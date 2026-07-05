@@ -1,9 +1,18 @@
-function App() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <h1 className="text-3xl font-bold text-[#6558FF]">Closing</h1>
-    </div>
-  );
+import { Route, Routes } from 'react-router-dom';
+import GuideListPage from './pages/guide/GuideListPage';
+
+function HomePlaceholder() {
+  return <div>홈 (준비 중)</div>;
 }
 
-export default App;
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePlaceholder />} />
+      <Route path="/guide" element={<GuideListPage />} />
+      {/* TODO: /guide/:stepId — 가이드 상세 (GUIDE002) */}
+      {/* TODO: /support — 지원정보 */}
+      {/* TODO: /market — 중고거래 */}
+    </Routes>
+  );
+}
