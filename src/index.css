@@ -1,9 +1,53 @@
-@import "pretendard/dist/web/static/pretendard.css";
 @import "tailwindcss";
 
+@font-face {
+  font-family: "SUIT";
+  src: url("./assets/fonts/SUIT-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "SUIT";
+  src: url("./assets/fonts/SUIT-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "SUIT";
+  src: url("./assets/fonts/SUIT-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "SUIT";
+  src: url("./assets/fonts/SUIT-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
 @theme {
-  --font-sans:
-    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: "SUIT", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* Primary */
+  --color-primary: #6558FF;
+  --color-primary-light: #EEEEFF;
+
+  /* Grayscale */
+  --color-gray-900: #1C1C1C;
+  --color-gray-700: #3F3F3F;
+  --color-gray-600: #666666;
+  --color-gray-500: #838286;
+  --color-gray-400: #999999;
+
+  /* Background */
+  --color-bg-200: #DBDBE2;
+  --color-bg-100: #EFEFF4;
+  --color-bg-30:  #F6F6FA;
+  --color-bg-5:   #FCFCFE;
+
+  /* System - Warning */
+  --color-red-500: #F50A0A;
+  --color-red-50:  #FEE2E2;
+
+  /* System - Delay */
+  --color-orange-500: #FD8802;
+  --color-orange-50:  #FFE7CC;
 }
 
 @layer base {

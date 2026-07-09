@@ -1,14 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
+import HomePage from './pages/home/HomePage';
 import GuideListPage from './pages/guide/GuideListPage';
-
-function HomePlaceholder() {
-  return <div>홈 (준비 중)</div>;
-}
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomePlaceholder />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/guide" element={<GuideListPage />} />
       {/* TODO: /guide/:stepId — 가이드 상세 (GUIDE002) */}
       {/* TODO: /support — 지원정보 */}
