@@ -24,6 +24,9 @@
 @theme {
   --font-sans: "SUIT", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
+  /* App frame — 모바일 퍼스트 고정폭 (데스크톱에서 가운데 정렬) */
+  --container-app: 430px;
+
   /* Primary */
   --color-primary: #6558FF;
   --color-primary-light: #EEEEFF;
@@ -36,22 +39,115 @@
   --color-gray-400: #999999;
 
   /* Background */
+  --color-white:  #FFFFFF;
   --color-bg-200: #DBDBE2;
   --color-bg-100: #EFEFF4;
   --color-bg-30:  #F6F6FA;
   --color-bg-5:   #FCFCFE;
 
-  /* System - Warning */
+  /* System - Information (Blue) */
+  --color-blue-700: #062AAC;
+  --color-blue-600: #002ED6;
+  --color-blue-500: #0238FD;
+  --color-blue-400: #2554FD;
+  --color-blue-300: #5277FF;
+  --color-blue-200: #8BA4FE;
+  --color-blue-100: #B3C3FE;
+  --color-blue-50:  #CCD7FF;
+
+  /* System - Warning (Red) */
+  --color-red-700: #A20707;
+  --color-red-600: #B50808;
   --color-red-500: #F50A0A;
+  --color-red-400: #F73B3B;
+  --color-red-300: #F85858;
+  --color-red-200: #FA7B7B;
+  --color-red-100: #FCB1B1;
   --color-red-50:  #FEE2E2;
 
-  /* System - Delay */
+  /* System - Delay (Orange) */
+  --color-orange-700: #B15F01;
+  --color-orange-600: #D47202;
   --color-orange-500: #FD8802;
+  --color-orange-400: #FD9925;
+  --color-orange-300: #FEAE53;
+  --color-orange-200: #FEC88B;
+  --color-orange-100: #FEDBB3;
   --color-orange-50:  #FFE7CC;
 }
 
 @layer base {
   body {
     font-family: var(--font-sans);
+    /* 프레임 양옆 레터박스 (데스크톱에서만 보임) */
+    background-color: var(--color-bg-100);
   }
+}
+
+/* Type System (SUIT) — weight / size / line-height / letter-spacing */
+@utility text-head-1 {
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 160%;
+  letter-spacing: -0.02em;
+}
+@utility text-head-2 {
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 160%;
+}
+@utility text-title-1 {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 150%;
+}
+@utility text-title-2 {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 150%;
+}
+@utility text-title-3 {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 150%;
+}
+@utility text-subtitle-1 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+}
+@utility text-subtitle-2 {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+}
+@utility text-body-1 {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+}
+@utility text-body-2 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+}
+@utility text-body-3 {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+}
+@utility text-caption-1 {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 150%;
+}
+@utility text-caption-2 {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 150%;
+}
+@utility text-caption-3 {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 140%;
 }

@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import HomeIcon from '../../assets/icons/home-02.svg?react';
 import GuideIcon from '../../assets/icons/book-05.svg?react';
 import SupportIcon from '../../assets/icons/file-search-02.svg?react';
-import MarketIcon from '../../assets/icons/bag-03.svg?react';
+import UsedIcon from '../../assets/icons/bag-03.svg?react';
 import { ROUTES } from '../../constants/routes';
 
 const TABS = [
@@ -26,9 +26,9 @@ const TABS = [
   },
   {
     label: '중고거래',
-    path: ROUTES.MARKET,
-    Icon: MarketIcon,
-    isActive: (pathname: string) => pathname.startsWith('/market'),
+    path: ROUTES.USED,
+    Icon: UsedIcon,
+    isActive: (pathname: string) => pathname.startsWith('/used'),
   },
 ] as const;
 
@@ -39,7 +39,7 @@ export default function BottomTabBar() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex bg-white border-t border-gray-100">
+    <nav className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-app -translate-x-1/2 bg-white border-t border-gray-100">
       {TABS.map(({ label, path, Icon, isActive }) => {
         const active = isActive(pathname);
         const color = active ? ACTIVE_COLOR : INACTIVE_COLOR;

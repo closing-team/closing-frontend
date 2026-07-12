@@ -4,5 +4,7 @@ export const ROUTES = {
   GUIDE_DETAIL: '/guide/:stepId',
   SUPPORT: '/support',
   SUPPORT_DETAIL: '/support/:supportId',
-  MARKET: '/market',
+  USED: '/used',
+  USED_DETAIL: '/used/:productId',
+  USED_WRITE: '/used/write',
 } as const;
