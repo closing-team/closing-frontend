@@ -398,7 +398,7 @@ export default function HomePage() {
       )}
 
       {/* AI 맞춤 계획 버튼 — LLM001 연동 예정 */}
-      <div className="fixed bottom-20 right-4 z-40">
+      <div className="pointer-events-none fixed inset-x-0 bottom-20 z-40 mx-auto flex w-full max-w-app justify-end px-4 [&>button]:pointer-events-auto">
         <button
           onClick={() => navigate('/ai')}
           className="flex items-center text-sm font-semibold text-white shadow-lg"
