@@ -1,4 +1,6 @@
 export const ROUTES = {
+  SPLASH: '/splash',
+  LOGIN: '/login',
   HOME: '/',
   GUIDE_LIST: '/guide',
   GUIDE_DETAIL: '/guide/:stepId',
