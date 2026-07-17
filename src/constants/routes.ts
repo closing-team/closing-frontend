@@ -9,4 +9,6 @@ export const ROUTES = {
   USED: "/used",
   USED_DETAIL: "/used/:productId",
   USED_WRITE: "/used/write",
+  LLM: "/ai",
+  LLM_CHAT: "/ai/chat",
 } as const;

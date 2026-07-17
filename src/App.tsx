@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import GuideListPage from "./pages/guide/GuideListPage";
 import LLMPage from "./pages/llm/LLMPage";
+import LLMChatPage from "./pages/llm/LLMChatPage";
 import SupportListPage from "./pages/support/SupportListPage";
 import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
@@ -17,7 +18,8 @@ export default function App() {
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.GUIDE} element={<GuideListPage />} />
-        <Route path="/ai" element={<LLMPage />} />
+        <Route path={ROUTES.LLM} element={<LLMPage />} />
+        <Route path={ROUTES.LLM_CHAT} element={<LLMChatPage />} />
         <Route path={ROUTES.SUPPORT} element={<SupportListPage />} />
         <Route path="/used" element={<UsedListPage />} />
         <Route path="/dev/components" element={<ComponentsPage />} />
