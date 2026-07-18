@@ -1,9 +1,14 @@
 import partnerAvatar from "../assets/images/chat/chat-partner-avatar.png";
+import chatRoomProductImage from "../assets/images/chat/chat-room-product.png";
 import productImage1 from "../assets/images/chat/chat-product-1.png";
 import productImage2 from "../assets/images/chat/chat-product-2.png";
 import productImage3 from "../assets/images/chat/chat-product-3.png";
 import productImage4 from "../assets/images/chat/chat-product-4.png";
-import type { ChatRoomSummary } from "../types/chat";
+import type {
+  ChatMessage,
+  ChatRoomDetail,
+  ChatRoomSummary,
+} from "../types/chat";
 
 export const MOCK_CHAT_ROOMS: ChatRoomSummary[] = [
   {
@@ -57,5 +62,51 @@ export const MOCK_CHAT_ROOMS: ChatRoomSummary[] = [
     lastMessageAt: "2026-07-14T10:00:00.000Z",
     relativeTime: "5일전",
     unreadCount: 0,
+  },
+];
+
+export const MOCK_CHAT_ROOM_DETAIL: ChatRoomDetail = {
+  id: "chat-1",
+  partnerNickname: "클로저 123",
+  partnerAvatarUrl: partnerAvatar,
+  dateLabel: "2026년 5월 10일",
+  product: {
+    id: "product-1",
+    title: "시모넬리 아피아 2그룹 커피머신",
+    price: 1_200_000,
+    imageUrl: chatRoomProductImage,
+  },
+};
+
+export const MOCK_CHAT_MESSAGES: ChatMessage[] = [
+  {
+    id: "message-3",
+    roomId: "chat-1",
+    sender: "other",
+    type: "text",
+    content: "네 가능해요!",
+    sentAt: "2026-05-10T14:10:02.000+09:00",
+    displayTime: "오후 2:10",
+    read: true,
+  },
+  {
+    id: "message-1",
+    roomId: "chat-1",
+    sender: "me",
+    type: "text",
+    content: "안녕하세요! 구매 가능할까요?",
+    sentAt: "2026-05-10T14:10:00.000+09:00",
+    displayTime: "오후 2:10",
+    read: true,
+  },
+  {
+    id: "message-2",
+    roomId: "chat-1",
+    sender: "me",
+    type: "text",
+    content: "내일 직거래 하고싶어요.",
+    sentAt: "2026-05-10T14:10:01.000+09:00",
+    displayTime: "오후 2:10",
+    read: true,
   },
 ];
