@@ -11,3 +11,34 @@ export interface ChatRoomSummary {
   relativeTime: string;
   unreadCount: number;
 }
+
+export interface ChatProductSummary {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+}
+
+export interface ChatRoomDetail {
+  id: string;
+  partnerNickname: string;
+  partnerAvatarUrl: string;
+  dateLabel: string;
+  product: ChatProductSummary;
+}
+
+export interface ChatMessage {
+  id: string;
+  roomId: string;
+  sender: "me" | "other";
+  type: "text" | "image";
+  content: string;
+  caption?: string;
+  sentAt: string;
+  displayTime: string;
+  read: boolean;
+}
+
+export type PendingChatMessage =
+  | { type: "text"; content: string }
+  | { type: "image"; content: string; file: File; caption?: string };
