@@ -43,16 +43,17 @@ export default function LoginPage({ onKakaoLogin = defaultKakaoLogin }: LoginPag
 
   return (
     <main className="relative min-h-dvh overflow-hidden bg-primary-50">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-[75px] top-[82px] h-[702px] w-[488px] -scale-x-100 overflow-hidden"
-      >
-        {[heroBody, heroHat, heroHair, heroTop, heroEyeLeft, heroEyeRight, heroMouth].map((src) => (
-          <img key={src} src={src} alt="" className="absolute inset-0 h-full w-full opacity-30" />
-        ))}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <img src={heroBody} alt="" className="absolute left-[119px] top-[336px] h-[448px] w-[444px] -scale-x-100 opacity-30" />
+        <img src={heroEyeLeft} alt="" className="absolute left-[261px] top-[500px] h-[66px] w-[33px] -scale-x-100 opacity-30" />
+        <img src={heroEyeRight} alt="" className="absolute left-[194px] top-[500px] h-[66px] w-[33px] -scale-x-100 opacity-30" />
+        <img src={heroHair} alt="" className="absolute left-[175px] top-[308px] h-[102px] w-[122px] -scale-x-100 opacity-30" />
+        <img src={heroHat} alt="" className="absolute left-[75px] top-[82px] h-[267px] w-[186px] -scale-x-100 opacity-30" />
+        <img src={heroTop} alt="" className="absolute left-[131px] top-[238px] h-[134px] w-[153px] -scale-x-100 opacity-30" />
+        <img src={heroMouth} alt="" className="absolute left-[270px] top-[592px] h-[29px] w-[46px] -scale-x-100 opacity-30" />
       </div>
 
-      <section className="absolute inset-x-0 top-[302px]">
+      <section className="absolute inset-x-0 top-[302px] z-10">
         <div className="px-5">
           <img src={loginLogo} alt="" className="h-[70px] w-[70px]" />
           <img src={loginWordmark} alt="클로징" className="mt-5 h-[22px] w-[60px]" />
