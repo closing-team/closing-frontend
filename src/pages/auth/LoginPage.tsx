@@ -6,7 +6,6 @@ import heroBody from "../../assets/images/auth/login-hero-body.png";
 import heroEyeLeft from "../../assets/images/auth/login-hero-eye-left.svg";
 import heroEyeRight from "../../assets/images/auth/login-hero-eye-right.svg";
 import heroHair from "../../assets/images/auth/login-hero-hair.png";
-import heroHat from "../../assets/images/auth/login-hero-hat.png";
 import heroMouth from "../../assets/images/auth/login-hero-mouth.svg";
 import heroTop from "../../assets/images/auth/login-hero-top.png";
 import loginLogo from "../../assets/images/auth/login-logo.png";
@@ -48,7 +47,6 @@ export default function LoginPage({ onKakaoLogin = defaultKakaoLogin }: LoginPag
         <img src={heroEyeLeft} alt="" className="absolute left-[261px] top-[500px] h-[66px] w-[33px] -scale-x-100 opacity-30" />
         <img src={heroEyeRight} alt="" className="absolute left-[194px] top-[500px] h-[66px] w-[33px] -scale-x-100 opacity-30" />
         <img src={heroHair} alt="" className="absolute left-[175px] top-[308px] h-[102px] w-[122px] -scale-x-100 opacity-30" />
-        <img src={heroHat} alt="" className="absolute left-[75px] top-[82px] h-[267px] w-[186px] -scale-x-100 opacity-30" />
         <img src={heroTop} alt="" className="absolute left-[131px] top-[238px] h-[134px] w-[153px] -scale-x-100 opacity-30" />
         <img src={heroMouth} alt="" className="absolute left-[270px] top-[592px] h-[29px] w-[46px] -scale-x-100 opacity-30" />
       </div>
