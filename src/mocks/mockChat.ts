@@ -110,3 +110,27 @@ export const MOCK_CHAT_MESSAGES: ChatMessage[] = [
     read: true,
   },
 ];
+
+export function getMockChatRoom(roomId: string):
+  | { room: ChatRoomDetail; messages: ChatMessage[] }
+  | undefined {
+  const summary = MOCK_CHAT_ROOMS.find((room) => room.id === roomId);
+
+  if (!summary) return undefined;
+
+  return {
+    room: {
+      ...MOCK_CHAT_ROOM_DETAIL,
+      id: summary.id,
+      partnerNickname: summary.partnerNickname,
+      partnerAvatarUrl: summary.partnerAvatarUrl,
+      product: {
+        ...MOCK_CHAT_ROOM_DETAIL.product,
+        id: summary.productId,
+        title: summary.productName,
+        imageUrl: summary.productImageUrl,
+      },
+    },
+    messages: MOCK_CHAT_MESSAGES.filter((message) => message.roomId === summary.id),
+  };
+}
