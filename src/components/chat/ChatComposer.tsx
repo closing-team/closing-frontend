@@ -180,6 +180,10 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
             setFailedMessage(null);
           }}
           onKeyDown={(event) => {
+            if (event.nativeEvent.isComposing) {
+              return;
+            }
+
             if (event.key === "Enter" && !event.shiftKey) {
               event.preventDefault();
               void send();
