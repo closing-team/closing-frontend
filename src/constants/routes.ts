@@ -1,6 +1,7 @@
 export const ROUTES = {
   SPLASH: "/splash",
   LOGIN: "/login",
+  TERMS: "/terms",
   CHATS: "/chats",
   CHAT_ROOM: "/chats/:roomId",
   HOME: "/",

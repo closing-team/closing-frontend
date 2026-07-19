@@ -5,6 +5,7 @@ import LLMPage from "./pages/llm/LLMPage";
 import SupportListPage from "./pages/support/SupportListPage";
 import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
+import TermsPage from "./pages/auth/TermsPage";
 import UsedListPage from "./pages/used/UsedListPage";
 import ComponentsPage from "./pages/dev/ComponentsPage";
 import ChatListPage from "./pages/chat/ChatListPage";
@@ -40,6 +41,7 @@ export default function App() {
       <Routes>
         <Route path={ROUTES.SPLASH} element={<SplashPage />} />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.TERMS} element={<TermsPage />} />
         <Route path={ROUTES.CHATS} element={<ChatListRoute />} />
         <Route path={ROUTES.CHAT_ROOM} element={<ChatRoomRoute />} />
         <Route path={ROUTES.HOME} element={<HomePage />} />
