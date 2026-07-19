@@ -2,6 +2,8 @@ export const ROUTES = {
   SPLASH: "/splash",
   LOGIN: "/login",
   TERMS: "/terms",
+  CHATS: "/chats",
+  CHAT_ROOM: "/chats/:roomId",
   HOME: "/",
   GUIDE: "/guide",
   GUIDE_DETAIL: "/guide/:stepId",
@@ -11,3 +13,6 @@ export const ROUTES = {
   USED_DETAIL: "/used/:productId",
   USED_WRITE: "/used/write",
 } as const;
+
+export const chatRoomPath = (roomId: string) =>
+  ROUTES.CHAT_ROOM.replace(":roomId", encodeURIComponent(roomId));
