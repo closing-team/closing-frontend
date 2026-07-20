@@ -16,6 +16,8 @@ export const ROUTES = {
   USED_WRITE: "/used/write",
   USED_DETAIL: "/used/:productId",
   USED_CHAT: "/used/chat/:productId",
+  LLM: "/ai",
+  LLM_CHAT: "/ai/chat",
 } as const;
 
 export const chatRoomPath = (roomId: string) =>

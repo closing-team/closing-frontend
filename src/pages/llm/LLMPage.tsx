@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
 import TopBar from "../../components/common/TopBar";
 import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatInput from "../../components/llm/ChatInput";
@@ -44,25 +45,11 @@ export default function LLMPage() {
 
       <div className="flex flex-col items-center px-4 py-8 gap-5">
         <div className="flex w-full flex-col items-start gap-3">
-          <div
-            className="flex shrink-0 items-center justify-center"
-            style={{
-              width: "80px",
-              height: "80px",
-              borderRadius: "50%",
-              background: "linear-gradient(180deg, #CFCBFF 0%, #F7F6FF 100%)",
-            }}
-          >
-            <img
-              src={characterRight}
-              alt=""
-              style={{
-                width: "57.14px",
-                height: "57.14px",
-                objectFit: "contain",
-              }}
-            />
-          </div>
+          <img
+            src={characterRight}
+            alt=""
+            style={{ width: "80px", height: "80px", objectFit: "contain" }}
+          />
           <p className="text-title-1 text-gray-900">
             사장님의 상황을 알려주시면
             <br />
@@ -100,7 +87,11 @@ export default function LLMPage() {
         <ChatInput
           value={input}
           onChange={setInput}
-          onSend={() => setInput("")}
+          onSend={() => {
+            if (input.trim()) {
+              navigate(ROUTES.LLM_CHAT, { state: { initialMessage: input } });
+            }
+          }}
           className="w-full"
         />
       </div>
