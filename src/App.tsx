@@ -1,6 +1,8 @@
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import GuideListPage from "./pages/guide/GuideListPage";
+import GuideDetailPage from "./pages/guide/GuideDetailPage";
+import GuideNoticeTemplatePage from "./pages/guide/GuideNoticeTemplatePage";
 import LLMPage from "./pages/llm/LLMPage";
 import SupportListPage from "./pages/support/SupportListPage";
 import SplashPage from "./pages/auth/SplashPage";
@@ -46,6 +48,11 @@ export default function App() {
         <Route path={ROUTES.CHAT_ROOM} element={<ChatRoomRoute />} />
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.GUIDE} element={<GuideListPage />} />
+        <Route path={ROUTES.GUIDE_DETAIL} element={<GuideDetailPage />} />
+        <Route
+          path={ROUTES.GUIDE_NOTICE_TEMPLATE}
+          element={<GuideNoticeTemplatePage />}
+        />
         <Route path="/ai" element={<LLMPage />} />
         <Route path={ROUTES.SUPPORT} element={<SupportListPage />} />
         <Route path="/used" element={<UsedListPage />} />

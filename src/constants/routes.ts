@@ -7,6 +7,8 @@ export const ROUTES = {
   HOME: "/",
   GUIDE: "/guide",
   GUIDE_DETAIL: "/guide/:stepId",
+  GUIDE_NOTICE_TEMPLATE: "/guide/2/template",
+  GUIDE_STEP6_TEMPLATE: "/guide/6/template",
   SUPPORT: "/support",
   SUPPORT_DETAIL: "/support/:supportId",
   USED: "/used",
