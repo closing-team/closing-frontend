@@ -29,7 +29,7 @@ export default function SearchBar({
           type="button"
           aria-label="뒤로가기"
           onClick={onBack}
-          className="-ml-1 p-1 text-gray-900"
+          className="p-1 text-gray-900"
         >
           <ChevronLeftIcon />
         </button>

@@ -4,6 +4,7 @@ const MAX_PRICE = 1_000_000_000;
 
 interface PriceFieldProps {
   label?: string;
+  labelSize?: "title-3" | "subtitle-2";
   value: string;
   onChange: (digits: string) => void;
   error?: string;
@@ -13,6 +14,7 @@ interface PriceFieldProps {
 
 export default function PriceField({
   label = "판매 가격",
+  labelSize,
   value,
   onChange,
   error,
@@ -25,6 +27,7 @@ export default function PriceField({
   return (
     <TextField
       label={label}
+      labelSize={labelSize}
       value={formatted}
       onChange={(e) => onChange(e.target.value.replace(/\D/g, ""))}
       onClear={() => onChange("")}

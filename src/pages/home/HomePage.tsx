@@ -316,6 +316,7 @@ export default function HomePage() {
       {/* 헤더 */}
       <TopBar
         logo
+        bordered={false}
         right={
           // 햄버거 — HOME002 사이드 메뉴 연동 예정
           <button type="button" aria-label="전체 메뉴" className="p-1 text-gray-900">
