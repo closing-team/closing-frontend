@@ -24,7 +24,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 
 const SIZE_CLASS: Record<ButtonSize, string> = {
   lg: "h-[52px] rounded-lg px-2.5 text-title-3",
-  sm: "rounded-md px-2.5 py-2 text-caption-1",
+  sm: "h-[34px] min-w-[52px] rounded-md px-2.5 py-2 text-caption-1",
 };
 
 function sizeIcon(icon: ReactNode): ReactNode {

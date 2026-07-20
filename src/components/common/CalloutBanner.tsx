@@ -18,7 +18,7 @@ export default function CalloutBanner({
 }: CalloutBannerProps) {
   return (
     <div
-      className={`flex items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-[0_1px_5px_0_rgba(0,0,0,0.03)] ${className}`}
+      className={`flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-[0_1px_5px_0_rgba(0,0,0,0.03)] ${className}`}
     >
       <div className="flex items-center gap-3">
         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] bg-primary-50">
