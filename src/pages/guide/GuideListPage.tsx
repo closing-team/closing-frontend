@@ -65,7 +65,7 @@ export default function GuideListPage() {
 
   return (
     <div className="min-h-screen bg-gray-30 pb-20">
-      <TopBar title="사장님 폐업 가이드" />
+      <TopBar title="사장님 폐업 가이드" bordered={false} />
       <div className="bg-white px-4 pb-5">
         <p className="text-title-2 text-gray-900">
           안전하고 현명한 사업 마무리

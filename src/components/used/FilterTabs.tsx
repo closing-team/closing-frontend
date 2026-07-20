@@ -1,3 +1,4 @@
+import Chip from "../common/Chip";
 import type { UsedFilter } from "../../types/used";
 
 interface FilterTabsProps {
@@ -19,24 +20,15 @@ export default function FilterTabs({
   nearbyLabel,
 }: FilterTabsProps) {
   return (
-    <div className="flex gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {FILTERS.map(({ key, label }) => {
-        const active = value === key;
-        return (
-          <button
-            key={key}
-            type="button"
-            onClick={() => onChange(key)}
-            className={`shrink-0 rounded-full border px-4 py-2 text-subtitle-2 transition-colors ${
-              active
-                ? "border-primary-500 bg-primary-500 text-white"
-                : "border-gray-200 bg-white text-gray-600"
-            }`}
-          >
-            {key === "nearby" ? nearbyLabel : label}
-          </button>
-        );
-      })}
+    <div className="flex gap-1.5 overflow-x-auto px-4 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {FILTERS.map(({ key, label }) => (
+        <Chip
+          key={key}
+          label={key === "nearby" ? nearbyLabel : (label ?? "")}
+          selected={value === key}
+          onClick={() => onChange(key)}
+        />
+      ))}
     </div>
   );
 }

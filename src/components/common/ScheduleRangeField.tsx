@@ -76,16 +76,12 @@ export default function ScheduleRangeField({
           )
         }
       />
-      <p
-        className={`flex min-h-[20px] items-center gap-2 text-caption-2 ${isInvalid ? "text-warning-500" : ""}`}
-      >
-        {isInvalid && (
-          <>
-            <XCircleIcon className="h-5 w-5 shrink-0" />
-            종료 일시는 시작 일시보다 늦어야 해요.
-          </>
-        )}
-      </p>
+      {isInvalid && (
+        <p className="flex items-center gap-2 text-caption-2 text-warning-500">
+          <XCircleIcon className="h-5 w-5 shrink-0" />
+          종료 일시는 시작 일시보다 늦어야 해요.
+        </p>
+      )}
     </div>
   );
 }

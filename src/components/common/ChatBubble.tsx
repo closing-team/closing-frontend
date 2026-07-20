@@ -4,6 +4,7 @@ interface ChatBubbleProps {
   me?: boolean;
   time?: string;
   read?: boolean;
+  avatar?: ReactNode;
   children: ReactNode;
 }
 
@@ -11,9 +12,10 @@ export default function ChatBubble({
   me = false,
   time,
   read = false,
+  avatar,
   children,
 }: ChatBubbleProps) {
-  return (
+  const column = (
     <div
       className={`flex flex-col gap-[5px] ${me ? "items-end" : "items-start"}`}
     >
@@ -27,15 +29,22 @@ export default function ChatBubble({
         {children}
       </div>
       {time && (
-        <span
-          className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-caption-3 text-gray-400 ${
-            me ? "mr-0.5" : ""
-          }`}
-        >
+        <span className="flex shrink-0 items-center gap-1 whitespace-nowrap px-0.5 text-caption-3 text-gray-400">
           {me && read && <span>읽음</span>}
           <span>{time}</span>
         </span>
       )}
     </div>
   );
+
+  if (!me && avatar) {
+    return (
+      <div className="flex items-start gap-2">
+        {avatar}
+        {column}
+      </div>
+    );
+  }
+
+  return column;
 }
