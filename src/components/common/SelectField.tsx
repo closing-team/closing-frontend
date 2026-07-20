@@ -6,8 +6,16 @@ export interface SelectOption {
   label: string;
 }
 
+type LabelSize = "title-3" | "subtitle-2";
+
+const LABEL_SIZE_CLASS: Record<LabelSize, string> = {
+  "title-3": "text-title-3",
+  "subtitle-2": "text-subtitle-2",
+};
+
 interface SelectFieldProps {
   label?: string;
+  labelSize?: LabelSize;
   options: SelectOption[];
   value: string | null;
   onChange: (value: string) => void;
@@ -18,6 +26,7 @@ interface SelectFieldProps {
 
 export default function SelectField({
   label,
+  labelSize = "title-3",
   options,
   value,
   onChange,
@@ -32,7 +41,7 @@ export default function SelectField({
     <div className={className}>
       {label && (
         <label
-          className={`mb-2 ml-0.5 block text-title-3 ${disabled ? "text-gray-400" : "text-gray-900"}`}
+          className={`mb-2 ml-0.5 block ${LABEL_SIZE_CLASS[labelSize]} ${disabled ? "text-gray-400" : "text-gray-900"}`}
         >
           {label}
         </label>

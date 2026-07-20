@@ -1,6 +1,6 @@
 import { XMdIcon } from "../../assets/icons";
 
-type ChipVariant = "tag" | "recent" | "badge";
+type ChipVariant = "tag" | "keyword" | "recent" | "badge";
 
 interface ChipProps {
   label: string;
@@ -24,7 +24,9 @@ export default function Chip({
       ? "px-2 py-1 text-caption-1 rounded gap-0.5"
       : variant === "recent"
         ? "h-8 max-w-[250px] px-3 text-body-3 rounded-full gap-1"
-        : "h-8 px-3 text-subtitle-2 rounded-full gap-1";
+        : variant === "keyword"
+          ? "h-8 px-3 text-body-3 rounded-full gap-1"
+          : "h-8 px-3 text-subtitle-2 rounded-full gap-1";
 
   const colorClass = selected
     ? "bg-primary-500 text-white"
@@ -32,7 +34,9 @@ export default function Chip({
       ? "bg-gray-100 text-gray-400"
       : variant === "recent"
         ? "bg-white text-gray-700 border border-gray-200"
-        : "bg-gray-5 text-gray-500 border border-gray-200";
+        : variant === "keyword"
+          ? "bg-white text-gray-700 border border-gray-200"
+          : "bg-gray-5 text-gray-500 border border-gray-200";
 
   return (
     <button

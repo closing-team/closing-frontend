@@ -7,6 +7,7 @@ interface TopBarProps {
   title?: string;
   onBack?: () => void;
   right?: ReactNode;
+  bordered?: boolean;
   className?: string;
 }
 
@@ -15,6 +16,7 @@ export default function TopBar({
   title,
   onBack,
   right,
+  bordered = true,
   className = "",
 }: TopBarProps) {
   const paddingClass = onBack ? "px-1.5" : right ? "pl-4 pr-2" : "px-4";
@@ -22,7 +24,7 @@ export default function TopBar({
   return (
     <header
       className={`relative flex h-14 items-center gap-2 bg-white ${paddingClass} ${
-        logo ? "" : "border-b border-gray-100"
+        bordered ? "border-b border-gray-100" : ""
       } ${className}`}
     >
       {onBack && (
@@ -30,7 +32,7 @@ export default function TopBar({
           type="button"
           aria-label="뒤로가기"
           onClick={onBack}
-          className="-ml-1 p-1 text-gray-900"
+          className="p-1 text-gray-900"
         >
           <ChevronLeftIcon />
         </button>

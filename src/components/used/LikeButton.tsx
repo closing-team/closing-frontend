@@ -29,10 +29,26 @@ export default function LikeButton({
       className={`shrink-0 p-0.5 ${className}`}
     >
       {liked ? (
-        <HeartFilledIcon width={24} height={24} />
+        <HeartFilledIcon width={24} height={24} className="text-[#FF4C7F]" />
       ) : (
         <HeartEmptyIcon width={24} height={24} className="text-gray-400" />
       )}
+    </span>
+  );
+}
+
+interface LikeCountProps {
+  count: number;
+  className?: string;
+}
+
+export function LikeCount({ count, className = "" }: LikeCountProps) {
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center gap-1 text-gray-200 ${className}`}
+    >
+      <HeartFilledIcon width={20} height={20} />
+      <span className="text-body-2 text-gray-400">{count}</span>
     </span>
   );
 }

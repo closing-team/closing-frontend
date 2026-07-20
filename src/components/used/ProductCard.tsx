@@ -27,7 +27,7 @@ export default function ProductCard({
       className="flex flex-col text-left active:opacity-80"
     >
       <div
-        className="relative w-full overflow-hidden rounded-xl bg-gray-100"
+        className="relative w-full overflow-hidden rounded-lg bg-gray-100"
         style={{ aspectRatio: "1 / 1" }}
       >
         {product.imageUrl ? (
@@ -50,15 +50,16 @@ export default function ProductCard({
       </div>
 
       {/* 상품명 (최대 2줄) */}
-      <p className="mt-2 line-clamp-2 text-subtitle-2 text-gray-900">
+      <p className="mt-2 line-clamp-2 text-subtitle-2 text-gray-700">
         {product.title}
       </p>
 
-      <p className="mt-1 truncate text-body-3 text-gray-400">{meta}</p>
+      <p className="mt-0.5 truncate text-caption-3 text-gray-500">{meta}</p>
 
       {/* 가격 */}
-      <p className="mt-1 text-title-3 text-gray-900">
-        {formatPrice(product.price)}원
+      <p className="mt-1 flex text-subtitle-2 text-gray-900">
+        <span className="min-w-0 truncate">{formatPrice(product.price)}</span>
+        <span className="shrink-0">원</span>
       </p>
     </button>
   );

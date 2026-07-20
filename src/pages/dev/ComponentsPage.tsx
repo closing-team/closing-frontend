@@ -30,10 +30,12 @@ import { getNextHour, toTimeValue, addHours } from "../../utils/dateFormat";
 import Fab from "../../components/common/Fab";
 import NavigationBar from "../../components/common/NavigationBar";
 import ProductCard from "../../components/used/ProductCard";
+import ProductListCard from "../../components/used/ProductListCard";
+import MyProductCard from "../../components/used/MyProductCard";
+import Tag from "../../components/used/Tag";
 import FilterTabs from "../../components/used/FilterTabs";
 import SortDropdown from "../../components/used/SortDropdown";
 import UsedEmptyView from "../../components/used/UsedEmptyView";
-import BusinessAuthModal from "../../components/used/BusinessAuthModal";
 import TodoList from "../../components/home/TodoList";
 import type { Todo } from "../../components/home/TodoList";
 import LikeButton from "../../components/used/LikeButton";
@@ -145,7 +147,6 @@ export default function ComponentsPage() {
   const [usedSort, setUsedSort] = useState<UsedSort>("popular");
   const [liked, setLiked] = useState(false);
   const [supportBookmarked, setSupportBookmarked] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, text: "점포 정리", done: true },
     { id: 2, text: "집기 중고 거래", done: false },
@@ -296,6 +297,7 @@ export default function ComponentsPage() {
           <div className="-mx-4 space-y-3">
             <TopBar
               logo
+              bordered={false}
               right={
                 <button type="button" className="p-1 text-gray-900">
                   <MenuHamburgerIcon />
@@ -304,6 +306,7 @@ export default function ComponentsPage() {
             />
             <TopBar
               title="제목"
+              bordered={false}
               right={
                 <>
                   <button type="button" className="p-1 text-gray-900">
@@ -545,12 +548,7 @@ export default function ComponentsPage() {
             nearbyLabel="원홍동 근처"
           />
           <div className="flex justify-end">
-            <SortDropdown
-              value={usedSort}
-              onChange={setUsedSort}
-              distanceEnabled
-              onDistanceRequest={() => {}}
-            />
+            <SortDropdown value={usedSort} onChange={setUsedSort} />
           </div>
           <div className="grid grid-cols-2 gap-x-3 gap-y-5">
             <ProductCard
@@ -562,15 +560,38 @@ export default function ComponentsPage() {
           <div className="overflow-hidden rounded-2xl border border-gray-100">
             <UsedEmptyView onWrite={() => {}} />
           </div>
-          <Button size="sm" onClick={() => setShowAuthModal(true)}>
-            사업자 인증 모달 열기
-          </Button>
-          {showAuthModal && (
-            <BusinessAuthModal
-              onClose={() => setShowAuthModal(false)}
-              onVerify={() => setShowAuthModal(false)}
-            />
-          )}
+        </Section>
+
+        <Section title="중고거래 — 큰 상품 카드 / 판매 리스트 / 태그">
+          <ProductListCard
+            title="상품명"
+            caption="캡션"
+            price={0}
+            liked={liked}
+            onToggleLike={() => setLiked((v) => !v)}
+            onClick={() => {}}
+          />
+          <MyProductCard
+            status="selling"
+            title="판매 상품 리스트"
+            meta="직거래 · 원흥동 · 3시간 전"
+            price={0}
+            likeCount={3}
+            onClick={() => {}}
+            onMenuClick={() => {}}
+          />
+          <MyProductCard
+            status="completed"
+            title="판매 상품 리스트"
+            meta="직거래 · 원흥동 · 3시간 전"
+            price={0}
+            likeCount={3}
+            onClick={() => {}}
+            onMenuClick={() => {}}
+          />
+          <div>
+            <Tag>Text / Text</Tag>
+          </div>
         </Section>
 
         {/* Fab · NavigationBar는 fixed 포지션이라 이 섹션이 아니라 화면 하단에 고정 표시됨 */}
