@@ -102,6 +102,7 @@ export default function SupportListPage() {
     <div className="min-h-screen bg-gray-30 pb-20">
       <TopBar
         logo
+        bordered={false}
         right={
           <button
             type="button"

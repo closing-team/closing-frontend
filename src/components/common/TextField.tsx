@@ -83,24 +83,25 @@ export default function TextField({
           </button>
         )}
       </div>
-      <p
-        className={`mt-2 flex min-h-[20px] items-center gap-2 text-caption-2 ${
-          error ? "text-warning-500" : success ? "text-info-500" : ""
-        }`}
-      >
-        {error && (
-          <>
-            <XCircleIcon className="h-5 w-5 shrink-0" />
-            {error}
-          </>
-        )}
-        {!error && success && (
-          <>
-            <CheckCircleIcon className="h-5 w-5 shrink-0" />
-            {success}
-          </>
-        )}
-      </p>
+      {(error || success) && (
+        <p
+          className={`mt-2 flex items-center gap-2 text-caption-2 ${
+            error ? "text-warning-500" : "text-info-500"
+          }`}
+        >
+          {error ? (
+            <>
+              <XCircleIcon className="h-5 w-5 shrink-0" />
+              {error}
+            </>
+          ) : (
+            <>
+              <CheckCircleIcon className="h-5 w-5 shrink-0" />
+              {success}
+            </>
+          )}
+        </p>
+      )}
     </div>
   );
 }
