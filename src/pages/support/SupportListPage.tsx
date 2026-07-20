@@ -5,46 +5,8 @@ import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
+import { SUPPORT_POSTS } from "../../mocks/mockSupport";
 import { MenuHamburgerIcon } from "../../assets/icons";
-
-const INITIAL_SUPPORT_POSTS: SupportPost[] = [
-  {
-    id: 1,
-    organization: "중소벤처기업부",
-    title: "2026년 희망리턴패키지 원스톱폐업지원 소상공인 모집",
-    period: "2026.01.01 - 2026.03.05",
-    startDate: "2026-01-01",
-    endDate: "2026-03-05",
-    bookmarked: true,
-  },
-  {
-    id: 2,
-    organization: "서울특별시",
-    title: "[서울] 2026년 새 길 여는 폐업지원 사업 모집 공고",
-    period: "2026.03.03 - 예산 소진시까지",
-    startDate: "2026-03-03",
-    endDate: null,
-    bookmarked: true,
-  },
-  {
-    id: 3,
-    organization: "전북특별자치도",
-    title: "[전북] 2026년 폐업 소상공인 사업정리 지원사업 공고",
-    period: "2026.03.05 - 예산 소진시까지",
-    startDate: "2026-03-05",
-    endDate: null,
-    bookmarked: false,
-  },
-  {
-    id: 4,
-    organization: "전북특별자치도",
-    title: "[전북] 2026년 새출발 재기지원 모집 공고",
-    period: "2026.03.26 - 예산 소진시까지",
-    startDate: "2026-03-26",
-    endDate: null,
-    bookmarked: false,
-  },
-];
 
 type SupportTab = "notice" | "bookmark";
 type SortOption = "popular" | "registered" | "deadline";
@@ -78,7 +40,7 @@ function sortPosts(posts: SupportPost[], sort: SortOption): SupportPost[] {
 }
 
 export default function SupportListPage() {
-  const [posts, setPosts] = useState<SupportPost[]>(INITIAL_SUPPORT_POSTS);
+  const [posts, setPosts] = useState<SupportPost[]>(SUPPORT_POSTS);
   const [activeTab, setActiveTab] = useState<SupportTab>("notice");
   const [sort, setSort] = useState<SortOption>("popular");
 

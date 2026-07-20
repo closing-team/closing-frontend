@@ -22,3 +22,6 @@ export const ROUTES = {
 
 export const chatRoomPath = (roomId: string) =>
   ROUTES.CHAT_ROOM.replace(":roomId", encodeURIComponent(roomId));
+
+export const supportDetailPath = (id: number | string) =>
+  ROUTES.SUPPORT_DETAIL.replace(":supportId", encodeURIComponent(id));

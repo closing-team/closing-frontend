@@ -2,7 +2,7 @@ import { cloneElement, isValidElement } from "react";
 import type { ButtonHTMLAttributes, ReactElement, ReactNode } from "react";
 
 type ButtonVariant = "primary" | "secondary" | "text" | "warning";
-type ButtonSize = "lg" | "sm";
+type ButtonSize = "lg" | "md" | "sm";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -24,6 +24,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 
 const SIZE_CLASS: Record<ButtonSize, string> = {
   lg: "h-[52px] rounded-lg px-2.5 text-title-3",
+  md: "h-11 rounded-md px-2.5 text-subtitle-2",
   sm: "rounded-md px-2.5 py-2 text-caption-1",
 };
 

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import BookmarkButton from "./BookmarkButton";
+import { supportDetailPath } from "../../constants/routes";
 
 export interface SupportPost {
   id: number;
@@ -26,9 +27,9 @@ export default function SupportCard({
     <div
       role="button"
       tabIndex={0}
-      onClick={() => navigate(`/support/${post.id}`)}
+      onClick={() => navigate(supportDetailPath(post.id))}
       onKeyDown={(e) => {
-        if (e.key === "Enter") navigate(`/support/${post.id}`);
+        if (e.key === "Enter") navigate(supportDetailPath(post.id));
       }}
       className="relative flex flex-col gap-2 rounded-lg bg-white pb-4 pl-4 pr-3 pt-4 shadow-[0_0_8px_0_rgba(159,159,162,0.02)] active:opacity-75"
     >
