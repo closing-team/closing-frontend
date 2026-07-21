@@ -6,9 +6,10 @@ import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
+import { ROUTES } from "../../constants/routes";
 import AddPlanModal from "../../components/common/AddPlanModal";
 import DayScheduleModal from "../../components/home/DayScheduleModal";
-import type { Plan } from "../../components/llm/PlanCard";
+import type { Plan } from "../../components/ai/PlanCard";
 import {
   MenuHamburgerIcon,
   PlusMdIcon,
@@ -391,12 +392,12 @@ export default function HomePage() {
 
       {/* AI 맞춤 계획 버튼 — LLM001 연동 예정 */}
       <Fab
-        variant="llm"
+        variant="ai"
         icon={
           <img src={aiCharacter} alt="" className="h-6 w-6 object-contain" />
         }
         label="AI 맞춤 계획"
-        onClick={() => navigate("/ai")}
+        onClick={() => navigate(ROUTES.AI)}
       />
 
       <NavigationBar />

@@ -7,7 +7,7 @@ import ProductCard from "../../components/used/ProductCard";
 import UsedContentSkeleton from "../../components/used/UsedContentSkeleton";
 import LocationPermissionSheet from "../../components/used/LocationPermissionSheet";
 import NavigationBar from "../../components/common/NavigationBar";
-import { ROUTES } from "../../constants/routes";
+import { ROUTES, usedDetailPath } from "../../constants/routes";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { applyFilter, searchProducts } from "../../utils/usedListUtils";
 import { useUsedStore } from "../../stores/usedStore";
@@ -82,7 +82,7 @@ export default function UsedSearchResultPage() {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onClick={(id) => navigate(`/used/${id}`)}
+                    onClick={(id) => navigate(usedDetailPath(id))}
                     onToggleLike={toggleLike}
                   />
                 ))}

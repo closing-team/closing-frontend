@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { CheckIcon, ChevronRightIcon } from "../../assets/icons";
+import { guideDetailPath } from "../../constants/routes";
 
 export interface GuideStep {
   id: number;
@@ -28,7 +29,7 @@ interface StepCardProps {
 export default function StepCard({ step }: StepCardProps) {
   return (
     <Link
-      to={`/guide/${step.id}`}
+      to={guideDetailPath(step.id)}
       className="flex items-center rounded-lg bg-white pb-4 pl-4 pr-3 pt-4 shadow-[0_0_8px_0_rgba(159,159,162,0.02)] active:opacity-75"
     >
       <StepCardBody step={step} />

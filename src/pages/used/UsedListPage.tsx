@@ -11,7 +11,7 @@ import UsedContentSkeleton from "../../components/used/UsedContentSkeleton";
 import LocationPermissionSheet from "../../components/used/LocationPermissionSheet";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { MenuHamburgerIcon, PlusMdIcon, SearchIcon } from "../../assets/icons";
-import { ROUTES } from "../../constants/routes";
+import { ROUTES, usedDetailPath } from "../../constants/routes";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { applyFilter } from "../../utils/usedListUtils";
 import { useUsedStore } from "../../stores/usedStore";
@@ -107,7 +107,7 @@ export default function UsedListPage() {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onClick={(id) => navigate(`/used/${id}`)}
+                    onClick={(id) => navigate(usedDetailPath(id))}
                     onToggleLike={toggleLike}
                   />
                 ))}

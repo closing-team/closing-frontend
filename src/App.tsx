@@ -3,10 +3,15 @@ import HomePage from "./pages/home/HomePage";
 import GuideListPage from "./pages/guide/GuideListPage";
 import GuideDetailPage from "./pages/guide/GuideDetailPage";
 import GuideNoticeTemplatePage from "./pages/guide/GuideNoticeTemplatePage";
-import LLMPage from "./pages/llm/LLMPage";
-import LLMChatPage from "./pages/llm/LLMChatPage";
+import GuideReportTemplatePage from "./pages/guide/GuideReportTemplatePage";
+import AIPage from "./pages/ai/AIPage";
+import AIPlanPage from "./pages/ai/AIPlanPage";
 import SupportListPage from "./pages/support/SupportListPage";
 import SupportDetailPage from "./pages/support/SupportDetailPage";
+import InquiryPage from "./pages/inquiry/InquiryPage";
+import InquiryHistoryPage from "./pages/inquiry/InquiryHistoryPage";
+import PolicyPage from "./pages/policy/PolicyPage";
+import ProfileEditPage from "./pages/account/ProfileEditPage";
 import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
 import TermsPage from "./pages/auth/TermsPage";
@@ -16,13 +21,14 @@ import UsedLikedProductsPage from "./pages/used/UsedLikedProductsPage";
 import UsedSearchPage from "./pages/used/UsedSearchPage";
 import UsedSearchResultPage from "./pages/used/UsedSearchResultPage";
 import UsedDetailPage from "./pages/used/UsedDetailPage";
-import BusinessAuthPage from "./pages/used/BusinessAuthPage";
+import BusinessAuthPage from "./pages/account/BusinessAuthPage";
 import UsedWritePage from "./pages/used/UsedWritePage";
 import ComponentsPage from "./pages/dev/ComponentsPage";
 import ChatListPage from "./pages/chat/ChatListPage";
 import ChatRoomPage from "./pages/chat/ChatRoomPage";
 import InvalidChatRoomPage from "./pages/chat/InvalidChatRoomPage";
-import { ROUTES } from "./constants/routes";
+import NotFoundPage from "./pages/error/NotFoundPage";
+import { ROUTES, chatRoomPath, usedDetailPath } from "./constants/routes";
 import { useUsedStore } from "./stores/usedStore";
 import {
   toChatMessages,
@@ -40,7 +46,7 @@ function ChatListRoute() {
     <ChatListPage
       rooms={rooms}
       onBack={() => navigate(ROUTES.HOME)}
-      onSelectRoom={(roomId) => navigate(`/chat/${roomId}`)}
+      onSelectRoom={(roomId) => navigate(chatRoomPath(roomId))}
     />
   );
 }
@@ -62,7 +68,7 @@ function UsedChatRoomRoute() {
       room={toChatRoomDetail(product, messages)}
       messages={toChatMessages(product.id, messages)}
       onBack={() => navigate(-1)}
-      onSelectProduct={() => navigate(`/used/${product.id}`)}
+      onSelectProduct={() => navigate(usedDetailPath(product.id))}
       onSendMessage={(pending) => {
         if (pending.type === "text") {
           sendMessage(product.id, pending.content);
@@ -79,34 +85,54 @@ export default function App() {
         <Route path={ROUTES.SPLASH} element={<SplashPage />} />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.TERMS} element={<TermsPage />} />
-        <Route path={ROUTES.CHAT} element={<ChatListRoute />} />
+
         <Route path={ROUTES.HOME} element={<HomePage />} />
+
+        <Route path={ROUTES.PROFILE_EDIT} element={<ProfileEditPage />} />
+        <Route path={ROUTES.BUSINESS_AUTH} element={<BusinessAuthPage />} />
+
         <Route path={ROUTES.GUIDE} element={<GuideListPage />} />
         <Route path={ROUTES.GUIDE_DETAIL} element={<GuideDetailPage />} />
         <Route
           path={ROUTES.GUIDE_NOTICE_TEMPLATE}
           element={<GuideNoticeTemplatePage />}
         />
-        <Route path={ROUTES.LLM} element={<LLMPage />} />
-        <Route path={ROUTES.LLM_PLAN} element={<LLMChatPage />} />
+        <Route
+          path={ROUTES.GUIDE_REPORT_TEMPLATE}
+          element={<GuideReportTemplatePage />}
+        />
+
+        <Route path={ROUTES.AI} element={<AIPage />} />
+        <Route path={ROUTES.AI_PLAN} element={<AIPlanPage />} />
+
         <Route path={ROUTES.SUPPORT} element={<SupportListPage />} />
         <Route path={ROUTES.SUPPORT_DETAIL} element={<SupportDetailPage />} />
+
+        <Route path={ROUTES.INQUIRY} element={<InquiryPage />} />
+        <Route path={ROUTES.INQUIRY_HISTORY} element={<InquiryHistoryPage />} />
+
+        <Route path={ROUTES.POLICY} element={<PolicyPage />} />
+
         <Route path={ROUTES.USED} element={<UsedListPage />} />
-        <Route
-          path={ROUTES.USED_MY_PRODUCTS}
-          element={<UsedMyProductsPage />}
-        />
-        <Route path={ROUTES.USED_LIKED} element={<UsedLikedProductsPage />} />
+        <Route path={ROUTES.USED_DETAIL} element={<UsedDetailPage />} />
         <Route path={ROUTES.USED_SEARCH} element={<UsedSearchPage />} />
         <Route
           path={ROUTES.USED_SEARCH_RESULT}
           element={<UsedSearchResultPage />}
         />
-        <Route path={ROUTES.BUSINESS_AUTH} element={<BusinessAuthPage />} />
         <Route path={ROUTES.USED_WRITE} element={<UsedWritePage />} />
-        <Route path={ROUTES.CHAT_DETAIL} element={<UsedChatRoomRoute />} />
-        <Route path={ROUTES.USED_DETAIL} element={<UsedDetailPage />} />
-        <Route path="/dev" element={<ComponentsPage />} />
+        <Route
+          path={ROUTES.USED_MY}
+          element={<UsedMyProductsPage />}
+        />
+        <Route path={ROUTES.USED_LIKED} element={<UsedLikedProductsPage />} />
+
+        <Route path={ROUTES.CHAT} element={<ChatListRoute />} />
+        <Route path={ROUTES.CHAT_ROOM} element={<UsedChatRoomRoute />} />
+
+        <Route path={ROUTES.DEV} element={<ComponentsPage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );

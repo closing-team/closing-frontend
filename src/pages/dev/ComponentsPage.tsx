@@ -19,7 +19,7 @@ import SearchBar from "../../components/used/SearchBar";
 import Callout, { CalloutItem } from "../../components/common/Callout";
 import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatBubble from "../../components/common/ChatBubble";
-import ChatInput from "../../components/llm/ChatInput";
+import ChatInput from "../../components/ai/ChatInput";
 import DateCalendar from "../../components/common/DateCalendar";
 import TimeWheel from "../../components/common/TimeWheel";
 import type { TimeValue } from "../../components/common/TimeWheel";
@@ -45,9 +45,9 @@ import GuideCard from "../../components/guide/GuideCard";
 import GuideHeader from "../../components/guide/GuideHeader";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
-import PlanCard from "../../components/llm/PlanCard";
-import type { Plan } from "../../components/llm/PlanCard";
-import GeneratedPlanCard from "../../components/llm/GeneratedPlanCard";
+import PlanCard from "../../components/ai/PlanCard";
+import type { Plan } from "../../components/ai/PlanCard";
+import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import type { Product, UsedFilter, UsedSort } from "../../types/used";
 import aiCharacter from "../../assets/images/cloy-fab.png";
 import {
@@ -141,7 +141,7 @@ export default function ComponentsPage() {
   const [rangeEndTime, setRangeEndTime] = useState<TimeValue>(
     toTimeValue(initialScheduleEnd),
   );
-  const [fabVariant, setFabVariant] = useState<"llm" | "used">("llm");
+  const [fabVariant, setFabVariant] = useState<"ai" | "used">("ai");
   const [usedFilter, setUsedFilter] = useState<UsedFilter>("all");
   const [usedSort, setUsedSort] = useState<UsedSort>("popular");
   const [liked, setLiked] = useState(false);
@@ -597,13 +597,13 @@ export default function ComponentsPage() {
           </p>
           <Button
             size="sm"
-            onClick={() => setFabVariant((v) => (v === "llm" ? "used" : "llm"))}
+            onClick={() => setFabVariant((v) => (v === "ai" ? "used" : "ai"))}
           >
             FAB variant 전환 ({fabVariant})
           </Button>
-          {fabVariant === "llm" ? (
+          {fabVariant === "ai" ? (
             <Fab
-              variant="llm"
+              variant="ai"
               icon={
                 <img
                   src={aiCharacter}

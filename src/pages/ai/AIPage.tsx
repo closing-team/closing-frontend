@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import TopBar from "../../components/common/TopBar";
 import CalloutBanner from "../../components/common/CalloutBanner";
-import ChatInput from "../../components/llm/ChatInput";
+import ChatInput from "../../components/ai/ChatInput";
 import { CheckIcon } from "../../assets/icons";
 import characterRight from "../../assets/images/cloy-lg.png";
 
@@ -35,7 +35,7 @@ const CHECKLIST = [
   },
 ];
 
-export default function LLMPage() {
+export default function AIPage() {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
 
@@ -90,7 +90,7 @@ export default function LLMPage() {
           onChange={setInput}
           onSend={() => {
             if (input.trim()) {
-              navigate(ROUTES.LLM_PLAN, { state: { initialMessage: input } });
+              navigate(ROUTES.AI_PLAN, { state: { initialMessage: input } });
             }
           }}
           className="mt-5 w-full"

@@ -5,6 +5,7 @@ import Button from "../../components/common/Button";
 import TipBox from "../../components/guide/TipBox";
 import CopyBox from "../../components/guide/CopyBox";
 import { CheckIcon } from "../../assets/icons";
+import { guideDetailPath } from "../../constants/routes";
 
 const TEXT_MESSAGE_TEMPLATE = `안녕하세요, 김건물 사장님.
 저는 대박카페 1호점 임차인 홍길동입니다.
@@ -48,7 +49,7 @@ export default function GuideNoticeTemplatePage() {
     <div className="min-h-screen bg-white pb-24">
       <TopBar
         title="문자/내용증명 복사용 작성 템플릿"
-        onBack={() => navigate("/guide/2")}
+        onBack={() => navigate(guideDetailPath(2))}
       />
 
       <div className="flex flex-col gap-6 px-4 py-5">
@@ -112,7 +113,7 @@ export default function GuideNoticeTemplatePage() {
       </div>
 
       <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 px-4 pb-5 pt-2.5">
-        <Button variant="primary" fullWidth onClick={() => navigate("/guide/2")}>
+        <Button variant="primary" fullWidth onClick={() => navigate(guideDetailPath(2))}>
           다음으로
         </Button>
       </div>

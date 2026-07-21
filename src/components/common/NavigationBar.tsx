@@ -18,19 +18,19 @@ const TABS = [
     label: "가이드",
     path: ROUTES.GUIDE,
     Icon: BookIcon,
-    isActive: (pathname: string) => pathname.startsWith("/guide"),
+    isActive: (pathname: string) => pathname.startsWith(ROUTES.GUIDE),
   },
   {
     label: "지원정보",
     path: ROUTES.SUPPORT,
     Icon: FileSearchIcon,
-    isActive: (pathname: string) => pathname.startsWith("/support"),
+    isActive: (pathname: string) => pathname.startsWith(ROUTES.SUPPORT),
   },
   {
     label: "중고거래",
     path: ROUTES.USED,
     Icon: BagIcon,
-    isActive: (pathname: string) => pathname.startsWith("/used"),
+    isActive: (pathname: string) => pathname.startsWith(ROUTES.USED),
   },
 ] as const;
 
