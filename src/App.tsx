@@ -27,11 +27,13 @@ import InquiryHistoryPage from "./pages/inquiry/InquiryHistoryPage";
 import PolicyPage from "./pages/policy/PolicyPage";
 import ComponentsPage from "./pages/dev/ComponentsPage";
 import NotFoundPage from "./pages/error/NotFoundPage";
+import DocumentMeta from "./components/common/DocumentMeta";
 import { ROUTES } from "./constants/routes";
 
 export default function App() {
   return (
     <div className="relative mx-auto min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] bg-white shadow-sm">
+      <DocumentMeta />
       <Routes>
         <Route path={ROUTES.SPLASH} element={<SplashPage />} />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
