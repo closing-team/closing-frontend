@@ -1,21 +1,23 @@
+import type { ReactNode } from "react";
 import { XMdIcon, ChevronRightIcon } from "../../assets/icons";
 import Button from "../common/Button";
 import type { Plan } from "../ai/PlanCard";
-import type { TimeValue } from "../common/TimeWheel";
+import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface DayScheduleModalProps {
   date: Date;
   plans: Plan[];
   onClose: () => void;
   onAdd: () => void;
+  onPlanClick: (plan: Plan) => void;
 }
 
-function formatDate(d: Date) {
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function formatTime(t: TimeValue) {
-  return `${t.meridiem} ${t.hour}:${String(t.minute).padStart(2, "0")}`;
+function Chip({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-[4px] bg-white px-1 py-px text-caption-3 text-gray-400">
+      {children}
+    </span>
+  );
 }
 
 export default function DayScheduleModal({
@@ -23,14 +25,15 @@ export default function DayScheduleModal({
   plans,
   onClose,
   onAdd,
+  onPlanClick,
 }: DayScheduleModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="relative w-full max-w-[343px] rounded-2xl bg-white">
         {/* 헤더 */}
-        <div className="flex h-[60px] items-center justify-between px-4">
-          <p className="text-title-3 text-gray-900">
+        <div className="flex items-center justify-between px-4 py-[14px]">
+          <p className="text-title-2 text-gray-900">
             {date.getMonth() + 1}월 {date.getDate()}일 일정
           </p>
           <button
@@ -44,22 +47,26 @@ export default function DayScheduleModal({
         </div>
 
         {/* 일정 리스트 */}
-        <div className="flex flex-col gap-3 px-4">
+        <div className="mt-2 flex flex-col gap-2 px-4">
           {plans.map((plan) => (
             <button
               key={plan.id}
               type="button"
-              className="flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-3 text-left"
+              onClick={() => onPlanClick(plan)}
+              className="flex items-center rounded-[6px] bg-gray-30 py-[10px] pl-4 pr-2 text-left"
             >
               <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500" />
-              <div className="flex flex-1 flex-col">
+              <div className="ml-3 flex flex-1 flex-col">
                 <p className="text-subtitle-2 text-gray-900">{plan.title}</p>
-                <p className="mt-0.5 text-caption-2 text-gray-400">
-                  {formatDate(plan.startDate)} {formatTime(plan.startTime)} —{" "}
-                  {formatDate(plan.endDate)} {formatTime(plan.endTime)}
-                </p>
+                <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                  <Chip>{formatDate(plan.startDate)}</Chip>
+                  <Chip>{formatTime(plan.startTime)}</Chip>
+                  <span className="h-px w-1 shrink-0 bg-gray-500" />
+                  <Chip>{formatDate(plan.endDate)}</Chip>
+                  <Chip>{formatTime(plan.endTime)}</Chip>
+                </div>
               </div>
-              <ChevronRightIcon className="h-5 w-5 shrink-0 text-gray-300" />
+              <ChevronRightIcon className="h-5 w-5 shrink-0 text-gray-400" />
             </button>
           ))}
         </div>
