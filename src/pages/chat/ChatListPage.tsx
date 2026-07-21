@@ -1,15 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import ChatEmptyView from "../../components/chat/ChatEmptyView";
 import ChatCard from "../../components/chat/ChatCard";
-import { MOCK_CHAT_ROOMS } from "../../mocks/chat/mockChat";
+import { ROUTES, chatRoomPath } from "../../constants/routes";
+import { useUsedStore } from "../../stores/usedStore";
+import { toChatRoomSummaries } from "../../utils/chatAdapter";
 import type { ChatRoomSummary } from "../../types/chat";
-
-interface ChatListPageProps {
-  rooms?: ChatRoomSummary[];
-  onBack?: () => void;
-  onNavigateHome?: () => void;
-  onSelectRoom?: (roomId: string) => void;
-}
 
 function sortRoomsByLatestMessage(rooms: ChatRoomSummary[]) {
   return [...rooms].sort(
@@ -19,29 +15,28 @@ function sortRoomsByLatestMessage(rooms: ChatRoomSummary[]) {
   );
 }
 
-function navigateToHome() {
-  window.location.assign("/");
-}
-
-export default function ChatListPage({
-  rooms = MOCK_CHAT_ROOMS,
-  onBack,
-  onNavigateHome,
-  onSelectRoom = () => {},
-}: ChatListPageProps) {
-  const sortedRooms = sortRoomsByLatestMessage(rooms);
-  const handleBack = onBack ?? onNavigateHome ?? navigateToHome;
+export default function ChatListPage() {
+  const navigate = useNavigate();
+  const products = useUsedStore((s) => s.products);
+  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const sortedRooms = sortRoomsByLatestMessage(
+    toChatRoomSummaries(products, messagesByProduct),
+  );
 
   return (
     <main className="flex min-h-screen flex-col bg-white">
-      <TopBar title="채팅" onBack={handleBack} />
+      <TopBar title="채팅" onBack={() => navigate(ROUTES.HOME)} />
 
       <section className="mt-4 flex flex-1 flex-col" aria-label="채팅 목록">
         {sortedRooms.length === 0 ? (
           <ChatEmptyView />
         ) : (
           sortedRooms.map((room) => (
-            <ChatCard key={room.id} room={room} onSelect={onSelectRoom} />
+            <ChatCard
+              key={room.id}
+              room={room}
+              onSelect={(roomId) => navigate(chatRoomPath(roomId))}
+            />
           ))
         )}
       </section>

@@ -1,22 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/common/Button";
+import { NotFoundIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center bg-white px-6 text-center">
-      <p className="text-title-1 text-gray-900">404</p>
-      <h1 className="mt-2 text-title-2 text-gray-900">
-        페이지를 찾을 수 없습니다.
-      </h1>
-      <p className="mt-2 text-body-2 text-gray-500">
-        주소가 잘못되었거나 삭제된 페이지예요.
-      </p>
-      <Button className="mt-6" onClick={() => navigate(ROUTES.HOME)}>
-        홈으로 가기
-      </Button>
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-2 bg-white px-6 text-center">
+      <div className="flex w-[172px] flex-col items-center gap-7">
+        <div className="flex flex-col items-center self-stretch">
+          <div className="flex aspect-square h-20 w-20 items-center justify-center p-2">
+            <NotFoundIcon className="h-16 w-16" />
+          </div>
+
+          <p className="text-title-3 text-gray-700">
+            페이지를 불러오지 못했어요
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate(ROUTES.HOME)}
+          className="flex items-center justify-center gap-2 rounded-lg bg-primary-500 px-5 py-2 text-title-3 text-white"
+        >
+          홈으로
+        </button>
+      </div>
     </main>
   );
 }
