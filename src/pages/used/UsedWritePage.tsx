@@ -82,6 +82,7 @@ export default function UsedWritePage() {
       timeAgo: "방금 전",
       createdAt: new Date().toISOString(),
       status: "selling",
+      isMine: true,
       sellerName: "클로저 123",
       sellerNeighborhood: "원홍동",
       industry: industry ?? undefined,

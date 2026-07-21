@@ -89,7 +89,7 @@ export default function LLMPage() {
           onChange={setInput}
           onSend={() => {
             if (input.trim()) {
-              navigate(ROUTES.LLM_CHAT, { state: { initialMessage: input } });
+              navigate(ROUTES.LLM_PLAN, { state: { initialMessage: input } });
             }
           }}
           className="w-full"

@@ -4,7 +4,8 @@ import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
-import type { Todo } from "../../components/home/TodoList";
+import SideMenu from "../../components/sidemenu/SideMenu";
+import { useUsedStore } from "../../stores/usedStore";
 import {
   MenuHamburgerIcon,
   PlusMdIcon,
@@ -17,21 +18,11 @@ import cubeIllust from "../../assets/images/package-banner.png";
 import aiCharacter from "../../assets/images/cloy-fab.png";
 import characterImg from "../../assets/images/cloy-banner.png";
 import curtainImg from "../../assets/images/curtain-banner.png";
-
-const MOCK_PROGRESS = { completed: 8, total: 12 };
-
-const MOCK_SCHEDULES: Record<string, string[]> = {
-  "2026-07-03": ["직원 정리"],
-  "2026-07-07": ["점포 정리"],
-  "2026-07-09": ["집기 중고 거래", "세금 신고"],
-  "2026-07-15": ["각종 해지하기"],
-};
-
-const INITIAL_TODOS: Todo[] = [
-  { id: 1, text: "점포 정리", done: true },
-  { id: 2, text: "집기 중고 거래", done: false },
-  { id: 3, text: "세금 신고", done: false },
-];
+import {
+  MOCK_PROGRESS,
+  MOCK_SCHEDULES,
+  INITIAL_TODOS,
+} from "../../mocks/home/mockHome";
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -285,7 +276,13 @@ export default function HomePage() {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [todos, setTodos] = useState(INITIAL_TODOS);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const authenticated = useUsedStore((s) => s.authenticated);
+  const products = useUsedStore((s) => s.products);
+  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const interestCount = products.filter((p) => p.liked).length;
+  const chatCount = Object.keys(messagesByProduct).length;
 
   const handlePrevMonth = () => {
     if (month === 0) {
@@ -318,11 +315,23 @@ export default function HomePage() {
         logo
         bordered={false}
         right={
-          // 햄버거 — HOME002 사이드 메뉴 연동 예정
-          <button type="button" aria-label="전체 메뉴" className="p-1 text-gray-900">
+          <button
+            type="button"
+            aria-label="전체 메뉴"
+            className="p-1 text-gray-900"
+            onClick={() => setIsSideMenuOpen(true)}
+          >
             <MenuHamburgerIcon />
           </button>
         }
+      />
+
+      <SideMenu
+        open={isSideMenuOpen}
+        onClose={() => setIsSideMenuOpen(false)}
+        verified={authenticated}
+        interestCount={interestCount}
+        chatCount={chatCount}
       />
 
       {todos.length === 0 ? <EmptyCard /> : <ProgressCard {...MOCK_PROGRESS} />}
@@ -339,7 +348,11 @@ export default function HomePage() {
         <div className="flex h-12 items-center justify-between pl-[18px] pr-4">
           <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
           {/* 할일 추가 버튼 — HOME004 모달 연동 예정 */}
-          <button type="button" aria-label="할 일 추가" className="text-gray-700">
+          <button
+            type="button"
+            aria-label="할 일 추가"
+            className="text-gray-700"
+          >
             <PlusMdIcon className="h-5 w-5" />
           </button>
         </div>
@@ -349,7 +362,9 @@ export default function HomePage() {
       {/* AI 맞춤 계획 버튼 — LLM001 연동 예정 */}
       <Fab
         variant="llm"
-        icon={<img src={aiCharacter} alt="" className="h-6 w-6 object-contain" />}
+        icon={
+          <img src={aiCharacter} alt="" className="h-6 w-6 object-contain" />
+        }
         label="AI 맞춤 계획"
         onClick={() => navigate("/ai")}
       />

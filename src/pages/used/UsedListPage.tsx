@@ -8,7 +8,8 @@ import SortDropdown from "../../components/used/SortDropdown";
 import ProductCard from "../../components/used/ProductCard";
 import UsedEmptyView from "../../components/used/UsedEmptyView";
 import UsedContentSkeleton from "../../components/used/UsedContentSkeleton";
-import LocationPermissionModal from "../../components/used/LocationPermissionModal";
+import LocationPermissionSheet from "../../components/used/LocationPermissionSheet";
+import SideMenu from "../../components/sidemenu/SideMenu";
 import { MenuHamburgerIcon, PlusMdIcon, SearchIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
 import type { UsedFilter, UsedSort } from "../../types/used";
@@ -24,6 +25,7 @@ export default function UsedListPage() {
   const products = useUsedStore((s) => s.products);
   const toggleLike = useUsedStore((s) => s.toggleLike);
   const authenticated = useUsedStore((s) => s.authenticated);
+  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
   const {
     locationGranted,
     showLocationModal,
@@ -34,6 +36,9 @@ export default function UsedListPage() {
 
   const [filter, setFilter] = useState<UsedFilter>("all");
   const [sort, setSort] = useState<UsedSort>("popular");
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const interestCount = products.filter((p) => p.liked).length;
+  const chatCount = Object.keys(messagesByProduct).length;
 
   const visibleProducts = useMemo(
     () => applyFilter(products, filter),
@@ -41,7 +46,7 @@ export default function UsedListPage() {
   );
 
   const handleWrite = () => {
-    navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.USED_BUSINESS_AUTH);
+    navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
   };
 
   const isEmpty = visibleProducts.length === 0;
@@ -65,11 +70,20 @@ export default function UsedListPage() {
               type="button"
               aria-label="메뉴"
               className="p-1 text-gray-900"
+              onClick={() => setIsSideMenuOpen(true)}
             >
               <MenuHamburgerIcon />
             </button>
           </>
         }
+      />
+
+      <SideMenu
+        open={isSideMenuOpen}
+        onClose={() => setIsSideMenuOpen(false)}
+        verified={authenticated}
+        interestCount={interestCount}
+        chatCount={chatCount}
       />
 
       {locationGranted ? (
@@ -115,7 +129,7 @@ export default function UsedListPage() {
       <NavigationBar />
 
       {showLocationModal && (
-        <LocationPermissionModal
+        <LocationPermissionSheet
           onAllow={handleAllow}
           onDeny={handleDeny}
           error={locationError}

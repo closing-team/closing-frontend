@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 interface FabBaseProps {
   icon: ReactNode;
   onClick?: () => void;
+  noNavBar?: boolean;
 }
 
 type FabProps =
@@ -14,11 +15,13 @@ const VARIANT_CLASS = {
   used: "flex h-12 w-12 items-center justify-center rounded-full bg-primary-500 p-3 shadow-xl active:opacity-90",
 } as const;
 
-export default function Fab({ icon, onClick, ...rest }: FabProps) {
+export default function Fab({ icon, onClick, noNavBar = false, ...rest }: FabProps) {
   const isLlm = rest.variant === "llm";
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-26 z-40 mx-auto flex w-full max-w-app min-w-[var(--container-app-min)] justify-end px-4 [&>button]:pointer-events-auto">
+    <div
+      className={`pointer-events-none fixed inset-x-0 ${noNavBar ? "bottom-6" : "bottom-26"} z-40 mx-auto flex w-full max-w-app min-w-[var(--container-app-min)] justify-end px-4 [&>button]:pointer-events-auto`}
+    >
       <button
         type="button"
         aria-label={isLlm ? rest.label : rest.ariaLabel}

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ChatMessage, Product } from "../types/used";
+import type { ChatMessage, Product, SaleStatus } from "../types/used";
 import { MOCK_PRODUCTS } from "../mocks/used/mockProducts";
 import { MOCK_MESSAGES } from "../mocks/used/mockChat";
 
@@ -9,6 +9,8 @@ interface UsedState {
   products: Product[];
   toggleLike: (id: number) => void;
   addProduct: (product: NewProduct) => number;
+  updateProductStatus: (id: number, status: SaleStatus) => void;
+  removeProduct: (id: number) => void;
 
   recentSearches: string[];
   addRecentSearch: (keyword: string) => void;
@@ -59,6 +61,18 @@ export const useUsedStore = create<UsedState>((set) => ({
     return id;
   },
 
+  updateProductStatus: (id, status) =>
+    set((state) => ({
+      products: state.products.map((p) =>
+        p.id === id ? { ...p, status } : p,
+      ),
+    })),
+
+  removeProduct: (id) =>
+    set((state) => ({
+      products: state.products.filter((p) => p.id !== id),
+    })),
+
   recentSearches: ["카페 패키지", "업소용 제빙기"],
 
   addRecentSearch: (keyword) =>
@@ -94,6 +108,8 @@ export const useUsedStore = create<UsedState>((set) => ({
         mine: true,
         text,
         time: nowLabel(),
+        sentAt: new Date().toISOString(),
+        read: false,
       };
       return {
         messagesByProduct: {

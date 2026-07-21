@@ -31,7 +31,7 @@ export default function LikeButton({
       {liked ? (
         <HeartFilledIcon width={24} height={24} className="text-[#FF4C7F]" />
       ) : (
-        <HeartEmptyIcon width={24} height={24} className="text-gray-400" />
+        <HeartEmptyIcon width={24} height={24} className="text-white" />
       )}
     </span>
   );
@@ -39,16 +39,23 @@ export default function LikeButton({
 
 interface LikeCountProps {
   count: number;
+  liked?: boolean;
   className?: string;
 }
 
-export function LikeCount({ count, className = "" }: LikeCountProps) {
+export function LikeCount({
+  count,
+  liked = false,
+  className = "",
+}: LikeCountProps) {
   return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-1 text-gray-200 ${className}`}
-    >
-      <HeartFilledIcon width={20} height={20} />
-      <span className="text-body-2 text-gray-400">{count}</span>
+    <span className={`inline-flex shrink-0 items-center gap-1 ${className}`}>
+      <HeartFilledIcon
+        width={12}
+        height={12}
+        className={liked ? "text-[#FF4C7F]" : "text-gray-200"}
+      />
+      <span className="text-caption-3 text-gray-500">{count}</span>
     </span>
   );
 }

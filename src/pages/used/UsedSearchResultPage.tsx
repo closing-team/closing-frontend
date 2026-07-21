@@ -5,7 +5,7 @@ import FilterTabs from "../../components/used/FilterTabs";
 import SortDropdown from "../../components/used/SortDropdown";
 import ProductCard from "../../components/used/ProductCard";
 import UsedContentSkeleton from "../../components/used/UsedContentSkeleton";
-import LocationPermissionModal from "../../components/used/LocationPermissionModal";
+import LocationPermissionSheet from "../../components/used/LocationPermissionSheet";
 import NavigationBar from "../../components/common/NavigationBar";
 import { ROUTES } from "../../constants/routes";
 import type { UsedFilter, UsedSort } from "../../types/used";
@@ -97,7 +97,7 @@ export default function UsedSearchResultPage() {
       <NavigationBar />
 
       {showLocationModal && (
-        <LocationPermissionModal
+        <LocationPermissionSheet
           onAllow={handleAllow}
           onDeny={handleDeny}
           error={locationError}

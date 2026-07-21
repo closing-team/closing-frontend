@@ -1,7 +1,7 @@
 import TopBar from "../../components/common/TopBar";
 import ChatEmptyView from "../../components/chat/ChatEmptyView";
-import ChatListItem from "../../components/chat/ChatListItem";
-import { MOCK_CHAT_ROOMS } from "../../mocks/mockChat";
+import ChatCard from "../../components/chat/ChatCard";
+import { MOCK_CHAT_ROOMS } from "../../mocks/chat/mockChat";
 import type { ChatRoomSummary } from "../../types/chat";
 
 interface ChatListPageProps {
@@ -41,7 +41,7 @@ export default function ChatListPage({
           <ChatEmptyView />
         ) : (
           sortedRooms.map((room) => (
-            <ChatListItem key={room.id} room={room} onSelect={onSelectRoom} />
+            <ChatCard key={room.id} room={room} onSelect={onSelectRoom} />
           ))
         )}
       </section>

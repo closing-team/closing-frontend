@@ -1,6 +1,6 @@
 export type DealType = "직거래" | "택배거래";
 
-export type SaleStatus = "selling" | "completed";
+export type SaleStatus = "selling" | "reserved" | "completed";
 
 export interface Product {
   id: number;
@@ -15,6 +15,7 @@ export interface Product {
   likes: number;
   liked: boolean;
   status?: SaleStatus;
+  isMine?: boolean;
   sellerName?: string;
   sellerNeighborhood?: string;
   industry?: string;
@@ -38,6 +39,8 @@ export interface ChatMessage {
   mine: boolean;
   text: string;
   time: string;
+  sentAt: string;
+  read: boolean;
 }
 
 export interface CategoryGroup {

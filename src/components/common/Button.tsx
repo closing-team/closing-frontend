@@ -16,7 +16,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary:
     "bg-primary-500 text-white active:opacity-90 disabled:bg-gray-100 disabled:text-gray-400",
   secondary:
-    "bg-white text-gray-900 border border-gray-200 active:bg-gray-30 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-transparent",
+    "bg-white text-primary-500 border border-gray-200 active:bg-gray-30 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-transparent",
   text: "bg-transparent text-primary-500 active:opacity-70 disabled:text-gray-400",
   warning:
     "bg-warning-50 text-warning-500 border border-warning-500 active:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-transparent",

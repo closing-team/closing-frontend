@@ -32,7 +32,6 @@ import NavigationBar from "../../components/common/NavigationBar";
 import ProductCard from "../../components/used/ProductCard";
 import ProductListCard from "../../components/used/ProductListCard";
 import MyProductCard from "../../components/used/MyProductCard";
-import Tag from "../../components/used/Tag";
 import FilterTabs from "../../components/used/FilterTabs";
 import SortDropdown from "../../components/used/SortDropdown";
 import UsedEmptyView from "../../components/used/UsedEmptyView";
@@ -589,9 +588,6 @@ export default function ComponentsPage() {
             onClick={() => {}}
             onMenuClick={() => {}}
           />
-          <div>
-            <Tag>Text / Text</Tag>
-          </div>
         </Section>
 
         {/* Fab · NavigationBar는 fixed 포지션이라 이 섹션이 아니라 화면 하단에 고정 표시됨 */}
