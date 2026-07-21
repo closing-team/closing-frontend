@@ -10,24 +10,20 @@ import { XMdIcon, MinusMdIcon } from "../../assets/icons";
 import type { Plan } from "../llm/PlanCard";
 import type { TimeValue } from "./TimeWheel";
 
-interface EditPlanModalProps {
-  plan: Plan;
+interface AddPlanModalProps {
   onCancel: () => void;
-  onConfirm: (updated: Plan) => void;
+  onConfirm: (plan: Plan) => void;
 }
 
 type ActivePicker = "startDate" | "endDate" | "startTime" | "endTime" | null;
 
-export default function EditPlanModal({
-  plan,
-  onCancel,
-  onConfirm,
-}: EditPlanModalProps) {
-  const [title, setTitle] = useState(plan.title);
-  const [startDate, setStartDate] = useState<Date>(plan.startDate);
-  const [startTime, setStartTime] = useState<TimeValue>(plan.startTime);
-  const [endDate, setEndDate] = useState<Date>(plan.endDate);
-  const [endTime, setEndTime] = useState<TimeValue>(plan.endTime);
+export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps) {
+  const today = new Date();
+  const [title, setTitle] = useState("");
+  const [startDate, setStartDate] = useState<Date>(today);
+  const [startTime, setStartTime] = useState<TimeValue>({ meridiem: "오전", hour: 10, minute: 0 });
+  const [endDate, setEndDate] = useState<Date>(today);
+  const [endTime, setEndTime] = useState<TimeValue>({ meridiem: "오후", hour: 10, minute: 0 });
   const [memo, setMemo] = useState("");
   const [activePicker, setActivePicker] = useState<ActivePicker>(null);
   const memoRef = useRef<HTMLTextAreaElement>(null);
@@ -51,7 +47,7 @@ export default function EditPlanModal({
       <div className="relative w-full max-w-[347px] overflow-y-auto rounded-xl bg-white">
         {/* 헤더 */}
         <div className="flex h-[60px] items-center justify-between pl-4 pr-3">
-          <p className="text-title-3 text-gray-900">일정 수정</p>
+          <p className="text-title-3 text-gray-900">일정 추가</p>
           <button
             type="button"
             aria-label="닫기"
@@ -178,10 +174,10 @@ export default function EditPlanModal({
             size="lg"
             fullWidth
             onClick={() =>
-              onConfirm({ ...plan, title, startDate, startTime, endDate, endTime })
+              onConfirm({ id: Date.now(), title, startDate, startTime, endDate, endTime })
             }
           >
-            완료
+            저장
           </Button>
         </div>
       </div>

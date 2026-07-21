@@ -38,7 +38,7 @@ export default function DateCalendar({
 
   return (
     <div
-      className={`flex flex-col gap-5 rounded-[10px] border border-gray-200 bg-white pb-5 pl-4 pr-4 pt-3 ${className}`}
+      className={`flex flex-col gap-3 rounded-[10px] border border-gray-200 bg-white px-4 pt-3 pb-4 ${className}`}
     >
       <div className="flex items-center justify-between">
         <p className="text-subtitle-1 text-gray-900">
@@ -67,11 +67,11 @@ export default function DateCalendar({
 
       <div>
         {/* 요일 */}
-        <div className="mb-2 grid grid-cols-7">
+        <div className="mb-2 grid grid-cols-7 gap-x-3.5">
           {WEEKDAYS.map((day) => (
             <span
               key={day}
-              className="py-1.5 text-center text-caption-2 text-gray-500"
+              className="py-1 text-center text-caption-2 text-gray-500"
             >
               {day}
             </span>
@@ -79,7 +79,7 @@ export default function DateCalendar({
         </div>
 
         {/* 날짜 */}
-        <div className="grid grid-cols-7 gap-y-3.5">
+        <div className="grid grid-cols-7 gap-x-3.5 gap-y-1">
           {cells.map((day, i) => {
             if (day === null) return <span key={`empty-${i}`} />;
             const date = new Date(year, month, day);
@@ -92,7 +92,7 @@ export default function DateCalendar({
                 className="flex justify-center"
               >
                 <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-caption-1 ${
+                  className={`flex h-7 w-7 items-center justify-center rounded-full text-caption-1 ${
                     selected
                       ? "bg-primary-500 font-semibold text-white"
                       : "text-gray-900 active:bg-gray-100"
