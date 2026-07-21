@@ -8,8 +8,8 @@ import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/common/DeletePlanModal";
 import EditPlanModal from "../../components/common/EditPlanModal";
 import type { Plan } from "../../components/llm/PlanCard";
-import cloySm from "../../assets/images/cloy-sm.png";
 import { MOCK_PLANS } from "../../mocks/llm/mockLLMPlans";
+import cloySm from "../../assets/images/cloy-sm.png";
 
 type TextMessage = {
   id: number;

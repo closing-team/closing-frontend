@@ -1,9 +1,12 @@
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import GuideListPage from "./pages/guide/GuideListPage";
+import GuideDetailPage from "./pages/guide/GuideDetailPage";
+import GuideNoticeTemplatePage from "./pages/guide/GuideNoticeTemplatePage";
 import LLMPage from "./pages/llm/LLMPage";
 import LLMChatPage from "./pages/llm/LLMChatPage";
 import SupportListPage from "./pages/support/SupportListPage";
+import SupportDetailPage from "./pages/support/SupportDetailPage";
 import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
 import TermsPage from "./pages/auth/TermsPage";
@@ -79,9 +82,15 @@ export default function App() {
         <Route path={ROUTES.CHAT} element={<ChatListRoute />} />
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.GUIDE} element={<GuideListPage />} />
+        <Route path={ROUTES.GUIDE_DETAIL} element={<GuideDetailPage />} />
+        <Route
+          path={ROUTES.GUIDE_NOTICE_TEMPLATE}
+          element={<GuideNoticeTemplatePage />}
+        />
         <Route path={ROUTES.LLM} element={<LLMPage />} />
         <Route path={ROUTES.LLM_PLAN} element={<LLMChatPage />} />
         <Route path={ROUTES.SUPPORT} element={<SupportListPage />} />
+        <Route path={ROUTES.SUPPORT_DETAIL} element={<SupportDetailPage />} />
         <Route path={ROUTES.USED} element={<UsedListPage />} />
         <Route
           path={ROUTES.USED_MY_PRODUCTS}

@@ -7,6 +7,8 @@ export const ROUTES = {
   LLM_PLAN: "/ai/plan",
   GUIDE: "/guide",
   GUIDE_DETAIL: "/guide/:stepId",
+  GUIDE_NOTICE_TEMPLATE: "/guide/2/template",
+  GUIDE_STEP6_TEMPLATE: "/guide/6/template",
   SUPPORT: "/support",
   SUPPORT_DETAIL: "/support/:supportId",
   BUSINESS_AUTH: "/business-auth",
@@ -20,3 +22,6 @@ export const ROUTES = {
   CHAT: "/chat",
   CHAT_DETAIL: "/chat/:productId",
 } as const;
+
+export const supportDetailPath = (id: number | string) =>
+  ROUTES.SUPPORT_DETAIL.replace(":supportId", encodeURIComponent(id));

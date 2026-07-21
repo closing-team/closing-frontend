@@ -43,7 +43,7 @@ export default function LLMPage() {
     <div className="min-h-screen bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
-      <div className="flex flex-col items-center px-4 py-8 gap-5">
+      <div className="flex flex-col items-center px-4 py-8">
         <div className="flex w-full flex-col items-start gap-3">
           <img
             src={characterRight}
@@ -61,21 +61,22 @@ export default function LLMPage() {
           title="막막한 폐업 준비가 처음이시라면?"
           description="전체적인 절차 가이드를 먼저 읽어보세요."
           actionLabel="읽기"
-          className="w-full"
+          onAction={() => navigate(ROUTES.GUIDE)}
+          className="mt-5 w-full"
         />
 
-        <div className="flex w-full flex-col gap-4 rounded-xl border border-gray-100 bg-gray-5 p-4">
+        <div className="mt-3 flex w-full flex-col gap-4 rounded-xl border border-gray-100 bg-gray-5 p-4">
           <p className="text-subtitle-2 text-gray-900">
             다섯 가지만 확인해 주세요
           </p>
           <div className="flex flex-col gap-3">
             {CHECKLIST.map((item, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <CheckIcon className="mt-0.5 h-6 w-6 shrink-0 text-primary-500" />
-                <div className="flex flex-col gap-1">
+              <div key={i} className="flex items-start gap-1">
+                <CheckIcon className="h-6 w-6 shrink-0 text-primary-500" />
+                <div className="flex flex-col">
                   <p className="text-subtitle-2 text-gray-900">{item.title}</p>
-                  <p className="text-body-3 text-gray-900">{item.desc}</p>
-                  <p className="text-body-3 text-primary-500">{item.example}</p>
+                  <p className="mt-1 text-body-3 text-gray-900">{item.desc}</p>
+                  <p className="mt-0.5 text-body-3 text-primary-500">{item.example}</p>
                 </div>
               </div>
             ))}
@@ -92,7 +93,7 @@ export default function LLMPage() {
               navigate(ROUTES.LLM_PLAN, { state: { initialMessage: input } });
             }
           }}
-          className="w-full"
+          className="mt-5 w-full"
         />
       </div>
     </div>

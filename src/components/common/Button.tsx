@@ -1,7 +1,7 @@
 import { cloneElement, isValidElement } from "react";
 import type { ButtonHTMLAttributes, ReactElement, ReactNode } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "text" | "warning";
+type ButtonVariant = "primary" | "secondary" | "outline" | "text" | "warning";
 type ButtonSize = "lg" | "sm";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -16,6 +16,8 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary:
     "bg-primary-500 text-white active:opacity-90 disabled:bg-gray-100 disabled:text-gray-400",
   secondary:
+    "bg-white text-gray-900 border border-gray-200 active:bg-gray-30 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-transparent",
+  outline:
     "bg-white text-primary-500 border border-gray-200 active:bg-gray-30 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-transparent",
   text: "bg-transparent text-primary-500 active:opacity-70 disabled:text-gray-400",
   warning:
@@ -24,7 +26,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 
 const SIZE_CLASS: Record<ButtonSize, string> = {
   lg: "h-[52px] rounded-lg px-2.5 text-title-3",
-  sm: "rounded-md px-2.5 py-2 text-caption-1",
+  sm: "h-[34px] min-w-[52px] rounded-md px-2.5 py-2 text-caption-1",
 };
 
 function sizeIcon(icon: ReactNode): ReactNode {

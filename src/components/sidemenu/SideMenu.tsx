@@ -99,7 +99,7 @@ export default function SideMenu({
 
           <div className="mx-5 mt-5">
             <Button
-              variant="secondary"
+              variant="outline"
               fullWidth
               onClick={() => go(ROUTES.BUSINESS_AUTH)}
             >
