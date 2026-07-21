@@ -5,6 +5,9 @@ import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import type { Todo } from "../../components/home/TodoList";
+import AddPlanModal from "../../components/common/AddPlanModal";
+import DayScheduleModal from "../../components/home/DayScheduleModal";
+import type { Plan } from "../../components/llm/PlanCard";
 import {
   MenuHamburgerIcon,
   PlusMdIcon,
@@ -20,11 +23,20 @@ import curtainImg from "../../assets/images/curtain-banner.png";
 
 const MOCK_PROGRESS = { completed: 8, total: 12 };
 
-const MOCK_SCHEDULES: Record<string, string[]> = {
-  "2026-07-03": ["직원 정리"],
-  "2026-07-07": ["점포 정리"],
-  "2026-07-09": ["집기 중고 거래", "세금 신고"],
-  "2026-07-15": ["각종 해지하기"],
+const MOCK_SCHEDULES: Record<string, Plan[]> = {
+  "2026-07-03": [
+    { id: 1, title: "직원 정리", startDate: new Date(2026, 6, 3), startTime: { meridiem: "오전", hour: 10, minute: 0 }, endDate: new Date(2026, 6, 3), endTime: { meridiem: "오후", hour: 5, minute: 0 } },
+  ],
+  "2026-07-07": [
+    { id: 2, title: "점포 정리", startDate: new Date(2026, 6, 7), startTime: { meridiem: "오전", hour: 10, minute: 0 }, endDate: new Date(2026, 6, 10), endTime: { meridiem: "오후", hour: 10, minute: 0 } },
+  ],
+  "2026-07-09": [
+    { id: 3, title: "집기 중고 거래", startDate: new Date(2026, 6, 9), startTime: { meridiem: "오후", hour: 12, minute: 0 }, endDate: new Date(2026, 6, 9), endTime: { meridiem: "오후", hour: 2, minute: 0 } },
+    { id: 4, title: "세금 신고", startDate: new Date(2026, 6, 9), startTime: { meridiem: "오후", hour: 4, minute: 0 }, endDate: new Date(2026, 6, 9), endTime: { meridiem: "오후", hour: 6, minute: 0 } },
+  ],
+  "2026-07-15": [
+    { id: 5, title: "각종 해지하기", startDate: new Date(2026, 6, 15), startTime: { meridiem: "오전", hour: 10, minute: 0 }, endDate: new Date(2026, 6, 15), endTime: { meridiem: "오후", hour: 3, minute: 0 } },
+  ],
 };
 
 const INITIAL_TODOS: Todo[] = [
@@ -144,12 +156,16 @@ function Calendar({
   onPrev,
   onNext,
   schedules,
+  onAddPlan,
+  onDayClick,
 }: {
   year: number;
   month: number;
   onPrev: () => void;
   onNext: () => void;
-  schedules: Record<string, string[]>;
+  schedules: Record<string, Plan[]>;
+  onAddPlan: () => void;
+  onDayClick: (date: Date, plans: Plan[]) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const today = new Date();
@@ -185,25 +201,29 @@ function Calendar({
     : cells.slice(collapsedRowStart, collapsedRowStart + 7);
 
   return (
-    <div className="px-4 pt-6">
-      <div className="rounded-2xl bg-white px-4 pb-2 pt-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.08)]">
-        <div className="mb-4 flex items-center">
-          <div className="flex flex-1 items-center justify-center gap-1">
-            <button onClick={onPrev} className="p-1 text-gray-900">
-              <ChevronLeftIcon />
+    <div className="pt-6">
+      {/* 섹션 1: 헤더 - 상단 radius 24px, 그림자 없음 */}
+      <div className="rounded-t-[24px] bg-white px-4 pt-4 pb-4">
+        <div className="relative flex items-center justify-center">
+          <div className="flex items-center gap-5">
+            <button type="button" onClick={onPrev} className="text-gray-900">
+              <ChevronLeftIcon className="h-6 w-6" />
             </button>
             <span className="text-title-3 text-gray-900">
               {year}년 {month + 1}월
             </span>
-            <button onClick={onNext} className="p-1 text-gray-900">
-              <ChevronRightIcon />
+            <button type="button" onClick={onNext} className="text-gray-900">
+              <ChevronRightIcon className="h-6 w-6" />
             </button>
           </div>
-          <button className="p-1 text-gray-900">
-            <PlusMdIcon className="h-8 w-8" />
+          <button type="button" onClick={onAddPlan} className="absolute right-0 text-gray-900">
+            <PlusMdIcon className="h-6 w-6" />
           </button>
         </div>
+      </div>
 
+      {/* 섹션 2: 날짜 그리드 - 그림자 없음 */}
+      <div className="bg-white px-4 pb-2">
         <div className="mb-1 grid grid-cols-7">
           {DAY_LABELS.map((label) => (
             <div
@@ -223,10 +243,21 @@ function Calendar({
             const events = dateKey ? (schedules[dateKey] ?? []) : [];
             const today_ = cell.currentMonth && isToday(cell.day);
 
+            const handleCellClick = () => {
+              if (isExpanded && cell.currentMonth && events.length > 0) {
+                onDayClick(new Date(year, month, cell.day), events);
+              }
+            };
+
             return (
               <div
                 key={i}
-                className="flex min-h-[52px] cursor-pointer flex-col items-center py-1"
+                onClick={handleCellClick}
+                className={`flex flex-col items-center py-1 ${
+                  isExpanded && cell.currentMonth && events.length > 0
+                    ? "cursor-pointer"
+                    : ""
+                } ${isExpanded ? "min-h-[101.6px]" : "min-h-[52px]"}`}
               >
                 <div
                   className={`flex h-7 w-7 items-center justify-center rounded-full text-caption-3 ${
@@ -248,7 +279,7 @@ function Calendar({
                             key={j}
                             className="truncate rounded bg-primary-50 px-0.5 text-[9px] leading-[14px] text-primary-500"
                           >
-                            {ev}
+                            {ev.title}
                           </div>
                         ))}
                       </div>
@@ -260,21 +291,21 @@ function Calendar({
             );
           })}
         </div>
-
-        {/* 접기/펼치기 버튼 */}
-        <button
-          type="button"
-          aria-label={isExpanded ? "캘린더 접기" : "캘린더 펼치기"}
-          onClick={() => setIsExpanded((v) => !v)}
-          className="mt-1 flex w-full items-center justify-center py-2 text-gray-500"
-        >
-          {isExpanded ? (
-            <ChevronUpIcon className="h-5 w-5" />
-          ) : (
-            <ChevronDownIcon className="h-5 w-5" />
-          )}
-        </button>
       </div>
+
+      {/* 섹션 3: 토글 - 독립 블럭, 높이 32px, 하단 radius 24px, 아래 방향 드롭섀도우만 */}
+      <button
+        type="button"
+        aria-label={isExpanded ? "캘린더 접기" : "캘린더 펼치기"}
+        onClick={() => setIsExpanded((v) => !v)}
+        className="flex h-8 w-full items-center justify-center rounded-b-[24px] bg-white text-gray-500 shadow-[0_4px_8px_0_rgba(0,0,0,0.08)]"
+      >
+        {isExpanded ? (
+          <ChevronUpIcon className="h-5 w-5" />
+        ) : (
+          <ChevronDownIcon className="h-5 w-5" />
+        )}
+      </button>
     </div>
   );
 }
@@ -285,6 +316,9 @@ export default function HomePage() {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [todos, setTodos] = useState(INITIAL_TODOS);
+  const [isAddingPlan, setIsAddingPlan] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedPlans, setSelectedPlans] = useState<Plan[]>([]);
   const navigate = useNavigate();
 
   const handlePrevMonth = () => {
@@ -333,6 +367,11 @@ export default function HomePage() {
         onPrev={handlePrevMonth}
         onNext={handleNextMonth}
         schedules={MOCK_SCHEDULES}
+        onAddPlan={() => setIsAddingPlan(true)}
+        onDayClick={(date, plans) => {
+          setSelectedDate(date);
+          setSelectedPlans(plans);
+        }}
       />
 
       <div className="mt-4 flex flex-col gap-2">
@@ -355,6 +394,25 @@ export default function HomePage() {
       />
 
       <NavigationBar />
+
+      {isAddingPlan && (
+        <AddPlanModal
+          onCancel={() => setIsAddingPlan(false)}
+          onConfirm={() => setIsAddingPlan(false)}
+        />
+      )}
+
+      {selectedDate && (
+        <DayScheduleModal
+          date={selectedDate}
+          plans={selectedPlans}
+          onClose={() => setSelectedDate(null)}
+          onAdd={() => {
+            setSelectedDate(null);
+            setIsAddingPlan(true);
+          }}
+        />
+      )}
     </div>
   );
 }
