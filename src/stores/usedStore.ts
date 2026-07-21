@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { ChatMessage, Product, SaleStatus } from "../types/used";
 import { MOCK_PRODUCTS } from "../mocks/used/mockProducts";
-import { MOCK_MESSAGES } from "../mocks/used/mockChat";
+import { MOCK_MESSAGES } from "../mocks/used/mockUsedMessages";
 
 type NewProduct = Omit<Product, "id" | "likes" | "liked">;
 

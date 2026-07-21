@@ -1,4 +1,4 @@
-import type { SupportPost } from "../components/support/SupportCard";
+import type { SupportPost } from "../../components/support/SupportCard";
 
 export interface SupportPostDetail extends SupportPost {
   overview: string;

@@ -1,27 +1,18 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ChatComposer from "../../components/chat/ChatComposer";
 import ProductBanner from "../../components/chat/ProductBanner";
 import ChatBubble from "../../components/common/ChatBubble";
 import TopBar from "../../components/common/TopBar";
-import {
-  MOCK_CHAT_MESSAGES,
-  MOCK_CHAT_ROOM_DETAIL,
-} from "../../mocks/chat/mockChat";
+import InvalidChatRoomPage from "./InvalidChatRoomPage";
+import { usedDetailPath } from "../../constants/routes";
+import { useUsedStore } from "../../stores/usedStore";
+import { toChatMessages, toChatRoomDetail } from "../../utils/chatAdapter";
 import type {
   ChatMessage,
   ChatRoomDetail,
   PendingChatMessage,
 } from "../../types/chat";
-
-export interface ChatRoomPageProps {
-  room?: ChatRoomDetail;
-  messages?: ChatMessage[];
-  onBack?: () => void;
-  onSelectProduct?: (productId: string) => void;
-  onSendMessage?: (
-    message: PendingChatMessage,
-  ) => ChatMessage | void | Promise<ChatMessage | void>;
-}
 
 function sortMessagesBySentAt(messages: ChatMessage[]) {
   return [...messages].sort(
@@ -49,13 +40,21 @@ function groupAdjacentMessages(messages: ChatMessage[]) {
   }, []);
 }
 
-export default function ChatRoomPage({
-  room = MOCK_CHAT_ROOM_DETAIL,
-  messages = MOCK_CHAT_MESSAGES,
-  onBack = () => {},
-  onSelectProduct = () => {},
-  onSendMessage = () => {},
-}: ChatRoomPageProps) {
+interface ChatRoomViewProps {
+  room: ChatRoomDetail;
+  messages: ChatMessage[];
+  onBack: () => void;
+  onSelectProduct: (productId: string) => void;
+  onSendMessage: (message: PendingChatMessage) => void | Promise<void>;
+}
+
+function ChatRoomView({
+  room,
+  messages,
+  onBack,
+  onSelectProduct,
+  onSendMessage,
+}: ChatRoomViewProps) {
   const [localMessages, setLocalMessages] = useState(() => [...messages]);
   const sentBlobUrlsRef = useRef(new Set<string>());
   const localMessageIdsRef = useRef(new Set<string>());
@@ -116,7 +115,7 @@ export default function ChatRoomPage({
 
   const handleSend = async (pendingMessage: PendingChatMessage) => {
     const sendingRoomId = room.id;
-    const savedMessage = await onSendMessage(pendingMessage);
+    await onSendMessage(pendingMessage);
 
     if (activeRoomIdRef.current !== sendingRoomId) {
       return;
@@ -124,7 +123,7 @@ export default function ChatRoomPage({
 
     const sentAt = new Date();
     const messageId = crypto.randomUUID();
-    const message: ChatMessage = savedMessage ?? {
+    const message: ChatMessage = {
       id: messageId,
       roomId: sendingRoomId,
       sender: "me",
@@ -239,5 +238,32 @@ export default function ChatRoomPage({
       </section>
       <ChatComposer key={room.id} onSend={handleSend} />
     </main>
+  );
+}
+
+export default function ChatRoomPage() {
+  const navigate = useNavigate();
+  const { productId = "" } = useParams();
+  const product = useUsedStore((s) =>
+    s.products.find((p) => String(p.id) === productId),
+  );
+  const messages =
+    useUsedStore((s) => s.messagesByProduct[Number(productId)]) ?? [];
+  const sendMessage = useUsedStore((s) => s.sendMessage);
+
+  if (!product) return <InvalidChatRoomPage />;
+
+  return (
+    <ChatRoomView
+      room={toChatRoomDetail(product, messages)}
+      messages={toChatMessages(product.id, messages)}
+      onBack={() => navigate(-1)}
+      onSelectProduct={() => navigate(usedDetailPath(product.id))}
+      onSendMessage={(pending) => {
+        if (pending.type === "text") {
+          sendMessage(product.id, pending.content);
+        }
+      }}
+    />
   );
 }

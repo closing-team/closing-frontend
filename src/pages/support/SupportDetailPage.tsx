@@ -6,7 +6,7 @@ import Button from "../../components/common/Button";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
 import { ChevronRightIcon } from "../../assets/icons";
-import { getSupportPostById } from "../../mocks/mockSupport";
+import { getSupportPostById } from "../../mocks/support/mockSupport";
 import { ROUTES } from "../../constants/routes";
 
 export default function SupportDetailPage() {
