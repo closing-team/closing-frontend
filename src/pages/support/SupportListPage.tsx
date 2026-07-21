@@ -6,7 +6,7 @@ import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
 import SideMenu from "../../components/sidemenu/SideMenu";
-import { SUPPORT_POSTS } from "../../mocks/mockSupport";
+import { SUPPORT_POSTS } from "../../mocks/support/mockSupport";
 import { MenuHamburgerIcon } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
 
