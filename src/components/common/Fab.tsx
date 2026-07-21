@@ -7,16 +7,16 @@ interface FabBaseProps {
 }
 
 type FabProps =
-  | (FabBaseProps & { variant: "llm"; label: string })
+  | (FabBaseProps & { variant: "ai"; label: string })
   | (FabBaseProps & { variant: "used"; ariaLabel: string });
 
 const VARIANT_CLASS = {
-  llm: "flex h-12 w-[140px] items-center justify-center gap-1 rounded-[50px] bg-primary-500 pb-3 pl-4 pr-[18px] pt-3 text-title-3 text-white shadow-xl active:opacity-90",
+  ai: "flex h-12 w-[140px] items-center justify-center gap-1 rounded-[50px] bg-primary-500 pb-3 pl-4 pr-[18px] pt-3 text-title-3 text-white shadow-xl active:opacity-90",
   used: "flex h-12 w-12 items-center justify-center rounded-full bg-primary-500 p-3 shadow-xl active:opacity-90",
 } as const;
 
 export default function Fab({ icon, onClick, noNavBar = false, ...rest }: FabProps) {
-  const isLlm = rest.variant === "llm";
+  const isAi = rest.variant === "ai";
 
   return (
     <div
@@ -24,12 +24,12 @@ export default function Fab({ icon, onClick, noNavBar = false, ...rest }: FabPro
     >
       <button
         type="button"
-        aria-label={isLlm ? rest.label : rest.ariaLabel}
+        aria-label={isAi ? rest.label : rest.ariaLabel}
         onClick={onClick}
         className={VARIANT_CLASS[rest.variant]}
       >
         {icon}
-        {isLlm && rest.label}
+        {isAi && rest.label}
       </button>
     </div>
   );

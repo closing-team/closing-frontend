@@ -12,6 +12,7 @@ import { MarkerIcon, TargetIcon } from "../../assets/icons";
 import type { DealType } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../mocks/used/mockUsedMeta";
+import { usedDetailPath } from "../../constants/routes";
 
 const DEFAULT_ADDRESS = "경기도 고양시 일산동구 장항동 32-1";
 
@@ -92,7 +93,7 @@ export default function UsedWritePage() {
         ? location.trim() || DEFAULT_ADDRESS
         : undefined,
     });
-    navigate(`/used/${newId}`);
+    navigate(usedDetailPath(newId));
   };
 
   return (

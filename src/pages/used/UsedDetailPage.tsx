@@ -7,7 +7,7 @@ import SellerInfo from "../../components/used/SellerInfo";
 import ProductStatusSheet from "../../components/used/ProductStatusSheet";
 import DeleteProductModal from "../../components/used/DeleteProductModal";
 import { ImageIcon, MarkerIcon, MenuKebabIcon, TargetIcon } from "../../assets/icons";
-import { ROUTES } from "../../constants/routes";
+import { ROUTES, chatRoomPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
 
 function InfoRow({
@@ -142,7 +142,7 @@ export default function UsedDetailPage() {
       <div className="fixed bottom-0 left-1/2 z-40 flex w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 items-center gap-5 border-t border-gray-100 bg-white p-4">
         <Button
           fullWidth
-          onClick={() => navigate(`/chat/${product.id}`)}
+          onClick={() => navigate(chatRoomPath(product.id))}
         >
           구매 문의
         </Button>
@@ -177,7 +177,7 @@ export default function UsedDetailPage() {
           onConfirm={() => {
             removeProduct(product.id);
             setDeleteOpen(false);
-            navigate(ROUTES.USED_MY_PRODUCTS);
+            navigate(ROUTES.USED_MY);
           }}
         />
       )}

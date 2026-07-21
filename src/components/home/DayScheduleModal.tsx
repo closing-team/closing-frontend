@@ -1,6 +1,6 @@
 import { XMdIcon, ChevronRightIcon } from "../../assets/icons";
 import Button from "../common/Button";
-import type { Plan } from "../llm/PlanCard";
+import type { Plan } from "../ai/PlanCard";
 import type { TimeValue } from "../common/TimeWheel";
 
 interface DayScheduleModalProps {

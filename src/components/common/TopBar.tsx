@@ -42,7 +42,7 @@ export default function TopBar({
       )}
       {title &&
         (onBack ? (
-          <h1 className="absolute inset-x-0 whitespace-nowrap text-center text-title-3 text-gray-900">
+          <h1 className="pointer-events-none absolute inset-x-0 whitespace-nowrap text-center text-title-3 text-gray-900">
             {title}
           </h1>
         ) : (

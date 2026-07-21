@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import ProductCard from "../../components/used/ProductCard";
 import { useUsedStore } from "../../stores/usedStore";
+import { usedDetailPath } from "../../constants/routes";
 
 export default function UsedLikedProductsPage() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function UsedLikedProductsPage() {
             <ProductCard
               key={product.id}
               product={product}
-              onClick={(id) => navigate(`/used/${id}`)}
+              onClick={(id) => navigate(usedDetailPath(id))}
               onToggleLike={toggleLike}
             />
           ))}

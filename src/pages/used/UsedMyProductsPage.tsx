@@ -7,7 +7,7 @@ import MyProductCard from "../../components/used/MyProductCard";
 import ProductStatusSheet from "../../components/used/ProductStatusSheet";
 import DeleteProductModal from "../../components/used/DeleteProductModal";
 import { PlusMdIcon } from "../../assets/icons";
-import { ROUTES } from "../../constants/routes";
+import { ROUTES, usedDetailPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
 import type { SaleStatus } from "../../types/used";
 
@@ -84,7 +84,7 @@ export default function UsedMyProductsPage() {
                 price={product.price}
                 likeCount={product.likes}
                 liked={product.liked}
-                onClick={() => navigate(`/used/${product.id}`)}
+                onClick={() => navigate(usedDetailPath(product.id))}
                 onMenuClick={() => setMenuProductId(product.id)}
               />
             </div>

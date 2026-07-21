@@ -14,7 +14,7 @@ import OptionBox from "../../components/guide/OptionBox";
 import UtilityItemCard from "../../components/guide/UtilityItemCard";
 import { CheckIcon } from "../../assets/icons";
 import cloyFab from "../../assets/images/cloy-fab.png";
-import { ROUTES } from "../../constants/routes";
+import { ROUTES, guideDetailPath } from "../../constants/routes";
 
 interface StepContent {
   title: string;
@@ -189,14 +189,14 @@ function Step2Page() {
           <Button
             variant="outline"
             fullWidth
-            onClick={() => navigate("/guide/1")}
+            onClick={() => navigate(guideDetailPath(1))}
           >
             이전으로
           </Button>
           <Button
             variant="primary"
             fullWidth
-            onClick={() => navigate("/guide/3")}
+            onClick={() => navigate(guideDetailPath(3))}
           >
             다음으로
           </Button>
@@ -253,7 +253,7 @@ function Step3Page() {
     <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP3_HEADER.title}
-        onBack={() => navigate("/guide/2")}
+        onBack={() => navigate(guideDetailPath(2))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -298,14 +298,14 @@ function Step3Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate("/guide/2")}
+              onClick={() => navigate(guideDetailPath(2))}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate("/guide/4")}
+              onClick={() => navigate(guideDetailPath(4))}
             >
               다음으로
             </Button>
@@ -402,7 +402,7 @@ function Step6Page() {
     <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP6_HEADER.title}
-        onBack={() => navigate("/guide/5")}
+        onBack={() => navigate(guideDetailPath(5))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -421,7 +421,7 @@ function Step6Page() {
               size="sm"
               fullWidth
               className="h-11"
-              onClick={() => navigate(ROUTES.GUIDE_STEP6_TEMPLATE)}
+              onClick={() => navigate(ROUTES.GUIDE_REPORT_TEMPLATE)}
             >
               문자/내용증명 복사용 작성 템플릿 보기
             </Button>
@@ -475,14 +475,14 @@ function Step6Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate("/guide/5")}
+              onClick={() => navigate(guideDetailPath(5))}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate("/guide/7")}
+              onClick={() => navigate(guideDetailPath(7))}
             >
               다음으로
             </Button>
@@ -576,7 +576,7 @@ function Step7Page() {
     <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP7_HEADER.title}
-        onBack={() => navigate("/guide/6")}
+        onBack={() => navigate(guideDetailPath(6))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -628,14 +628,14 @@ function Step7Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate("/guide/6")}
+              onClick={() => navigate(guideDetailPath(6))}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate("/guide/8")}
+              onClick={() => navigate(guideDetailPath(8))}
             >
               다음으로
             </Button>
@@ -724,7 +724,7 @@ function Step8Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP8_HEADER.title}
-        onBack={() => navigate("/guide/7")}
+        onBack={() => navigate(guideDetailPath(7))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -790,14 +790,14 @@ function Step8Page() {
           <Button
             variant="outline"
             fullWidth
-            onClick={() => navigate("/guide/7")}
+            onClick={() => navigate(guideDetailPath(7))}
           >
             이전으로
           </Button>
           <Button
             variant="primary"
             fullWidth
-            onClick={() => navigate("/guide/9")}
+            onClick={() => navigate(guideDetailPath(9))}
           >
             다음으로
           </Button>
@@ -861,7 +861,7 @@ function Step4Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP4_HEADER.title}
-        onBack={() => navigate("/guide/3")}
+        onBack={() => navigate(guideDetailPath(3))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -931,14 +931,14 @@ function Step4Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate("/guide/3")}
+              onClick={() => navigate(guideDetailPath(3))}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate("/guide/5")}
+              onClick={() => navigate(guideDetailPath(5))}
             >
               다음으로
             </Button>
@@ -1018,7 +1018,7 @@ function Step5Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP5_HEADER.title}
-        onBack={() => navigate("/guide/4")}
+        onBack={() => navigate(guideDetailPath(4))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -1086,14 +1086,14 @@ function Step5Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate("/guide/4")}
+              onClick={() => navigate(guideDetailPath(4))}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate("/guide/6")}
+              onClick={() => navigate(guideDetailPath(6))}
             >
               다음으로
             </Button>
@@ -1169,7 +1169,7 @@ function Step9Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP9_HEADER.title}
-        onBack={() => navigate("/guide/8")}
+        onBack={() => navigate(guideDetailPath(8))}
       />
 
       <div className="bg-white px-4 py-5">
@@ -1336,7 +1336,7 @@ export default function GuideDetailPage() {
         <Button
           variant="primary"
           fullWidth
-          onClick={() => navigate(`/guide/${content.nextStepId}`)}
+          onClick={() => navigate(guideDetailPath(content.nextStepId))}
         >
           다음으로
         </Button>

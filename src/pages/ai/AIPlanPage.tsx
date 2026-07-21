@@ -2,13 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import ChatBubble from "../../components/common/ChatBubble";
-import ChatInput from "../../components/llm/ChatInput";
-import GeneratedPlanCard from "../../components/llm/GeneratedPlanCard";
+import ChatInput from "../../components/ai/ChatInput";
+import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/common/DeletePlanModal";
 import EditPlanModal from "../../components/common/EditPlanModal";
-import type { Plan } from "../../components/llm/PlanCard";
-import { MOCK_PLANS } from "../../mocks/llm/mockLLMPlans";
+import type { Plan } from "../../components/ai/PlanCard";
+import { MOCK_PLANS } from "../../mocks/ai/mockAIPlans";
 import cloySm from "../../assets/images/cloy-sm.png";
 
 type TextMessage = {
@@ -40,7 +40,7 @@ function formatTime(date: Date) {
   return `${ampm} ${h12}:${String(m).padStart(2, "0")}`;
 }
 
-export default function LLMChatPage() {
+export default function AIPlanPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [input, setInput] = useState("");

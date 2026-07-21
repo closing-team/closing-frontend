@@ -101,7 +101,7 @@ export default function SideMenu({
             <Button
               variant="outline"
               fullWidth
-              onClick={() => go(ROUTES.BUSINESS_AUTH)}
+              onClick={() => go(ROUTES.PROFILE_EDIT)}
             >
               프로필 · 사업자 정보 수정
             </Button>
@@ -114,7 +114,7 @@ export default function SideMenu({
           <div className="mx-5 flex flex-col gap-2.5 border-b border-gray-100 py-4">
             <MenuRow
               label="나의 판매물품"
-              onClick={() => go(ROUTES.USED_MY_PRODUCTS)}
+              onClick={() => go(ROUTES.USED_MY)}
             />
             <MenuRow
               label="관심 물품"
@@ -129,12 +129,20 @@ export default function SideMenu({
           </div>
 
           <div className="mx-5 flex flex-col gap-2.5 border-b border-gray-100 py-4">
-            <MenuRow label="문의하기" muted />
-            <MenuRow label="나의 문의내역" muted />
+            <MenuRow
+              label="문의하기"
+              muted
+              onClick={() => go(ROUTES.INQUIRY)}
+            />
+            <MenuRow
+              label="나의 문의내역"
+              muted
+              onClick={() => go(ROUTES.INQUIRY_HISTORY)}
+            />
             <MenuRow
               label="약관 및 개인정보 처리방침"
               muted
-              onClick={() => go(ROUTES.TERMS)}
+              onClick={() => go(ROUTES.POLICY)}
             />
             <MenuRow
               label="로그아웃"

@@ -1,5 +1,5 @@
 import Button from "./Button";
-import type { Plan } from "../llm/PlanCard";
+import type { Plan } from "../ai/PlanCard";
 import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface DeletePlanModalProps {

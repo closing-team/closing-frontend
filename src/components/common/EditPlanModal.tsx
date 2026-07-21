@@ -7,7 +7,7 @@ import DateCalendar from "./DateCalendar";
 import TimeWheel from "./TimeWheel";
 import Button from "./Button";
 import { XMdIcon, MinusMdIcon } from "../../assets/icons";
-import type { Plan } from "../llm/PlanCard";
+import type { Plan } from "../ai/PlanCard";
 import type { TimeValue } from "./TimeWheel";
 
 interface EditPlanModalProps {
