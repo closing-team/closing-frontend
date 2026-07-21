@@ -1,14 +1,14 @@
-import partnerAvatar from "../assets/images/chat/chat-partner-avatar.png";
-import chatRoomProductImage from "../assets/images/chat/chat-room-product.png";
-import productImage1 from "../assets/images/chat/chat-product-1.png";
-import productImage2 from "../assets/images/chat/chat-product-2.png";
-import productImage3 from "../assets/images/chat/chat-product-3.png";
-import productImage4 from "../assets/images/chat/chat-product-4.png";
+import partnerAvatar from "../../assets/images/chat/chat-partner-avatar.png";
+import chatRoomProductImage from "../../assets/images/chat/chat-room-product.png";
+import productImage1 from "../../assets/images/chat/chat-product-1.png";
+import productImage2 from "../../assets/images/chat/chat-product-2.png";
+import productImage3 from "../../assets/images/chat/chat-product-3.png";
+import productImage4 from "../../assets/images/chat/chat-product-4.png";
 import type {
   ChatMessage,
   ChatRoomDetail,
   ChatRoomSummary,
-} from "../types/chat";
+} from "../../types/chat";
 
 export const MOCK_CHAT_ROOMS: ChatRoomSummary[] = [
   {
@@ -111,9 +111,9 @@ export const MOCK_CHAT_MESSAGES: ChatMessage[] = [
   },
 ];
 
-export function getMockChatRoom(roomId: string):
-  | { room: ChatRoomDetail; messages: ChatMessage[] }
-  | undefined {
+export function getMockChatRoom(
+  roomId: string,
+): { room: ChatRoomDetail; messages: ChatMessage[] } | undefined {
   const summary = MOCK_CHAT_ROOMS.find((room) => room.id === roomId);
 
   if (!summary) return undefined;
@@ -131,6 +131,8 @@ export function getMockChatRoom(roomId: string):
         imageUrl: summary.productImageUrl,
       },
     },
-    messages: MOCK_CHAT_MESSAGES.filter((message) => message.roomId === summary.id),
+    messages: MOCK_CHAT_MESSAGES.filter(
+      (message) => message.roomId === summary.id,
+    ),
   };
 }

@@ -107,7 +107,7 @@ describe("ChatRoomPage", () => {
     ]);
     expect(messages).toEqual([newestMessage, oldestMessage]);
     expect(
-      screen.getByRole("img", { name: `${room.product.title} 상품 이미지` }),
+      screen.getByRole("img", { name: room.product.title }),
     ).toHaveClass("h-full", "w-full", "object-cover");
   });
 

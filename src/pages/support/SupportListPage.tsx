@@ -5,8 +5,10 @@ import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
+import SideMenu from "../../components/sidemenu/SideMenu";
 import { SUPPORT_POSTS } from "../../mocks/mockSupport";
 import { MenuHamburgerIcon } from "../../assets/icons";
+import { useUsedStore } from "../../stores/usedStore";
 
 type SupportTab = "notice" | "bookmark";
 type SortOption = "popular" | "registered" | "deadline";
@@ -43,6 +45,12 @@ export default function SupportListPage() {
   const [posts, setPosts] = useState<SupportPost[]>(SUPPORT_POSTS);
   const [activeTab, setActiveTab] = useState<SupportTab>("notice");
   const [sort, setSort] = useState<SortOption>("popular");
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const authenticated = useUsedStore((s) => s.authenticated);
+  const products = useUsedStore((s) => s.products);
+  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const interestCount = products.filter((p) => p.liked).length;
+  const chatCount = Object.keys(messagesByProduct).length;
 
   const visiblePosts = useMemo(() => {
     const filtered =
@@ -70,10 +78,19 @@ export default function SupportListPage() {
             type="button"
             aria-label="전체 메뉴"
             className="p-1 text-gray-900"
+            onClick={() => setIsSideMenuOpen(true)}
           >
             <MenuHamburgerIcon />
           </button>
         }
+      />
+
+      <SideMenu
+        open={isSideMenuOpen}
+        onClose={() => setIsSideMenuOpen(false)}
+        verified={authenticated}
+        interestCount={interestCount}
+        chatCount={chatCount}
       />
 
       <Tabs

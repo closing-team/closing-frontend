@@ -1,9 +1,9 @@
-interface SellerRowProps {
+interface SellerInfoProps {
   name: string;
   neighborhood?: string;
 }
 
-export default function SellerRow({ name, neighborhood }: SellerRowProps) {
+export default function SellerInfo({ name, neighborhood }: SellerInfoProps) {
   return (
     <div className="flex items-center gap-3 border-b border-gray-100 py-4">
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-500 text-subtitle-2 text-white">

@@ -1,3 +1,5 @@
+import type { SaleStatus } from "./used";
+
 export interface ChatRoomSummary {
   id: string;
   productId: string;
@@ -17,6 +19,9 @@ export interface ChatProductSummary {
   title: string;
   price: number;
   imageUrl: string;
+  status?: SaleStatus;
+  meta?: string;
+  likeCount?: number;
 }
 
 export interface ChatRoomDetail {

@@ -8,7 +8,7 @@ import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/common/DeletePlanModal";
 import EditPlanModal from "../../components/common/EditPlanModal";
 import type { Plan } from "../../components/llm/PlanCard";
-import { MOCK_PLANS } from "../../mocks/llm/mockPlans";
+import { MOCK_PLANS } from "../../mocks/llm/mockLLMPlans";
 import cloySm from "../../assets/images/cloy-sm.png";
 
 type TextMessage = {
@@ -39,7 +39,6 @@ function formatTime(date: Date) {
   const h12 = h % 12 || 12;
   return `${ampm} ${h12}:${String(m).padStart(2, "0")}`;
 }
-
 
 export default function LLMChatPage() {
   const navigate = useNavigate();
@@ -87,7 +86,10 @@ export default function LLMChatPage() {
     setMessages((prev) =>
       prev.map((msg) =>
         isPlanResult(msg)
-          ? { ...msg, plans: msg.plans.map((p) => (p.id === updated.id ? updated : p)) }
+          ? {
+              ...msg,
+              plans: msg.plans.map((p) => (p.id === updated.id ? updated : p)),
+            }
           : msg,
       ),
     );
@@ -140,7 +142,12 @@ export default function LLMChatPage() {
                       />
                     ))}
                   </div>
-                  <Button variant="primary" size="lg" fullWidth className="mt-4">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    fullWidth
+                    className="mt-4"
+                  >
                     캘린더에 모두 추가
                   </Button>
                 </div>

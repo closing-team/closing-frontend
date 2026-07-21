@@ -1,11 +1,12 @@
+import { ImageIcon } from "../../assets/icons";
 import type { ChatRoomSummary } from "../../types/chat";
 
-interface ChatListItemProps {
+interface ChatCardProps {
   room: ChatRoomSummary;
   onSelect: (roomId: string) => void;
 }
 
-export default function ChatListItem({ room, onSelect }: ChatListItemProps) {
+export default function ChatCard({ room, onSelect }: ChatCardProps) {
   const unreadMessageLabel =
     room.unreadCount > 0 ? `읽지 않은 메시지 ${room.unreadCount}개` : null;
   const accessibleName = [
@@ -22,14 +23,20 @@ export default function ChatListItem({ room, onSelect }: ChatListItemProps) {
       type="button"
       aria-label={accessibleName}
       onClick={() => onSelect(room.id)}
-      className="flex h-[99px] w-full items-center gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
+      className="flex h-[99px] w-full items-center gap-3 bg-white p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
     >
       <span className="relative h-[66px] w-[66px] shrink-0">
-        <img
-          src={room.productImageUrl}
-          alt={`${room.productName} 상품 이미지`}
-          className="absolute left-0 top-0 h-[58px] w-[58px] rounded-lg object-cover"
-        />
+        {room.productImageUrl ? (
+          <img
+            src={room.productImageUrl}
+            alt={`${room.productName} 상품 이미지`}
+            className="absolute left-0 top-0 h-[58px] w-[58px] rounded-lg object-cover"
+          />
+        ) : (
+          <div className="absolute left-0 top-0 flex h-[58px] w-[58px] items-center justify-center rounded-lg bg-gray-100 text-gray-200">
+            <ImageIcon className="h-6 w-6" />
+          </div>
+        )}
         <img
           src={room.partnerAvatarUrl}
           alt={`${room.partnerNickname} 프로필 이미지`}
@@ -50,7 +57,7 @@ export default function ChatListItem({ room, onSelect }: ChatListItemProps) {
           {room.unreadCount > 0 && (
             <span
               aria-label={unreadMessageLabel!}
-              className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-primary-500 px-px text-caption-1 leading-[18px] text-white"
+              className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-primary-500 py-0 pl-[5px] pr-1 text-caption-1 leading-[18px] text-white"
             >
               {room.unreadCount}
             </span>

@@ -101,9 +101,12 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
   };
 
   return (
-    <section className="border-t border-gray-100 bg-white px-3 py-4" aria-label="메시지 작성">
+    <section
+      className="flex flex-col gap-2 border-t border-gray-100 bg-white px-3 py-4"
+      aria-label="메시지 작성"
+    >
       {previewUrl && (
-        <div className="mb-3 flex items-start gap-2">
+        <div className="flex items-start gap-2">
           <div className="relative h-14 w-14">
             <img
               src={previewUrl}
@@ -132,7 +135,7 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
       )}
 
       {failedMessage && (
-        <div className="mb-3 flex items-center justify-between gap-3" role="alert">
+        <div className="flex items-center justify-between gap-3" role="alert">
           <span className="text-caption-2 text-warning-600">메시지를 전송할 수 없습니다.</span>
           <button
             type="button"
@@ -157,7 +160,7 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
             }
           }}
         >
-          <PlusMdIcon className="h-6 w-6" />
+          <PlusMdIcon className="h-6 w-6 shrink-0" />
         </button>
         <input
           ref={fileInputRef}
@@ -192,19 +195,19 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
           placeholder="메시지를 입력하세요..."
           rows={1}
           disabled={isSending}
-          className="h-10 min-w-0 flex-1 resize-none rounded-lg bg-gray-30 px-4 py-2.5 text-body-2 text-gray-900 outline-none placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-primary-500"
+          className="h-10 min-w-0 flex-1 resize-none rounded-lg bg-gray-30 py-2 pl-3 pr-2 text-body-2 text-gray-900 outline-none placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-primary-500"
         />
         <button
           type="button"
           aria-label="전송"
           disabled={!canSend || isSending}
           onClick={() => void send()}
-          className="flex h-10 w-10 shrink-0 items-center justify-center disabled:cursor-not-allowed"
+          className="flex h-10 w-10 shrink-0 items-center justify-center text-gray-400 disabled:cursor-not-allowed"
         >
           {canSend && !isSending ? (
-            <SendEnabledIcon className="h-6 w-6" />
+            <SendEnabledIcon className="h-6 w-6 shrink-0" />
           ) : (
-            <SendDisabledIcon className="h-6 w-6" />
+            <SendDisabledIcon className="h-6 w-6 shrink-0" />
           )}
         </button>
       </div>

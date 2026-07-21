@@ -94,7 +94,6 @@ export default function SupportDetailPage() {
         <div className="flex flex-col items-center gap-3 px-4 pb-4 pt-5">
           <Button
             variant="primary"
-            size="md"
             fullWidth
             rightIcon={<ChevronRightIcon />}
             onClick={handleApply}
