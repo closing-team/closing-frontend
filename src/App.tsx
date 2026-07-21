@@ -6,6 +6,7 @@ import GuideNoticeTemplatePage from "./pages/guide/GuideNoticeTemplatePage";
 import LLMPage from "./pages/llm/LLMPage";
 import LLMChatPage from "./pages/llm/LLMChatPage";
 import SupportListPage from "./pages/support/SupportListPage";
+import SupportDetailPage from "./pages/support/SupportDetailPage";
 import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
 import TermsPage from "./pages/auth/TermsPage";
@@ -63,6 +64,7 @@ export default function App() {
         <Route path={ROUTES.LLM} element={<LLMPage />} />
         <Route path={ROUTES.LLM_CHAT} element={<LLMChatPage />} />
         <Route path={ROUTES.SUPPORT} element={<SupportListPage />} />
+        <Route path={ROUTES.SUPPORT_DETAIL} element={<SupportDetailPage />} />
         <Route path={ROUTES.USED} element={<UsedListPage />} />
         <Route path={ROUTES.USED_SEARCH} element={<UsedSearchPage />} />
         <Route
