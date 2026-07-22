@@ -7,9 +7,9 @@ import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
 import SideMenu from "../../components/sidemenu/SideMenu";
-import { SUPPORT_POSTS } from "../../mocks/support/mockSupport";
 import { MenuHamburgerIcon } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
+import { useSupportStore } from "../../stores/supportStore";
 import { ROUTES } from "../../constants/routes";
 
 type SupportTab = "notice" | "bookmark";
@@ -52,7 +52,8 @@ export default function SupportListPage() {
   const location = useLocation();
   const isBookmarkEntry = location.pathname === ROUTES.SUPPORT_BOOKMARK;
 
-  const [posts, setPosts] = useState<SupportPost[]>(SUPPORT_POSTS);
+  const posts = useSupportStore((s) => s.posts);
+  const toggleBookmark = useSupportStore((s) => s.toggleBookmark);
   const [activeTab, setActiveTab] = useState<SupportTab>(
     isBookmarkEntry ? "bookmark" : "notice",
   );
@@ -71,14 +72,6 @@ export default function SupportListPage() {
         : posts;
     return sortPosts(filtered, sort);
   }, [posts, activeTab, sort]);
-
-  const toggleBookmark = (id: number) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === id ? { ...post, bookmarked: !post.bookmarked } : post,
-      ),
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gray-30 pb-20">
