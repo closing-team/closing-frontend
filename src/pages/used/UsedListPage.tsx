@@ -15,6 +15,7 @@ import { ROUTES, usedDetailPath } from "../../constants/routes";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { applyFilter } from "../../utils/usedListUtils";
 import { useUsedStore } from "../../stores/usedStore";
+import { useSupportStore } from "../../stores/supportStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
 
 const DEFAULT_NEARBY_LABEL = "원홍동 근처";
@@ -39,6 +40,9 @@ export default function UsedListPage() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const interestCount = products.filter((p) => p.liked).length;
   const chatCount = Object.keys(messagesByProduct).length;
+  const bookmarkCount = useSupportStore(
+    (s) => s.posts.filter((post) => post.bookmarked).length,
+  );
 
   const visibleProducts = useMemo(
     () => applyFilter(products, filter),
@@ -82,6 +86,7 @@ export default function UsedListPage() {
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
         verified={authenticated}
+        bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
       />

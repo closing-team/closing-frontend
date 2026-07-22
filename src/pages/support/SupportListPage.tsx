@@ -71,6 +71,7 @@ export default function SupportListPage() {
   );
   const [sort, setSort] = useState<SortOption>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const bookmarkCount = posts.filter((post) => post.bookmarked).length;
   const authenticated = useUsedStore((s) => s.authenticated);
   const products = useUsedStore((s) => s.products);
   const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
@@ -106,6 +107,7 @@ export default function SupportListPage() {
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
         verified={authenticated}
+        bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
       />
