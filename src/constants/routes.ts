@@ -6,9 +6,7 @@ export const ROUTES = {
 
   // home
   HOME: "/",
-<<<<<<< HEAD
-
-  // ai
+// ai
   AI: "/ai",
   AI_PLAN: "/ai/plan",
 
@@ -20,16 +18,10 @@ export const ROUTES = {
 
   // support
   SUPPORT: "/supports",
+  SUPPORT_BOOKMARK: "/supports/bookmark",
   SUPPORT_DETAIL: "/supports/:supportId",
 
   // used
-=======
-  GUIDE: "/guide",
-  GUIDE_DETAIL: "/guide/:stepId",
-  SUPPORT: "/support",
-  SUPPORT_BOOKMARK: "/support/bookmark",
-  SUPPORT_DETAIL: "/support/:supportId",
->>>>>>> dc74a7b ([지원정보] feat: 북마크 목록 진입용 라우트(SUP002) 연결)
   USED: "/used",
   USED_DETAIL: "/used/:productId",
   USED_SEARCH: "/used/search",
