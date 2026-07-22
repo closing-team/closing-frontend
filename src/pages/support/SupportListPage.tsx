@@ -6,6 +6,7 @@ import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
+import SupportEmptyView from "../../components/support/SupportEmptyView";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { MenuHamburgerIcon } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
@@ -23,6 +24,17 @@ const TABS: { key: SupportTab; label: string }[] = [
 const SECTION_TITLE: Record<SupportTab, string> = {
   notice: "폐업지원 공고",
   bookmark: "나의 관심 공고",
+};
+
+const EMPTY_STATE: Record<SupportTab, { title: string; description: string }> = {
+  notice: {
+    title: "현재 진행 중인 폐업지원 공고가 없어요",
+    description: "새로운 공고가 등록되면 이곳에서 확인할 수 있어요.",
+  },
+  bookmark: {
+    title: "아직 저장한 공고가 없어요",
+    description: "관심 있는 공고를 저장하면 이곳에서 모아볼 수 있어요.",
+  },
 };
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
@@ -118,15 +130,22 @@ export default function SupportListPage() {
       </div>
 
       {/* 공고 목록 */}
-      <div className="flex flex-col gap-3 px-4">
-        {visiblePosts.map((post) => (
-          <SupportCard
-            key={post.id}
-            post={post}
-            onToggleBookmark={toggleBookmark}
-          />
-        ))}
-      </div>
+      {visiblePosts.length === 0 ? (
+        <SupportEmptyView
+          title={EMPTY_STATE[activeTab].title}
+          description={EMPTY_STATE[activeTab].description}
+        />
+      ) : (
+        <div className="flex flex-col gap-3 px-4">
+          {visiblePosts.map((post) => (
+            <SupportCard
+              key={post.id}
+              post={post}
+              onToggleBookmark={toggleBookmark}
+            />
+          ))}
+        </div>
+      )}
 
       <NavigationBar />
     </div>
