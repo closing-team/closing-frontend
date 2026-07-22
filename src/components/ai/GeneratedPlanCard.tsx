@@ -1,6 +1,6 @@
 import { CalendarIcon, PencilIcon, TrashIcon } from "../../assets/icons";
-import { PlanDateRange } from "./PlanCard";
-import type { Plan } from "./PlanCard";
+import { PlanDateRange } from "../common/PlanCard";
+import type { Plan } from "../common/PlanCard";
 
 interface GeneratedPlanCardProps {
   plan: Plan;

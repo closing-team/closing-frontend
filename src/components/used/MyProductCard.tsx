@@ -1,5 +1,7 @@
-import { ImageIcon, MenuKebabIcon } from "../../assets/icons";
+import { MenuKebabIcon } from "../../assets/icons";
 import { LikeCount } from "./LikeButton";
+import ProductThumbnail from "./ProductThumbnail";
+import { formatPrice } from "../../utils/formatPrice";
 import type { SaleStatus } from "../../types/used";
 
 export type { SaleStatus };
@@ -58,7 +60,7 @@ export default function MyProductCard({
 
       <button
         type="button"
-        aria-label={`${title}, ${price.toLocaleString("ko-KR")}원`}
+        aria-label={`${title}, ${formatPrice(price)}원`}
         onClick={onClick}
         className="flex w-full gap-3 px-3 text-left active:opacity-80"
       >
@@ -66,17 +68,11 @@ export default function MyProductCard({
           className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-30"
           style={{ aspectRatio: "1 / 1" }}
         >
-          {imageUrl ? (
-            <img
-              src={imageUrl}
-              alt={title}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-gray-200">
-              <ImageIcon className="h-8 w-8" />
-            </div>
-          )}
+          <ProductThumbnail
+            imageUrl={imageUrl}
+            alt={title}
+            iconClassName="h-8 w-8"
+          />
         </div>
 
         <div className="flex h-20 min-w-0 flex-1 flex-col justify-between">
@@ -86,7 +82,7 @@ export default function MyProductCard({
               <p className="truncate text-caption-3 text-gray-500">{meta}</p>
             )}
             <p className="text-subtitle-2 text-gray-900">
-              {price.toLocaleString("ko-KR")}원
+              {formatPrice(price)}원
             </p>
           </div>
 

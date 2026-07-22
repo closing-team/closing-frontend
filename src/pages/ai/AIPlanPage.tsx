@@ -5,9 +5,9 @@ import ChatBubble from "../../components/common/ChatBubble";
 import ChatInput from "../../components/ai/ChatInput";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import Button from "../../components/common/Button";
-import DeletePlanModal from "../../components/common/DeletePlanModal";
-import EditPlanModal from "../../components/common/EditPlanModal";
-import type { Plan } from "../../components/ai/PlanCard";
+import DeletePlanModal from "../../components/ai/DeletePlanModal";
+import EditPlanModal from "../../components/ai/EditPlanModal";
+import type { Plan } from "../../components/common/PlanCard";
 import { MOCK_PLANS } from "../../mocks/ai/mockAIPlans";
 import cloySm from "../../assets/images/cloy-sm.png";
 

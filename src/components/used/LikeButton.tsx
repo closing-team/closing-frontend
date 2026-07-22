@@ -4,12 +4,14 @@ interface LikeButtonProps {
   liked: boolean;
   onToggle: () => void;
   className?: string;
+  unlikedClassName?: string;
 }
 
 export default function LikeButton({
   liked,
   onToggle,
   className = "",
+  unlikedClassName = "text-white",
 }: LikeButtonProps) {
   return (
     <span
@@ -26,12 +28,12 @@ export default function LikeButton({
           onToggle();
         }
       }}
-      className={`shrink-0 p-0.5 ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center p-0.5 ${className}`}
     >
       {liked ? (
         <HeartFilledIcon width={24} height={24} className="text-[#FF4C7F]" />
       ) : (
-        <HeartEmptyIcon width={24} height={24} className="text-white" />
+        <HeartEmptyIcon width={24} height={24} className={unlikedClassName} />
       )}
     </span>
   );

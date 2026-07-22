@@ -7,9 +7,9 @@ import TodoList from "../../components/home/TodoList";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
 import { ROUTES } from "../../constants/routes";
-import AddPlanModal from "../../components/common/AddPlanModal";
+import AddPlanModal from "../../components/home/AddPlanModal";
 import DayScheduleModal from "../../components/home/DayScheduleModal";
-import type { Plan } from "../../components/ai/PlanCard";
+import type { Plan } from "../../components/common/PlanCard";
 import {
   MenuHamburgerIcon,
   PlusMdIcon,

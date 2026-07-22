@@ -8,13 +8,15 @@ import Button from "../../components/common/Button";
 import Radio from "../../components/used/Radio";
 import PriceField from "../../components/used/PriceField";
 import PhotoUploader from "../../components/used/PhotoUploader";
-import { MarkerIcon, TargetIcon } from "../../assets/icons";
+import NaverMapPicker from "../../components/used/NaverMapPicker";
 import type { DealType } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../mocks/used/mockUsedMeta";
 import { usedDetailPath } from "../../constants/routes";
 
 const DEFAULT_ADDRESS = "경기도 고양시 일산동구 장항동 32-1";
+const DEFAULT_LAT = 37.6689;
+const DEFAULT_LNG = 126.7407;
 
 function RadioRow({
   label,
@@ -56,7 +58,10 @@ export default function UsedWritePage() {
   const [itemCategory, setItemCategory] = useState<string | null>(null);
   const [price, setPrice] = useState("");
   const [directAvailable, setDirectAvailable] = useState(true);
-  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState(DEFAULT_ADDRESS);
+  const [addressDetail, setAddressDetail] = useState("");
+  const [lat, setLat] = useState(DEFAULT_LAT);
+  const [lng, setLng] = useState(DEFAULT_LNG);
   const [parcelAvailable, setParcelAvailable] = useState(true);
   const [description, setDescription] = useState("");
 
@@ -90,8 +95,10 @@ export default function UsedWritePage() {
       itemCategory: itemCategory ?? undefined,
       description: description.trim() || undefined,
       dealLocation: directAvailable
-        ? location.trim() || DEFAULT_ADDRESS
+        ? [address, addressDetail.trim()].filter(Boolean).join(" ")
         : undefined,
+      lat: directAvailable ? lat : undefined,
+      lng: directAvailable ? lng : undefined,
     });
     navigate(usedDetailPath(newId));
   };
@@ -164,28 +171,23 @@ export default function UsedWritePage() {
             <div className="mt-4 flex flex-col gap-3">
               <p className="pl-0.5 text-subtitle-2 text-gray-900">직거래 장소</p>
 
-              <div className="relative aspect-[343/233] overflow-hidden rounded-lg bg-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center text-primary-500">
-                  <MarkerIcon className="h-8 w-8" />
-                </div>
-                <span className="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-white/70 p-1 text-gray-700 backdrop-blur-[2px]">
-                  <TargetIcon className="h-6 w-6" />
-                </span>
-              </div>
-
-              <div className="flex h-[52px] items-center gap-3 rounded-lg border border-gray-100 bg-white py-2 pl-4 pr-2 shadow-[0_1px_5px_0_rgba(0,0,0,0.03),0_5px_10px_0_rgba(0,0,0,0.03)]">
-                <MarkerIcon className="h-6 w-6 shrink-0 text-primary-500" />
-                <span className="flex-1 truncate text-body-2 text-gray-900">
-                  {DEFAULT_ADDRESS}
-                </span>
-              </div>
+              <NaverMapPicker
+                lat={lat}
+                lng={lng}
+                onChange={(newLat, newLng) => {
+                  setLat(newLat);
+                  setLng(newLng);
+                }}
+                onAddressChange={setAddress}
+                className="aspect-[343/233] w-full overflow-hidden rounded-lg"
+              />
 
               <TextField
                 className="mb-0!"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                onClear={() => setLocation("")}
-                placeholder="장소 직접 입력"
+                value={addressDetail}
+                onChange={(e) => setAddressDetail(e.target.value)}
+                onClear={() => setAddressDetail("")}
+                placeholder="상세 주소 직접 입력"
               />
             </div>
           )}
