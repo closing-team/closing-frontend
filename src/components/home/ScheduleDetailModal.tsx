@@ -5,7 +5,7 @@ import {
   PencilIcon,
   TrashIcon,
 } from "../../assets/icons";
-import type { Plan } from "../ai/PlanCard";
+import type { Plan } from "../common/PlanCard";
 import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface ScheduleDetailModalProps {
