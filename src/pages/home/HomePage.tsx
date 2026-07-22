@@ -7,12 +7,12 @@ import TodoList from "../../components/home/TodoList";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
 import { ROUTES } from "../../constants/routes";
-import AddPlanModal from "../../components/common/AddPlanModal";
-import EditPlanModal from "../../components/common/EditPlanModal";
+import AddPlanModal from "../../components/home/AddPlanModal";
+import EditPlanModal from "../../components/ai/EditPlanModal";
 import DayScheduleModal from "../../components/home/DayScheduleModal";
 import ScheduleDetailModal from "../../components/home/ScheduleDetailModal";
 import DeleteConfirmModal from "../../components/home/DeleteConfirmModal";
-import type { Plan } from "../../components/ai/PlanCard";
+import type { Plan } from "../../components/common/PlanCard";
 import {
   MenuHamburgerIcon,
   PlusMdIcon,

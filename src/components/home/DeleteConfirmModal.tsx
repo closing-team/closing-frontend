@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Button from "../common/Button";
-import type { Plan } from "../ai/PlanCard";
+import type { Plan } from "../common/PlanCard";
 import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface DeleteConfirmModalProps {

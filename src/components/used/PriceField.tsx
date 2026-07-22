@@ -1,4 +1,5 @@
 import TextField from "../common/TextField";
+import { formatPrice } from "../../utils/formatPrice";
 
 const MAX_PRICE = 1_000_000_000;
 
@@ -21,7 +22,7 @@ export default function PriceField({
   placeholder = "가격",
   className = "",
 }: PriceFieldProps) {
-  const formatted = value ? Number(value).toLocaleString("ko-KR") : "";
+  const formatted = value ? formatPrice(Number(value)) : "";
   const overLimit = Number(value) >= MAX_PRICE;
 
   return (

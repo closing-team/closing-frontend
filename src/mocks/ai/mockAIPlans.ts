@@ -1,4 +1,4 @@
-import type { Plan } from "../../components/ai/PlanCard";
+import type { Plan } from "../../components/common/PlanCard";
 
 export const MOCK_PLANS: Plan[] = [
   {

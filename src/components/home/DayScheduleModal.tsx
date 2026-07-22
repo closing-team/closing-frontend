@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { XMdIcon, ChevronRightIcon } from "../../assets/icons";
 import Button from "../common/Button";
-import type { Plan } from "../ai/PlanCard";
+import type { Plan } from "../common/PlanCard";
 import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface DayScheduleModalProps {

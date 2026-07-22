@@ -1,5 +1,6 @@
-import { ImageIcon } from "../../assets/icons";
 import LikeButton from "./LikeButton";
+import ProductThumbnail from "./ProductThumbnail";
+import { formatPrice } from "../../utils/formatPrice";
 import type { Product } from "../../types/used";
 
 interface ProductCardProps {
@@ -30,17 +31,7 @@ export default function ProductCard({
         className="relative w-full overflow-hidden rounded-lg bg-gray-100"
         style={{ aspectRatio: "1 / 1" }}
       >
-        {product.imageUrl ? (
-          <img
-            src={product.imageUrl}
-            alt={product.title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-gray-200">
-            <ImageIcon className="h-10 w-10" />
-          </div>
-        )}
+        <ProductThumbnail imageUrl={product.imageUrl} alt={product.title} />
 
         <LikeButton
           liked={product.liked}
@@ -63,10 +54,6 @@ export default function ProductCard({
       </p>
     </button>
   );
-}
-
-function formatPrice(price: number) {
-  return price.toLocaleString("ko-KR");
 }
 
 function formatDistance(distanceM: number) {

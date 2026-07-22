@@ -22,6 +22,8 @@ export interface Product {
   itemCategory?: string;
   description?: string;
   dealLocation?: string;
+  lat?: number;
+  lng?: number;
   images?: string[];
 }
 
