@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Tabs from "../../components/common/Tabs";
@@ -9,6 +10,7 @@ import SideMenu from "../../components/sidemenu/SideMenu";
 import { SUPPORT_POSTS } from "../../mocks/support/mockSupport";
 import { MenuHamburgerIcon } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
+import { ROUTES } from "../../constants/routes";
 
 type SupportTab = "notice" | "bookmark";
 type SortOption = "popular" | "registered" | "deadline";
@@ -17,6 +19,11 @@ const TABS: { key: SupportTab; label: string }[] = [
   { key: "notice", label: "공고" },
   { key: "bookmark", label: "북마크" },
 ];
+
+const SECTION_TITLE: Record<SupportTab, string> = {
+  notice: "폐업지원 공고",
+  bookmark: "나의 관심 공고",
+};
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: "popular", label: "인기순" },
@@ -42,8 +49,13 @@ function sortPosts(posts: SupportPost[], sort: SortOption): SupportPost[] {
 }
 
 export default function SupportListPage() {
+  const location = useLocation();
+  const isBookmarkEntry = location.pathname === ROUTES.SUPPORT_BOOKMARK;
+
   const [posts, setPosts] = useState<SupportPost[]>(SUPPORT_POSTS);
-  const [activeTab, setActiveTab] = useState<SupportTab>("notice");
+  const [activeTab, setActiveTab] = useState<SupportTab>(
+    isBookmarkEntry ? "bookmark" : "notice",
+  );
   const [sort, setSort] = useState<SortOption>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const authenticated = useUsedStore((s) => s.authenticated);
@@ -96,11 +108,15 @@ export default function SupportListPage() {
       <Tabs
         tabs={TABS}
         value={activeTab}
+        // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark)도 함께 바꿀지 여부는
+        // 아직 정해지지 않음 — 사용자와 상의 후 결정
         onChange={(key) => setActiveTab(key as SupportTab)}
       />
 
       <div className="flex items-center justify-between px-4 pb-3 pt-5">
-        <h2 className="text-title-3 text-gray-900">폐업지원 공고</h2>
+        <h2 className="text-title-3 text-gray-900">
+          {SECTION_TITLE[activeTab]}
+        </h2>
         <Dropdown
           options={SORT_OPTIONS}
           value={sort}
