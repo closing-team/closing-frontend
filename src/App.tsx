@@ -1,5 +1,4 @@
-import { Route, Routes } from "react-router-dom";
-import SplashPage from "./pages/auth/SplashPage";
+import { Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import TermsPage from "./pages/auth/TermsPage";
 import HomePage from "./pages/home/HomePage";
@@ -35,7 +34,10 @@ export default function App() {
     <div className="relative mx-auto min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] bg-white shadow-sm">
       <DocumentMeta />
       <Routes>
-        <Route path={ROUTES.SPLASH} element={<SplashPage />} />
+        <Route
+          path={ROUTES.SPLASH}
+          element={<Navigate to={ROUTES.HOME} replace />}
+        />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.TERMS} element={<TermsPage />} />
 
