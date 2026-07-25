@@ -6,8 +6,7 @@ export const ROUTES = {
 
   // home
   HOME: "/",
-
-  // ai
+// ai
   AI: "/ai",
   AI_PLAN: "/ai/plan",
 
@@ -19,6 +18,7 @@ export const ROUTES = {
 
   // support
   SUPPORT: "/supports",
+  SUPPORT_BOOKMARK: "/supports/bookmark",
   SUPPORT_DETAIL: "/supports/:supportId",
 
   // used

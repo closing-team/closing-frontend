@@ -56,6 +56,7 @@ export default function App() {
         />
 
         <Route path={ROUTES.SUPPORT} element={<SupportListPage />} />
+        <Route path={ROUTES.SUPPORT_BOOKMARK} element={<SupportListPage />} />
         <Route path={ROUTES.SUPPORT_DETAIL} element={<SupportDetailPage />} />
 
         <Route path={ROUTES.USED} element={<UsedListPage />} />
