@@ -13,7 +13,7 @@ export const useSupportStore = create<SupportState>((set) => ({
   toggleBookmark: (id) =>
     set((state) => ({
       posts: state.posts.map((post) =>
-        post.id === id ? { ...post, bookmarked: !post.bookmarked } : post,
+        post.id === id ? { ...post, isBookmarked: !post.isBookmarked } : post,
       ),
     })),
 }));
