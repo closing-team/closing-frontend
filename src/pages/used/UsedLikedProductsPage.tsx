@@ -1,35 +1,44 @@
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
-import ProductCard from "../../components/used/ProductCard";
+import ProductGrid from "../../components/used/ProductGrid";
+import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
+import UsedLikedEmptyView from "../../components/used/UsedLikedEmptyView";
 import { useUsedStore } from "../../stores/usedStore";
-import { usedDetailPath } from "../../constants/routes";
+import { ROUTES, usedDetailPath } from "../../constants/routes";
+import { useBookmarkedProductsQuery } from "../../hooks/useProducts";
+import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
 
 export default function UsedLikedProductsPage() {
   const navigate = useNavigate();
-  const products = useUsedStore((s) => s.products);
-  const toggleLike = useUsedStore((s) => s.toggleLike);
-
-  const likedProducts = products.filter((p) => p.liked);
+  const location = useUsedStore((s) => s.location);
+  const {
+    products: likedProducts,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useBookmarkedProductsQuery(location);
+  const handleToggleLike = useProductLikeToggle(likedProducts);
 
   return (
     <div className="min-h-screen bg-white pb-24">
       <TopBar title="관심 물품" onBack={() => navigate(-1)} />
 
       {likedProducts.length === 0 ? (
-        <p className="px-4 pt-20 text-center text-body-2 text-gray-400">
-          아직 관심 등록한 물품이 없어요.
-        </p>
+        <UsedLikedEmptyView onGoHome={() => navigate(ROUTES.USED)} />
       ) : (
-        <div className="grid grid-cols-2 gap-x-3 gap-y-4 px-4 py-3">
-          {likedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onClick={(id) => navigate(usedDetailPath(id))}
-              onToggleLike={toggleLike}
-            />
-          ))}
-        </div>
+        <>
+          <ProductGrid
+            products={likedProducts}
+            onProductClick={(id) => navigate(usedDetailPath(id))}
+            onToggleLike={handleToggleLike}
+            className="grid grid-cols-2 gap-x-3 gap-y-4 px-4 py-3"
+          />
+          <InfiniteScrollTrigger
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            onLoadMore={fetchNextPage}
+          />
+        </>
       )}
     </div>
   );

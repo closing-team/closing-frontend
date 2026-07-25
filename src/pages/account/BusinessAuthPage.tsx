@@ -28,7 +28,7 @@ export default function BusinessAuthPage() {
   const handleVerify = () => {
     if (!canSubmit) return;
     setAuthenticated(true);
-    navigate(ROUTES.USED_WRITE);
+    navigate(ROUTES.USED_WRITE, { replace: true });
   };
 
   return (

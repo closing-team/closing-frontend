@@ -9,6 +9,7 @@ import SideMenu from "../../components/sidemenu/SideMenu";
 import { SUPPORT_POSTS } from "../../mocks/support/mockSupport";
 import { MenuHamburgerIcon } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
+import { useInterestCount } from "../../hooks/useInterestCount";
 
 type SupportTab = "notice" | "bookmark";
 type SortOption = "popular" | "registered" | "deadline";
@@ -47,9 +48,8 @@ export default function SupportListPage() {
   const [sort, setSort] = useState<SortOption>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const authenticated = useUsedStore((s) => s.authenticated);
-  const products = useUsedStore((s) => s.products);
   const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
-  const interestCount = products.filter((p) => p.liked).length;
+  const interestCount = useInterestCount();
   const chatCount = Object.keys(messagesByProduct).length;
 
   const visiblePosts = useMemo(() => {
