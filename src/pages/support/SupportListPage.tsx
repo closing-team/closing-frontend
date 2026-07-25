@@ -11,6 +11,7 @@ import SideMenu from "../../components/sidemenu/SideMenu";
 import { MenuHamburgerIcon } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSupportStore } from "../../stores/supportStore";
+import { useInterestCount } from "../../hooks/useInterestCount";
 import { ROUTES } from "../../constants/routes";
 
 type SupportTab = "notice" | "bookmark";
@@ -73,9 +74,8 @@ export default function SupportListPage() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const bookmarkCount = posts.filter((post) => post.bookmarked).length;
   const authenticated = useUsedStore((s) => s.authenticated);
-  const products = useUsedStore((s) => s.products);
   const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
-  const interestCount = products.filter((p) => p.liked).length;
+  const interestCount = useInterestCount();
   const chatCount = Object.keys(messagesByProduct).length;
 
   const visiblePosts = useMemo(() => {

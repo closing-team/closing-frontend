@@ -1,7 +1,7 @@
 import { MenuKebabIcon } from "../../assets/icons";
 import { LikeCount } from "./LikeButton";
 import ProductThumbnail from "./ProductThumbnail";
-import { formatPrice } from "../../utils/formatPrice";
+import { formatPriceLabel } from "../../utils/formatPrice";
 import type { SaleStatus } from "../../types/used";
 
 export type { SaleStatus };
@@ -36,11 +36,7 @@ export default function MyProductCard({
   onMenuClick,
 }: MyProductCardProps) {
   const completed = status === "completed";
-  const statusColorClass = completed
-    ? "text-gray-400"
-    : status === "reserved"
-      ? "text-gray-500"
-      : "text-primary-500";
+  const statusColorClass = completed ? "text-gray-400" : "text-primary-500";
 
   return (
     <div className="flex flex-col items-start self-stretch rounded-xl bg-white pb-3 shadow-[0_0_8px_0_rgba(159,159,162,0.02)]">
@@ -60,7 +56,7 @@ export default function MyProductCard({
 
       <button
         type="button"
-        aria-label={`${title}, ${formatPrice(price)}원`}
+        aria-label={`${title}, ${formatPriceLabel(price)}`}
         onClick={onClick}
         className="flex w-full gap-3 px-3 text-left active:opacity-80"
       >
@@ -82,7 +78,7 @@ export default function MyProductCard({
               <p className="truncate text-caption-3 text-gray-500">{meta}</p>
             )}
             <p className="text-subtitle-2 text-gray-900">
-              {formatPrice(price)}원
+              {formatPriceLabel(price)}
             </p>
           </div>
 

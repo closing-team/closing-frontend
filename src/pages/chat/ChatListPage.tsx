@@ -1,11 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import { useQueries } from "@tanstack/react-query";
 import TopBar from "../../components/common/TopBar";
 import ChatEmptyView from "../../components/chat/ChatEmptyView";
 import ChatCard from "../../components/chat/ChatCard";
 import { ROUTES, chatRoomPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
+import { getProductDetail } from "../../api/used";
+import { productDetailDtoToProduct } from "../../utils/productAdapter";
+import { productKeys } from "../../hooks/useProducts";
 import { toChatRoomSummaries } from "../../utils/chatAdapter";
 import type { ChatRoomSummary } from "../../types/chat";
+import type { Product } from "../../types/used";
 
 function sortRoomsByLatestMessage(rooms: ChatRoomSummary[]) {
   return [...rooms].sort(
@@ -17,8 +22,19 @@ function sortRoomsByLatestMessage(rooms: ChatRoomSummary[]) {
 
 export default function ChatListPage() {
   const navigate = useNavigate();
-  const products = useUsedStore((s) => s.products);
   const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const productIds = Object.keys(messagesByProduct).map(Number);
+
+  const productQueries = useQueries({
+    queries: productIds.map((id) => ({
+      queryKey: productKeys.detail(id),
+      queryFn: async () => productDetailDtoToProduct(await getProductDetail(id)),
+    })),
+  });
+  const products = productQueries
+    .map((q) => q.data)
+    .filter((p): p is Product => !!p);
+
   const sortedRooms = sortRoomsByLatestMessage(
     toChatRoomSummaries(products, messagesByProduct),
   );

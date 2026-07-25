@@ -1,31 +1,32 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import FilterTabs from "../../components/used/FilterTabs";
 import SortDropdown from "../../components/used/SortDropdown";
-import ProductCard from "../../components/used/ProductCard";
+import ProductGrid from "../../components/used/ProductGrid";
+import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
 import UsedEmptyView from "../../components/used/UsedEmptyView";
 import UsedContentSkeleton from "../../components/used/UsedContentSkeleton";
 import LocationPermissionSheet from "../../components/used/LocationPermissionSheet";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { MenuHamburgerIcon, PlusMdIcon, SearchIcon } from "../../assets/icons";
 import { ROUTES, usedDetailPath } from "../../constants/routes";
+import { DEFAULT_NEARBY_LABEL } from "../../constants/location";
 import type { UsedFilter, UsedSort } from "../../types/used";
-import { applyFilter } from "../../utils/usedListUtils";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSupportStore } from "../../stores/supportStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
-
-const DEFAULT_NEARBY_LABEL = "원홍동 근처";
+import { useProductListQuery } from "../../hooks/useProducts";
+import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
+import { useInterestCount } from "../../hooks/useInterestCount";
 
 export default function UsedListPage() {
   const navigate = useNavigate();
 
-  const products = useUsedStore((s) => s.products);
-  const toggleLike = useUsedStore((s) => s.toggleLike);
   const authenticated = useUsedStore((s) => s.authenticated);
+  const location = useUsedStore((s) => s.location);
   const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
   const {
     locationGranted,
@@ -38,22 +39,31 @@ export default function UsedListPage() {
   const [filter, setFilter] = useState<UsedFilter>("all");
   const [sort, setSort] = useState<UsedSort>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-  const interestCount = products.filter((p) => p.liked).length;
+  const interestCount = useInterestCount();
   const chatCount = Object.keys(messagesByProduct).length;
   const bookmarkCount = useSupportStore(
     (s) => s.posts.filter((post) => post.bookmarked).length,
   );
 
-  const visibleProducts = useMemo(
-    () => applyFilter(products, filter),
-    [products, filter],
-  );
+  const {
+    products: visibleProducts,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useProductListQuery({
+    filter,
+    sort,
+    location,
+  });
+  const handleToggleLike = useProductLikeToggle(visibleProducts);
 
   const handleWrite = () => {
     navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
   };
 
   const isEmpty = visibleProducts.length === 0;
+  const showSkeleton = isLoading || showLocationModal;
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -91,32 +101,39 @@ export default function UsedListPage() {
         chatCount={chatCount}
       />
 
-      {locationGranted ? (
+      {!showSkeleton ? (
         <>
           <FilterTabs
             value={filter}
             onChange={setFilter}
             nearbyLabel={DEFAULT_NEARBY_LABEL}
+            showNearby={locationGranted}
           />
 
           <div className="flex flex-col gap-4 px-4 py-3">
             <div className="flex justify-end">
-              <SortDropdown value={sort} onChange={setSort} />
+              <SortDropdown
+                value={sort}
+                onChange={setSort}
+                showDistance={locationGranted}
+              />
             </div>
 
             {isEmpty ? (
               <UsedEmptyView onWrite={handleWrite} />
             ) : (
-              <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-                {visibleProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onClick={(id) => navigate(usedDetailPath(id))}
-                    onToggleLike={toggleLike}
-                  />
-                ))}
-              </div>
+              <>
+                <ProductGrid
+                  products={visibleProducts}
+                  onProductClick={(id) => navigate(usedDetailPath(id))}
+                  onToggleLike={handleToggleLike}
+                />
+                <InfiniteScrollTrigger
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                  onLoadMore={fetchNextPage}
+                />
+              </>
             )}
           </div>
         </>

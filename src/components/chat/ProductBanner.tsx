@@ -1,5 +1,5 @@
 import { ImageIcon } from "../../assets/icons";
-import { formatPrice } from "../../utils/formatPrice";
+import { formatPriceLabel } from "../../utils/formatPrice";
 
 interface ProductBannerProps {
   imageUrl?: string | null;
@@ -18,7 +18,7 @@ export default function ProductBanner({
     <button
       type="button"
       onClick={onClick}
-      aria-label={`${title}, ${formatPrice(price)}원`}
+      aria-label={`${title}, ${formatPriceLabel(price)}`}
       className="flex w-full items-center gap-3 self-stretch bg-gray-30 p-4 text-left"
     >
       <div className="h-9 w-9 shrink-0 overflow-hidden rounded bg-gray-200">
@@ -38,7 +38,7 @@ export default function ProductBanner({
       <div className="min-w-0 flex-1">
         <p className="truncate text-body-3 text-gray-900">{title}</p>
         <p className="mt-1 text-caption-1 text-gray-900">
-          {formatPrice(price)}원
+          {formatPriceLabel(price)}
         </p>
       </div>
     </button>

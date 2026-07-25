@@ -6,21 +6,35 @@ import NavigationBar from "../../components/common/NavigationBar";
 import Chip from "../../components/common/Chip";
 import { ROUTES } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
-import { RECOMMENDED_KEYWORDS } from "../../mocks/used/mockUsedMeta";
+import { useCommitSearch } from "../../hooks/useCommitSearch";
+import { RECOMMENDED_KEYWORDS } from "../../constants/usedCategories";
+import {
+  toBusinessCategoryCode,
+  toProductCategoryCode,
+} from "../../utils/productCategoryMap";
 
 export default function UsedSearchPage() {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
 
   const recentSearches = useUsedStore((s) => s.recentSearches);
-  const addRecentSearch = useUsedStore((s) => s.addRecentSearch);
   const removeRecentSearch = useUsedStore((s) => s.removeRecentSearch);
+  const commitSearch = useCommitSearch();
 
   const goResult = (query: string) => {
-    const q = query.trim();
+    const q = commitSearch(query);
     if (!q) return;
-    addRecentSearch(q);
     navigate(`${ROUTES.USED_SEARCH_RESULT}?q=${encodeURIComponent(q)}`);
+  };
+
+  const goCategory = (type: "industry" | "item", label: string) => {
+    const param =
+      type === "industry"
+        ? `businessCategory=${encodeURIComponent(toBusinessCategoryCode(label))}`
+        : `productCategory=${encodeURIComponent(toProductCategoryCode(label))}`;
+    navigate(
+      `${ROUTES.USED_SEARCH_RESULT}?${param}&label=${encodeURIComponent(label)}`,
+    );
   };
 
   return (
@@ -73,7 +87,7 @@ export default function UsedSearchPage() {
         </section>
       </div>
 
-      <CategoryPanel onSelect={goResult} />
+      <CategoryPanel onSelect={goCategory} />
 
       <NavigationBar />
     </div>

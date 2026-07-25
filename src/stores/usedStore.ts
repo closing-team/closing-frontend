@@ -1,17 +1,14 @@
 import { create } from "zustand";
-import type { ChatMessage, Product, SaleStatus } from "../types/used";
-import { MOCK_PRODUCTS } from "../mocks/used/mockProducts";
+import { persist } from "zustand/middleware";
+import type { ChatMessage } from "../types/used";
 import { MOCK_MESSAGES } from "../mocks/used/mockUsedMessages";
 
-type NewProduct = Omit<Product, "id" | "likes" | "liked">;
+export interface GeoLocation {
+  lat: number;
+  lng: number;
+}
 
 interface UsedState {
-  products: Product[];
-  toggleLike: (id: number) => void;
-  addProduct: (product: NewProduct) => number;
-  updateProductStatus: (id: number, status: SaleStatus) => void;
-  removeProduct: (id: number) => void;
-
   recentSearches: string[];
   addRecentSearch: (keyword: string) => void;
   removeRecentSearch: (keyword: string) => void;
@@ -21,6 +18,11 @@ interface UsedState {
 
   locationGranted: boolean;
   setLocationGranted: (value: boolean) => void;
+  location: GeoLocation | null;
+  setLocation: (location: GeoLocation) => void;
+
+  locationPromptAnswered: boolean;
+  setLocationPromptAnswered: (value: boolean) => void;
 
   messagesByProduct: Record<number, ChatMessage[]>;
   sendMessage: (productId: number, text: string) => void;
@@ -35,87 +37,70 @@ function nowLabel(): string {
   return `${meridiem} ${hour12}:${minute}`;
 }
 
-export const useUsedStore = create<UsedState>((set) => ({
-  products: MOCK_PRODUCTS,
+export const useUsedStore = create<UsedState>()(
+  persist(
+    (set) => ({
+      recentSearches: ["카페 패키지", "업소용 제빙기"],
 
-  toggleLike: (id) =>
-    set((state) => ({
-      products: state.products.map((p) =>
-        p.id === id
-          ? { ...p, liked: !p.liked, likes: p.likes + (p.liked ? -1 : 1) }
-          : p,
-      ),
-    })),
+      addRecentSearch: (keyword) =>
+        set((state) => {
+          const kw = keyword.trim();
+          if (!kw) return state;
+          return {
+            recentSearches: [
+              kw,
+              ...state.recentSearches.filter((k) => k !== kw),
+            ].slice(0, 10),
+          };
+        }),
 
-  addProduct: (product) => {
-    let id = 0;
-    set((state) => {
-      id = Math.max(0, ...state.products.map((p) => p.id)) + 1;
-      return {
-        products: [
-          { ...product, id, likes: 0, liked: false },
-          ...state.products,
-        ],
-      };
-    });
-    return id;
-  },
+      removeRecentSearch: (keyword) =>
+        set((state) => ({
+          recentSearches: state.recentSearches.filter((k) => k !== keyword),
+        })),
 
-  updateProductStatus: (id, status) =>
-    set((state) => ({
-      products: state.products.map((p) =>
-        p.id === id ? { ...p, status } : p,
-      ),
-    })),
+      authenticated: true,
+      setAuthenticated: (value) => set({ authenticated: value }),
 
-  removeProduct: (id) =>
-    set((state) => ({
-      products: state.products.filter((p) => p.id !== id),
-    })),
+      locationGranted: false,
+      setLocationGranted: (value) => set({ locationGranted: value }),
+      location: null,
+      setLocation: (location) =>
+        set({ locationGranted: true, locationPromptAnswered: true, location }),
 
-  recentSearches: ["카페 패키지", "업소용 제빙기"],
+      locationPromptAnswered: false,
+      setLocationPromptAnswered: (value) =>
+        set({ locationPromptAnswered: value }),
 
-  addRecentSearch: (keyword) =>
-    set((state) => {
-      const kw = keyword.trim();
-      if (!kw) return state;
-      return {
-        recentSearches: [
-          kw,
-          ...state.recentSearches.filter((k) => k !== kw),
-        ].slice(0, 10),
-      };
+      messagesByProduct: MOCK_MESSAGES,
+
+      sendMessage: (productId, text) =>
+        set((state) => {
+          const list = state.messagesByProduct[productId] ?? [];
+          const message: ChatMessage = {
+            id: (list.at(-1)?.id ?? 0) + 1,
+            mine: true,
+            text,
+            time: nowLabel(),
+            sentAt: new Date().toISOString(),
+            read: false,
+          };
+          return {
+            messagesByProduct: {
+              ...state.messagesByProduct,
+              [productId]: [...list, message],
+            },
+          };
+        }),
     }),
-
-  removeRecentSearch: (keyword) =>
-    set((state) => ({
-      recentSearches: state.recentSearches.filter((k) => k !== keyword),
-    })),
-
-  authenticated: false,
-  setAuthenticated: (value) => set({ authenticated: value }),
-
-  locationGranted: false,
-  setLocationGranted: (value) => set({ locationGranted: value }),
-
-  messagesByProduct: MOCK_MESSAGES,
-
-  sendMessage: (productId, text) =>
-    set((state) => {
-      const list = state.messagesByProduct[productId] ?? [];
-      const message: ChatMessage = {
-        id: (list.at(-1)?.id ?? 0) + 1,
-        mine: true,
-        text,
-        time: nowLabel(),
-        sentAt: new Date().toISOString(),
-        read: false,
-      };
-      return {
-        messagesByProduct: {
-          ...state.messagesByProduct,
-          [productId]: [...list, message],
-        },
-      };
-    }),
-}));
+    {
+      name: "used-store",
+      partialize: (state) => ({
+        locationGranted: state.locationGranted,
+        locationPromptAnswered: state.locationPromptAnswered,
+        location: state.location,
+        recentSearches: state.recentSearches,
+      }),
+    },
+  ),
+);

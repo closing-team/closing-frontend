@@ -4,7 +4,6 @@ interface NaverMapFallbackProps {
   className?: string;
 }
 
-// 지도 스크립트 로드 실패나 클라이언트 ID 미설정 시 지도 자리에 노출하는 대체 UI.
 export default function NaverMapFallback({
   className = "",
 }: NaverMapFallbackProps) {
