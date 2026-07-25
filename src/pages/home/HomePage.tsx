@@ -6,6 +6,7 @@ import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
+import { useSupportStore } from "../../stores/supportStore";
 import { ROUTES } from "../../constants/routes";
 import AddPlanModal from "../../components/home/AddPlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
@@ -315,6 +316,9 @@ export default function HomePage() {
   const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
   const interestCount = products.filter((p) => p.liked).length;
   const chatCount = Object.keys(messagesByProduct).length;
+  const bookmarkCount = useSupportStore(
+    (s) => s.posts.filter((post) => post.bookmarked).length,
+  );
 
   const handlePrevMonth = () => {
     if (month === 0) {
@@ -362,6 +366,7 @@ export default function HomePage() {
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
         verified={authenticated}
+        bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
       />
