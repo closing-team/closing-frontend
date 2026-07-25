@@ -3,19 +3,23 @@ import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
+import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
 import cloyMd from "../../assets/images/cloy-md.png";
 import { PlusSmIcon } from "../../assets/icons";
+
+const INITIAL_NICKNAME = "원흥동 상사";
 
 export default function ProfileEditPage() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [nickname, setNickname] = useState("원흥동 상사");
+  const [nickname, setNickname] = useState(INITIAL_NICKNAME);
   const [name] = useState("김철수");
   const [phone] = useState("01055647756");
   const [businessNumber] = useState("000-00-00000");
   // TODO: 실제 사업자 인증 상태는 API 조회 결과로 대체
   const [verified] = useState(true);
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
   const handlePickImage = () => {
     fileInputRef.current?.click();
@@ -35,9 +39,17 @@ export default function ProfileEditPage() {
     navigate(-1);
   };
 
+  const handleBack = () => {
+    if (nickname !== INITIAL_NICKNAME) {
+      setShowUnsavedModal(true);
+      return;
+    }
+    navigate(-1);
+  };
+
   return (
     <div className="min-h-screen bg-gray-30 pb-28">
-      <TopBar title="프로필 수정" onBack={() => navigate(-1)} />
+      <TopBar title="프로필 수정" onBack={handleBack} />
 
       <div className="flex flex-col items-center py-8">
         <div className="relative h-[90px] w-[90px]">
@@ -102,6 +114,13 @@ export default function ProfileEditPage() {
           완료
         </Button>
       </div>
+
+      {showUnsavedModal && (
+        <UnsavedChangesModal
+          onCancel={() => setShowUnsavedModal(false)}
+          onConfirm={() => navigate(-1)}
+        />
+      )}
     </div>
   );
 }
