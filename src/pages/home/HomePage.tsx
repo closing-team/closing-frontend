@@ -6,8 +6,7 @@ import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
-import { useSupportStore } from "../../stores/supportStore";
-import { useInterestCount } from "../../hooks/useInterestCount";
+import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
 import AddPlanModal from "../../components/home/AddPlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
@@ -313,12 +312,7 @@ export default function HomePage() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const navigate = useNavigate();
   const authenticated = useUsedStore((s) => s.authenticated);
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
-  const interestCount = useInterestCount();
-  const chatCount = Object.keys(messagesByProduct).length;
-  const bookmarkCount = useSupportStore(
-    (s) => s.posts.filter((post) => post.bookmarked).length,
-  );
+  const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const handlePrevMonth = () => {
     if (month === 0) {

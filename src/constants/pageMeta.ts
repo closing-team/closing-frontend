@@ -3,7 +3,6 @@ import { ROUTES } from "./routes";
 export const PAGE_TITLES: Partial<Record<keyof typeof ROUTES, string>> = {
   LOGIN: "로그인",
   TERMS: "약관 동의",
-  HOME: "홈",
   AI: "AI 맞춤 계획 만들기",
   AI_PLAN: "AI 맞춤 계획 만들기",
   GUIDE: "폐업 가이드",

@@ -16,18 +16,16 @@ import { ROUTES, usedDetailPath } from "../../constants/routes";
 import { DEFAULT_NEARBY_LABEL } from "../../constants/location";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
-import { useSupportStore } from "../../stores/supportStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
 import { useProductListQuery } from "../../hooks/useProducts";
 import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
-import { useInterestCount } from "../../hooks/useInterestCount";
+import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 
 export default function UsedListPage() {
   const navigate = useNavigate();
 
   const authenticated = useUsedStore((s) => s.authenticated);
   const location = useUsedStore((s) => s.location);
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
   const {
     locationGranted,
     showLocationModal,
@@ -39,11 +37,7 @@ export default function UsedListPage() {
   const [filter, setFilter] = useState<UsedFilter>("all");
   const [sort, setSort] = useState<UsedSort>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-  const interestCount = useInterestCount();
-  const chatCount = Object.keys(messagesByProduct).length;
-  const bookmarkCount = useSupportStore(
-    (s) => s.posts.filter((post) => post.bookmarked).length,
-  );
+  const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const {
     products: visibleProducts,

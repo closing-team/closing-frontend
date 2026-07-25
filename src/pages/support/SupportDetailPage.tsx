@@ -43,7 +43,7 @@ export default function SupportDetailPage() {
 
       <div className="relative mx-4 mt-5 overflow-hidden rounded-xl bg-white">
         <BookmarkButton
-          bookmarked={post.bookmarked}
+          bookmarked={post.isBookmarked}
           onToggle={() => toggleBookmark(post.id)}
           className="absolute right-3 top-3 z-10"
         />
