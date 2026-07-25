@@ -57,11 +57,13 @@ src/
 │   └── images/
 │
 ├── components/
+│   ├── account/
 │   ├── ai/
 │   ├── chat/
 │   ├── common/
 │   ├── guide/
 │   ├── home/
+│   ├── inquiry/
 │   ├── sidemenu/
 │   ├── support/
 │   └── used/
@@ -77,6 +79,7 @@ src/
 ├── mocks/
 │   ├── ai/
 │   ├── home/
+│   ├── inquiry/
 │   ├── support/
 │   └── used/
 │
@@ -95,6 +98,7 @@ src/
 │   └── used/
 │
 ├── stores/
+│   ├── supportStore.ts
 │   └── usedStore.ts
 │
 ├── types/
@@ -360,6 +364,7 @@ export default defineConfig([
 | 가이드 작성 템플릿 (안내문) | `/guides/2/template` | `GuideNoticeTemplatePage` | 박고은 |
 | 가이드 작성 템플릿 (신고서) | `/guides/6/template` | `GuideReportTemplatePage` | 박고은 |
 | 지원정보 목록 | `/supports` | `SupportListPage` | 박고은 |
+| 지원정보 북마크 목록 | `/supports/bookmark` | `SupportListPage` | 박고은 |
 | 지원정보 상세 | `/supports/:supportId` | `SupportDetailPage` | 박고은 |
 | 중고거래 목록 | `/used` | `UsedListPage` | 김상엽 |
 | 중고거래 상세 | `/used/:productId` | `UsedDetailPage` | 김상엽 |
