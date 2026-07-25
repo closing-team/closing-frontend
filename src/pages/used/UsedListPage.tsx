@@ -16,6 +16,7 @@ import { ROUTES, usedDetailPath } from "../../constants/routes";
 import { DEFAULT_NEARBY_LABEL } from "../../constants/location";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
+import { useSupportStore } from "../../stores/supportStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
 import { useProductListQuery } from "../../hooks/useProducts";
 import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
@@ -40,6 +41,9 @@ export default function UsedListPage() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const interestCount = useInterestCount();
   const chatCount = Object.keys(messagesByProduct).length;
+  const bookmarkCount = useSupportStore(
+    (s) => s.posts.filter((post) => post.bookmarked).length,
+  );
 
   const {
     products: visibleProducts,
@@ -92,6 +96,7 @@ export default function UsedListPage() {
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
         verified={authenticated}
+        bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
       />

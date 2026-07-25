@@ -109,8 +109,3 @@ export const SUPPORT_POSTS: SupportPostDetail[] = [
     applyUrlLabel: "바로가기: https://www.jb.go.kr",
   },
 ];
-
-// TODO: API 연동 시 이 함수를 해당 API 호출로 교체
-export function getSupportPostById(id: number): SupportPostDetail | undefined {
-  return SUPPORT_POSTS.find((post) => post.id === id);
-}

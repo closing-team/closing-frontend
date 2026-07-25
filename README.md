@@ -39,6 +39,8 @@ React + TypeScript + Vite 기반으로 제작된 소상공인 폐업 지원 서�
 - React Router DOM
 - Tanstack Query
 - Zustand
+- Naver Maps API
+- MSW(Mock Service Worker)
 
 ---
 
@@ -47,51 +49,78 @@ React + TypeScript + Vite 기반으로 제작된 소상공인 폐업 지원 서�
 ```
 src/
 ├── api/
-│   ├── axios.ts
-│   ├── auth.ts
-│   └── market.ts
+│   └── axios.ts
+│
+├── assets/
+│   ├── fonts/
+│   ├── icons/
+│   └── images/
 │
 ├── components/
-│   ├── ui/
-│   ├── layout/
-│   └── common/
+│   ├── account/
+│   ├── ai/
+│   ├── chat/
+│   ├── common/
+│   ├── guide/
+│   ├── home/
+│   ├── inquiry/
+│   ├── sidemenu/
+│   ├── support/
+│   └── used/
 │
-├── pages/
-│   ├── HomePage.tsx
-│   └── ...
+├── constants/
+│   ├── pageMeta.ts
+│   └── routes.ts
 │
 ├── hooks/
-│   ├── queries/
-│   ├── mutations/
-│   └── useDebounce.ts
+│   ├── useLocationGate.ts
+│   └── useNaverMapsScript.ts
 │
-├── store/
-│   ├── authStore.ts
-│   └── ...
+├── mocks/
+│   ├── ai/
+│   ├── home/
+│   ├── inquiry/
+│   ├── support/
+│   └── used/
 │
-├── router/
-│   └── index.tsx
+├── pages/
+│   ├── account/
+│   ├── ai/
+│   ├── auth/
+│   ├── chat/
+│   ├── dev/
+│   ├── error/
+│   ├── guide/
+│   ├── home/
+│   ├── inquiry/
+│   ├── policy/
+│   ├── support/
+│   └── used/
+│
+├── stores/
+│   ├── supportStore.ts
+│   └── usedStore.ts
 │
 ├── types/
 │   ├── auth.ts
-│   └── ...
+│   ├── chat.ts
+│   ├── naverMaps.d.ts
+│   └── used.ts
 │
 ├── utils/
-│   ├── formatDate.ts
-│   └── validate.ts
-│
-├── constants/
-│   ├── routes.ts
-│   └── api.ts
-│
-├── styles/
-│   └── index.css
-│
-├── assets/
+│   ├── chatAdapter.ts
+│   ├── dateFormat.ts
+│   ├── formatPrice.ts
+│   ├── naverGeocoder.ts
+│   ├── naverMap.ts
+│   └── usedListUtils.ts
 │
 ├── App.tsx
+├── index.css
 └── main.tsx
 ```
+
+> `mocks/`는 MSW(Mock Service Worker) 기반 API 목킹 데이터, `stores/`는 Zustand 스토어가 위치합니다.
 
 ---
 
@@ -320,4 +349,39 @@ export default defineConfig([
 
 ## 🖼 화면 목록 및 플로우
 
-추후 업데이트 예정입니다.
+`src/constants/routes.ts`에 정의된 라우트와 `src/App.tsx`의 라우팅 기준으로 정리한 전체 화면 목록입니다.
+
+| 화면 이름 | Route Path | Page Component | 담당 파트 |
+| --- | --- | --- | --- |
+| 스플래시 | `/splash` | `SplashPage` | 진준영 |
+| 로그인 | `/login` | `LoginPage` | 진준영 |
+| 서비스 약관 동의 | `/terms` | `TermsPage` | 진준영 |
+| 홈 | `/` | `HomePage` | 송혜원 |
+| AI 일정 생성 | `/ai` | `AIPage` | 송혜원 |
+| AI 일정표 | `/ai/plan` | `AIPlanPage` | 송혜원 |
+| 사장님 폐업 가이드 목록 | `/guides` | `GuideListPage` | 박고은 |
+| 가이드 상세 (STEP) | `/guides/:stepId` | `GuideDetailPage` | 박고은 |
+| 가이드 작성 템플릿 (안내문) | `/guides/2/template` | `GuideNoticeTemplatePage` | 박고은 |
+| 가이드 작성 템플릿 (신고서) | `/guides/6/template` | `GuideReportTemplatePage` | 박고은 |
+| 지원정보 목록 | `/supports` | `SupportListPage` | 박고은 |
+| 지원정보 북마크 목록 | `/supports/bookmark` | `SupportListPage` | 박고은 |
+| 지원정보 상세 | `/supports/:supportId` | `SupportDetailPage` | 박고은 |
+| 중고거래 목록 | `/used` | `UsedListPage` | 김상엽 |
+| 중고거래 상세 | `/used/:productId` | `UsedDetailPage` | 김상엽 |
+| 중고거래 검색 | `/used/search` | `UsedSearchPage` | 김상엽 |
+| 중고거래 검색 결과 | `/used/search/result` | `UsedSearchResultPage` | 김상엽 |
+| 중고거래 등록/수정 | `/used/write` | `UsedWritePage` | 김상엽 |
+| 나의 판매물품 | `/used/my` | `UsedMyProductsPage` | 김상엽 |
+| 관심 물품 | `/used/liked` | `UsedLikedProductsPage` | 김상엽 |
+| 채팅 목록 | `/chats` | `ChatListPage` | 진준영 |
+| 채팅방 | `/chats/:productId` | `ChatRoomPage` | 진준영 |
+| 프로필 · 사업자 정보 수정 | `/profile` | `ProfileEditPage` | 박고은 (마이페이지) |
+| 사업자 인증 | `/business` | `BusinessAuthPage` | 김상엽 |
+| 1:1 문의하기 | `/inquiry` | `InquiryPage` | 박고은 (마이페이지) |
+| 나의 문의내역 | `/inquiry/history` | `InquiryHistoryPage` | 박고은 (마이페이지) |
+| 약관 및 정책 | `/policy` | `PolicyPage` | 박고은 (마이페이지) |
+| 컴포넌트 프리뷰 (개발용) | `/dev` | `ComponentsPage` | 확인 필요 (공용/개발용) |
+| 404 Not Found | `*` | `NotFoundPage` | 확인 필요 (공용) |
+
+> 사이드바(`SideMenu`)에서 진입하는 "나의 판매물품·관심 물품·채팅"은 각 도메인(상품/채팅) 소유이며,
+> "프로필 수정·문의·약관"만 마이페이지(사이드바) 담당인 박고은 파트로 분류했습니다.
