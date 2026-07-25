@@ -4,6 +4,7 @@ import type { UsedSort } from "../../types/used";
 interface SortDropdownProps {
   value: UsedSort;
   onChange: (sort: UsedSort) => void;
+  showDistance?: boolean;
 }
 
 const SORT_OPTIONS: { key: UsedSort; label: string }[] = [
@@ -14,12 +15,20 @@ const SORT_OPTIONS: { key: UsedSort; label: string }[] = [
   { key: "priceHigh", label: "높은 가격순" },
 ];
 
-export default function SortDropdown({ value, onChange }: SortDropdownProps) {
+export default function SortDropdown({
+  value,
+  onChange,
+  showDistance = true,
+}: SortDropdownProps) {
+  const options = showDistance
+    ? SORT_OPTIONS
+    : SORT_OPTIONS.filter((o) => o.key !== "distance");
+
   return (
     <Dropdown
       variant="muted"
       hideSelectedFromList={false}
-      options={SORT_OPTIONS}
+      options={options}
       value={value}
       onChange={(key) => onChange(key as UsedSort)}
     />

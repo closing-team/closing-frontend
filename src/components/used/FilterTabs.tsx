@@ -5,6 +5,7 @@ interface FilterTabsProps {
   value: UsedFilter;
   onChange: (filter: UsedFilter) => void;
   nearbyLabel: string;
+  showNearby?: boolean;
 }
 
 const FILTERS: { key: UsedFilter; label?: string }[] = [
@@ -18,10 +19,15 @@ export default function FilterTabs({
   value,
   onChange,
   nearbyLabel,
+  showNearby = true,
 }: FilterTabsProps) {
+  const filters = showNearby
+    ? FILTERS
+    : FILTERS.filter((f) => f.key !== "nearby");
+
   return (
     <div className="flex gap-1.5 overflow-x-auto px-4 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {FILTERS.map(({ key, label }) => (
+      {filters.map(({ key, label }) => (
         <Chip
           key={key}
           label={key === "nearby" ? nearbyLabel : (label ?? "")}

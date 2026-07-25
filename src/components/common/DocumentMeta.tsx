@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { matchPath, useLocation } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
+import { useProductDetailQuery } from "../../hooks/useProducts";
 import { SUPPORT_POSTS } from "../../mocks/support/mockSupport";
 import {
   buildDocumentTitle,
@@ -34,11 +35,15 @@ function setMetaDescription(content: string) {
 
 export default function DocumentMeta() {
   const { pathname, search } = useLocation();
-  const products = useUsedStore((s) => s.products);
+  const location = useUsedStore((s) => s.location);
+  const matched = matchRoute(pathname);
+  const productIdParam =
+    matched?.key === "USED_DETAIL" || matched?.key === "CHAT_ROOM"
+      ? Number(matched.params.productId)
+      : undefined;
+  const { data: product } = useProductDetailQuery(productIdParam, location);
 
   useEffect(() => {
-    const matched = matchRoute(pathname);
-
     let title = matched ? PAGE_TITLES[matched.key] : undefined;
     const description = matched
       ? (PAGE_DESCRIPTIONS[matched.key] ?? DEFAULT_DESCRIPTION)
@@ -57,9 +62,6 @@ export default function DocumentMeta() {
     }
 
     if (matched?.key === "USED_DETAIL" || matched?.key === "CHAT_ROOM") {
-      const product = products.find(
-        (p) => String(p.id) === matched.params.productId,
-      );
       if (product) {
         title =
           matched.key === "CHAT_ROOM"
@@ -75,7 +77,7 @@ export default function DocumentMeta() {
 
     document.title = buildDocumentTitle(matched ? title : NOT_FOUND_TITLE);
     setMetaDescription(description);
-  }, [pathname, search, products]);
+  }, [pathname, search, matched, product]);
 
   return null;
 }

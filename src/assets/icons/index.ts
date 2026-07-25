@@ -27,6 +27,7 @@ export { default as MenuKebabIcon } from './menu-kebab.svg?react';
 export { default as MessageIcon } from './message.svg?react';
 export { default as MinusMdIcon } from './minus-md.svg?react';
 export { default as NotFoundIcon } from './not-found.svg?react';
+export { default as PackageIcon } from './package.svg?react';
 export { default as PencilIcon } from './pencil.svg?react';
 export { default as PlusMdIcon } from './plus-md.svg?react';
 export { default as PlusSmIcon } from './plus-sm.svg?react';

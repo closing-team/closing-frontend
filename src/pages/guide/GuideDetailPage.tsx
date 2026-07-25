@@ -253,7 +253,7 @@ function Step3Page() {
     <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP3_HEADER.title}
-        onBack={() => navigate(guideDetailPath(2))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -402,7 +402,7 @@ function Step6Page() {
     <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP6_HEADER.title}
-        onBack={() => navigate(guideDetailPath(5))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -576,7 +576,7 @@ function Step7Page() {
     <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP7_HEADER.title}
-        onBack={() => navigate(guideDetailPath(6))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -724,7 +724,7 @@ function Step8Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP8_HEADER.title}
-        onBack={() => navigate(guideDetailPath(7))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -861,7 +861,7 @@ function Step4Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP4_HEADER.title}
-        onBack={() => navigate(guideDetailPath(3))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -1018,7 +1018,7 @@ function Step5Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP5_HEADER.title}
-        onBack={() => navigate(guideDetailPath(4))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -1169,7 +1169,7 @@ function Step9Page() {
     <div className="min-h-screen bg-gray-30 pb-32">
       <TopBar
         title={STEP9_HEADER.title}
-        onBack={() => navigate(guideDetailPath(8))}
+        onBack={() => navigate(ROUTES.GUIDE)}
       />
 
       <div className="bg-white px-4 py-5">

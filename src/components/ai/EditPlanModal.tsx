@@ -1,22 +1,17 @@
 import { useState, useRef } from "react";
 import type { ChangeEvent } from "react";
-import TextField from "./TextField";
-import DateField from "./DateField";
-import TimeField from "./TimeField";
-import DateCalendar from "./DateCalendar";
-import TimeWheel from "./TimeWheel";
-import Button from "./Button";
-import { XMdIcon, MinusMdIcon } from "../../assets/icons";
-import type { Plan } from "../ai/PlanCard";
-import type { TimeValue } from "./TimeWheel";
+import TextField from "../common/TextField";
+import ScheduleRangeField from "../common/ScheduleRangeField";
+import Button from "../common/Button";
+import { XMdIcon } from "../../assets/icons";
+import type { Plan } from "../common/PlanCard";
+import type { TimeValue } from "../common/TimeWheel";
 
 interface EditPlanModalProps {
   plan: Plan;
   onCancel: () => void;
   onConfirm: (updated: Plan) => void;
 }
-
-type ActivePicker = "startDate" | "endDate" | "startTime" | "endTime" | null;
 
 export default function EditPlanModal({
   plan,
@@ -29,12 +24,7 @@ export default function EditPlanModal({
   const [endDate, setEndDate] = useState<Date>(plan.endDate);
   const [endTime, setEndTime] = useState<TimeValue>(plan.endTime);
   const [memo, setMemo] = useState("");
-  const [activePicker, setActivePicker] = useState<ActivePicker>(null);
   const memoRef = useRef<HTMLTextAreaElement>(null);
-
-  const togglePicker = (picker: ActivePicker) => {
-    setActivePicker((prev) => (prev === picker ? null : picker));
-  };
 
   const handleMemoInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMemo(e.target.value);
@@ -74,75 +64,19 @@ export default function EditPlanModal({
           />
 
           {/* 일정 시작 / 일정 종료 */}
-          <div className="mt-5 flex flex-col gap-2">
-            {/* 라벨 */}
-            <div className="flex gap-4">
-              <p className="flex-1 text-subtitle-2 text-gray-900">일정 시작</p>
-              <p className="flex-1 text-subtitle-2 text-gray-900">일정 종료</p>
-            </div>
-
-            {/* 날짜 필드 */}
-            <div className="relative flex gap-4">
-              <DateField
-                value={startDate}
-                compact
-                active={activePicker === "startDate"}
-                onClick={() => togglePicker("startDate")}
-                className="flex-1"
-              />
-              <DateField
-                value={endDate}
-                compact
-                active={activePicker === "endDate"}
-                onClick={() => togglePicker("endDate")}
-                className="flex-1"
-              />
-              <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-gray-400">
-                <MinusMdIcon className="h-3 w-3" />
-              </span>
-            </div>
-
-            {/* 날짜 캘린더 */}
-            {(activePicker === "startDate" || activePicker === "endDate") && (
-              <DateCalendar
-                value={activePicker === "startDate" ? startDate : endDate}
-                onChange={(date) => {
-                  if (activePicker === "startDate") setStartDate(date);
-                  else setEndDate(date);
-                  setActivePicker(null);
-                }}
-              />
-            )}
-
-            {/* 시간 필드 */}
-            <div className="flex gap-4">
-              <TimeField
-                value={startTime}
-                compact
-                active={activePicker === "startTime"}
-                onClick={() => togglePicker("startTime")}
-                className="flex-1"
-              />
-              <TimeField
-                value={endTime}
-                compact
-                active={activePicker === "endTime"}
-                onClick={() => togglePicker("endTime")}
-                className="flex-1"
-              />
-            </div>
-
-            {/* 시간 휠 */}
-            {(activePicker === "startTime" || activePicker === "endTime") && (
-              <TimeWheel
-                value={activePicker === "startTime" ? startTime : endTime}
-                onChange={(time) => {
-                  if (activePicker === "startTime") setStartTime(time);
-                  else setEndTime(time);
-                }}
-              />
-            )}
-          </div>
+          <ScheduleRangeField
+            className="mt-5"
+            startLabel="일정 시작"
+            endLabel="일정 종료"
+            startDate={startDate}
+            endDate={endDate}
+            startTime={startTime}
+            endTime={endTime}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
+            onStartTimeChange={setStartTime}
+            onEndTimeChange={setEndTime}
+          />
 
           {/* 상세 메모 */}
           <div className="mt-5">

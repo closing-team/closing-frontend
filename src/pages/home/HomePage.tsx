@@ -6,10 +6,14 @@ import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
+import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
-import AddPlanModal from "../../components/common/AddPlanModal";
+import AddPlanModal from "../../components/home/AddPlanModal";
+import EditPlanModal from "../../components/ai/EditPlanModal";
 import DayScheduleModal from "../../components/home/DayScheduleModal";
-import type { Plan } from "../../components/ai/PlanCard";
+import ScheduleDetailModal from "../../components/home/ScheduleDetailModal";
+import DeleteConfirmModal from "../../components/home/DeleteConfirmModal";
+import type { Plan } from "../../components/common/PlanCard";
 import {
   MenuHamburgerIcon,
   PlusMdIcon,
@@ -301,14 +305,14 @@ export default function HomePage() {
   const [todos, setTodos] = useState(INITIAL_TODOS);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedPlans, setSelectedPlans] = useState<Plan[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const navigate = useNavigate();
   const authenticated = useUsedStore((s) => s.authenticated);
-  const products = useUsedStore((s) => s.products);
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
-  const interestCount = products.filter((p) => p.liked).length;
-  const chatCount = Object.keys(messagesByProduct).length;
+  const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const handlePrevMonth = () => {
     if (month === 0) {
@@ -356,6 +360,7 @@ export default function HomePage() {
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
         verified={authenticated}
+        bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
       />
@@ -402,6 +407,30 @@ export default function HomePage() {
 
       <NavigationBar />
 
+      {selectedDate && !selectedPlan && !isAddingPlan && (
+        <DayScheduleModal
+          date={selectedDate}
+          plans={selectedPlans}
+          onClose={() => setSelectedDate(null)}
+          onAdd={() => setIsAddingPlan(true)}
+          onPlanClick={(plan) => setSelectedPlan(plan)}
+        />
+      )}
+
+      {selectedDate && selectedPlan && !isEditing && !isDeleting && (
+        <ScheduleDetailModal
+          date={selectedDate}
+          plan={selectedPlan}
+          onBack={() => setSelectedPlan(null)}
+          onClose={() => {
+            setSelectedPlan(null);
+            setSelectedDate(null);
+          }}
+          onEdit={() => setIsEditing(true)}
+          onDelete={() => setIsDeleting(true)}
+        />
+      )}
+
       {isAddingPlan && (
         <AddPlanModal
           onCancel={() => setIsAddingPlan(false)}
@@ -409,14 +438,26 @@ export default function HomePage() {
         />
       )}
 
-      {selectedDate && (
-        <DayScheduleModal
-          date={selectedDate}
-          plans={selectedPlans}
-          onClose={() => setSelectedDate(null)}
-          onAdd={() => {
+      {isEditing && selectedPlan && (
+        <EditPlanModal
+          plan={selectedPlan}
+          onCancel={() => setIsEditing(false)}
+          onConfirm={() => {
+            setIsEditing(false);
+            setSelectedPlan(null);
             setSelectedDate(null);
-            setIsAddingPlan(true);
+          }}
+        />
+      )}
+
+      {isDeleting && selectedPlan && (
+        <DeleteConfirmModal
+          plan={selectedPlan}
+          onCancel={() => setIsDeleting(false)}
+          onConfirm={() => {
+            setIsDeleting(false);
+            setSelectedPlan(null);
+            setSelectedDate(null);
           }}
         />
       )}

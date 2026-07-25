@@ -9,7 +9,7 @@ export interface SupportPost {
   period: string;
   startDate: string;
   endDate: string | null;
-  bookmarked: boolean;
+  isBookmarked: boolean;
 }
 
 interface SupportCardProps {
@@ -34,7 +34,7 @@ export default function SupportCard({
       className="relative flex flex-col gap-2 rounded-lg bg-white pb-4 pl-4 pr-3 pt-4 shadow-[0_0_8px_0_rgba(159,159,162,0.02)] active:opacity-75"
     >
       <BookmarkButton
-        bookmarked={post.bookmarked}
+        bookmarked={post.isBookmarked}
         onToggle={() => onToggleBookmark(post.id)}
         className="absolute right-2 top-2"
       />

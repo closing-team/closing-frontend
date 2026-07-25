@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ChevronRightIcon } from "../../assets/icons";
 import { formatDate, formatTime } from "../../utils/dateFormat";
-import type { TimeValue } from "../common/TimeWheel";
+import type { TimeValue } from "./TimeWheel";
 
 export interface Plan {
   id: number;

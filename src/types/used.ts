@@ -22,7 +22,8 @@ export interface Product {
   itemCategory?: string;
   description?: string;
   dealLocation?: string;
-  images?: string[];
+  lat?: number;
+  lng?: number;
 }
 
 export type UsedFilter = "all" | "nearby" | "parcel" | "direct";

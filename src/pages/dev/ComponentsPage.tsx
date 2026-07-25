@@ -1,8 +1,6 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import Button from "../../components/common/Button";
-import IconButton from "../../components/common/IconButton";
-import ProgressBar from "../../components/home/ProgressBar";
 import TextField from "../../components/common/TextField";
 import TextArea from "../../components/common/TextArea";
 import Checkbox from "../../components/common/Checkbox";
@@ -30,7 +28,6 @@ import { getNextHour, toTimeValue, addHours } from "../../utils/dateFormat";
 import Fab from "../../components/common/Fab";
 import NavigationBar from "../../components/common/NavigationBar";
 import ProductCard from "../../components/used/ProductCard";
-import ProductListCard from "../../components/used/ProductListCard";
 import MyProductCard from "../../components/used/MyProductCard";
 import FilterTabs from "../../components/used/FilterTabs";
 import SortDropdown from "../../components/used/SortDropdown";
@@ -41,19 +38,16 @@ import LikeButton from "../../components/used/LikeButton";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import StepCard from "../../components/guide/StepCard";
 import type { GuideStep } from "../../components/guide/StepCard";
-import GuideCard from "../../components/guide/GuideCard";
-import GuideHeader from "../../components/guide/GuideHeader";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
-import PlanCard from "../../components/ai/PlanCard";
-import type { Plan } from "../../components/ai/PlanCard";
+import PlanCard from "../../components/common/PlanCard";
+import type { Plan } from "../../components/common/PlanCard";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import type { Product, UsedFilter, UsedSort } from "../../types/used";
 import aiCharacter from "../../assets/images/cloy-fab.png";
 import {
   ChevronRightIcon,
   SearchIcon,
-  TrashIcon,
   MenuHamburgerIcon,
   PlusMdIcon,
 } from "../../assets/icons";
@@ -86,7 +80,7 @@ const SAMPLE_SUPPORT_POST: SupportPost = {
   period: "2000.00.00 - 2000.00.00",
   startDate: "2000-01-01",
   endDate: "2000-01-01",
-  bookmarked: false,
+  isBookmarked: false,
 };
 
 const SAMPLE_PLAN: Plan = {
@@ -187,12 +181,7 @@ export default function ComponentsPage() {
             <Button size="sm" variant="warning">
               버튼
             </Button>
-            <IconButton icon={<TrashIcon />} label="버튼" />
           </div>
-        </Section>
-
-        <Section title="Progress bar">
-          <ProgressBar value={45} />
         </Section>
 
         <Section title="Text Field">
@@ -485,49 +474,8 @@ export default function ComponentsPage() {
         <Section title="StepCard / SupportCard">
           <StepCard step={SAMPLE_GUIDE_STEP} />
           <SupportCard
-            post={{ ...SAMPLE_SUPPORT_POST, bookmarked: supportBookmarked }}
+            post={{ ...SAMPLE_SUPPORT_POST, isBookmarked: supportBookmarked }}
             onToggleBookmark={() => setSupportBookmarked((v) => !v)}
-          />
-        </Section>
-
-        <Section title="GuideHeader">
-          <GuideHeader
-            title="폐업의 시작은 건물주에게 알리는 것"
-            description="말하지 않고 공사를 시작하면 계약이 자동 연장되어 가게 문을 닫고도 수개월간 월세를 더 내야 할 수 있습니다."
-          />
-        </Section>
-
-        <Section title="GuideCard">
-          <GuideCard
-            title="언제 통보해야 하나요?"
-            points={[
-              {
-                header: "최소 1개월 ~ 3개월 전 통보 필수",
-                details: [
-                  "상가임대차법상 계약 만료 최소 1개월 전까지 의사를 밝혀야 묵시적 갱신(자동 연장)을 막고 보증금을 제때 받습니다.",
-                ],
-              },
-            ]}
-          />
-          <GuideCard
-            title="어떻게 통보해야 안전할까요?"
-            points={[
-              {
-                header: "구두 통보(전화)는 위험합니다",
-                details: [
-                  '"그런 말 들은 적 없다"고 오리발을 내미는 분쟁이 정말 많습니다.',
-                ],
-                buttonLabel: "문자/내용증명 복사용 작성 템플릿 보기",
-              },
-              {
-                header: "효력이 있는 증거 남기기",
-                details: [
-                  "문자 메시지 또는 카카오톡 (확인 답변까지 받아두기)",
-                  "가장 확실한 방법: 우체국 '내용증명' 발송",
-                ],
-                buttonLabel: "문자/내용증명 복사용 작성 템플릿 보기",
-              },
-            ]}
           />
         </Section>
 
@@ -561,15 +509,7 @@ export default function ComponentsPage() {
           </div>
         </Section>
 
-        <Section title="중고거래 — 큰 상품 카드 / 판매 리스트 / 태그">
-          <ProductListCard
-            title="상품명"
-            caption="캡션"
-            price={0}
-            liked={liked}
-            onToggleLike={() => setLiked((v) => !v)}
-            onClick={() => {}}
-          />
+        <Section title="중고거래 — 판매 리스트 / 태그">
           <MyProductCard
             status="selling"
             title="판매 상품 리스트"

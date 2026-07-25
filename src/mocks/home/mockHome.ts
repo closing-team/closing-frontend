@@ -1,5 +1,5 @@
 import type { Todo } from "../../components/home/TodoList";
-import type { Plan } from "../../components/ai/PlanCard";
+import type { Plan } from "../../components/common/PlanCard";
 
 export const MOCK_PROGRESS = { completed: 8, total: 12 };
 

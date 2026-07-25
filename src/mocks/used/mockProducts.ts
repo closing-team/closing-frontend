@@ -22,6 +22,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "외식 / 식당",
     itemCategory: "주방기기 / 설비",
     dealLocation: "경기도 고양시 덕양구 원홍동",
+    lat: 37.6395,
+    lng: 126.8367,
     description:
       "업소 정리로 내놓습니다. 성에 없이 깨끗하게 관리한 제품이고, 냉각 잘 됩니다.\n직접 보고 가져가실 분 구합니다.",
   },
@@ -44,6 +46,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "외식 / 식당",
     itemCategory: "주방기기 / 설비",
     dealLocation: "서울특별시 은평구 역촌동",
+    lat: 37.6079,
+    lng: 126.9147,
     description: "식기세척기 팝니다. 최근까지 사용하던 제품입니다.",
   },
   {
@@ -65,6 +69,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "카페 / 베이커리",
     itemCategory: "주방기기 / 설비",
     dealLocation: "경기도 고양시 덕양구 원홍동",
+    lat: 37.6395,
+    lng: 126.8367,
     description:
       "업종 변경으로 인한 급매물입니다.\n관리가 잘 된 장비이며, 가스켓, 샤워스크린 최근에 교체 완료했습니다.\n\n23년 설치\n알아서 가져가실 분 구합니다.",
   },
@@ -87,6 +93,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "카페 / 베이커리",
     itemCategory: "주방기기 / 설비",
     dealLocation: "경기도 고양시 덕양구 흥동",
+    lat: 37.642,
+    lng: 126.833,
     description: "여름 대비 빙삭기 판매합니다. 택배 거래 가능합니다.",
   },
   {
@@ -108,6 +116,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "외식 / 식당",
     itemCategory: "주방기기 / 설비",
     dealLocation: "경기도 고양시 덕양구 원홍동",
+    lat: 37.6395,
+    lng: 126.8367,
     description: "화력 좋은 4구 가스레인지입니다. 렌지대 포함입니다.",
   },
   {
@@ -129,6 +139,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "외식 / 식당",
     itemCategory: "싱크대 / 작업대",
     dealLocation: "서울특별시 은평구 불광동",
+    lat: 37.6108,
+    lng: 126.9297,
     description: "미사용급 스테인리스 작업대입니다. 택배 거래만 가능합니다.",
   },
   {
@@ -150,6 +162,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "카페 / 베이커리",
     itemCategory: "주방기기 / 설비",
     dealLocation: "서울특별시 서대문구 연희동",
+    lat: 37.5665,
+    lng: 126.9357,
     description: "시모넬리 뷰레타 3그룹입니다. 상태 좋습니다.",
   },
   {
@@ -171,6 +185,8 @@ export const MOCK_PRODUCTS: Product[] = [
     industry: "카페 / 베이커리",
     itemCategory: "제빙기 / 쇼케이스",
     dealLocation: "서울특별시 마포구 서교동",
+    lat: 37.553,
+    lng: 126.9155,
     description: "시모넬리 미토스 원두 그라인더입니다. 거래 완료되었습니다.",
   },
 ];

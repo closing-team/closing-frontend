@@ -7,6 +7,7 @@ import TopBar from "../../components/common/TopBar";
 import InvalidChatRoomPage from "./InvalidChatRoomPage";
 import { usedDetailPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
+import { useProductDetailQuery } from "../../hooks/useProducts";
 import { toChatMessages, toChatRoomDetail } from "../../utils/chatAdapter";
 import type {
   ChatMessage,
@@ -244,9 +245,8 @@ function ChatRoomView({
 export default function ChatRoomPage() {
   const navigate = useNavigate();
   const { productId = "" } = useParams();
-  const product = useUsedStore((s) =>
-    s.products.find((p) => String(p.id) === productId),
-  );
+  const location = useUsedStore((s) => s.location);
+  const { data: product } = useProductDetailQuery(Number(productId), location);
   const messages =
     useUsedStore((s) => s.messagesByProduct[Number(productId)]) ?? [];
   const sendMessage = useUsedStore((s) => s.sendMessage);
