@@ -108,7 +108,11 @@ export default function SideMenu({
           </div>
 
           <div className="mx-5 mt-10 border-y border-gray-100 py-4">
-            <MenuRow label="북마크 목록" count={bookmarkCount} />
+            <MenuRow
+              label="북마크 목록"
+              count={bookmarkCount}
+              onClick={() => go(ROUTES.SUPPORT_BOOKMARK)}
+            />
           </div>
 
           <div className="mx-5 flex flex-col gap-2.5 border-b border-gray-100 py-4">
