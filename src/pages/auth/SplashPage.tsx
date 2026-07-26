@@ -12,8 +12,8 @@ export default function SplashPage({
   isRetrying = false,
 }: SplashPageProps) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-primary-500">
-      <div className="mx-auto flex min-h-screen w-full max-w-app flex-col items-center justify-center px-6">
+    <main className="relative mx-auto min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] overflow-hidden bg-primary-500 shadow-sm">
+      <div className="flex min-h-dvh w-full flex-col items-center justify-center px-6">
         <div className="flex items-center gap-[13px]" aria-label="클로징">
           <img src={characterImage} alt="" className="h-[58px] w-[58px]" />
           <span className="text-[40px] font-bold leading-none text-white">

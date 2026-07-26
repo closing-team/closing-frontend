@@ -15,6 +15,19 @@ function renderSplash(
 }
 
 describe("SplashPage", () => {
+  it("앱과 동일한 중앙 프레임 안에서 스플래시를 표시한다", () => {
+    renderSplash({ status: "checking" });
+
+    expect(screen.getByRole("main")).toHaveClass(
+      "mx-auto",
+      "min-h-dvh",
+      "w-full",
+      "max-w-app",
+      "min-w-[var(--container-app-min)]",
+      "shadow-sm",
+    );
+  });
+
   it("checking 상태에서는 브랜드만 표시한다", () => {
     renderSplash({ status: "checking" });
 
