@@ -20,12 +20,12 @@ React + TypeScript + Vite 기반으로 제작된 소상공인 폐업 지원 서�
 
 ## 👥 팀원 및 프론트엔드 역할 분담
 
-| 팀원 | 담당 영역 |
-| --- | --- |
+| 팀원   | 담당 영역                                                                |
+| ------ | ------------------------------------------------------------------------ |
 | 김상엽 | 상품 도메인 (중고거래 목록·검색, 상품 상세, 상품 등록·수정, 사업자 인증) |
-| 박고은 | 가이드 + 마이페이지(사이드바) + 지원정보 |
-| 송혜원 | 홈 + AI 일정 |
-| 진준영 | 계정/대화 도메인 (로그인/회원가입, 중고거래 채팅, 채팅 목록) |
+| 박고은 | 가이드 + 마이페이지(사이드바) + 지원정보                                 |
+| 송혜원 | 홈 + AI 일정                                                             |
+| 진준영 | 계정/대화 도메인 (로그인/회원가입, 중고거래 채팅, 채팅 목록)             |
 
 ---
 
@@ -49,7 +49,6 @@ React + TypeScript + Vite 기반으로 제작된 소상공인 폐업 지원 서�
 ```
 src/
 ├── api/
-│   └── axios.ts
 │
 ├── assets/
 │   ├── fonts/
@@ -69,17 +68,14 @@ src/
 │   └── used/
 │
 ├── constants/
-│   ├── pageMeta.ts
-│   └── routes.ts
 │
 ├── hooks/
-│   ├── useLocationGate.ts
-│   └── useNaverMapsScript.ts
 │
 ├── mocks/
 │   ├── ai/
 │   ├── home/
 │   ├── inquiry/
+│   ├── msw/
 │   ├── support/
 │   └── used/
 │
@@ -98,29 +94,17 @@ src/
 │   └── used/
 │
 ├── stores/
-│   ├── supportStore.ts
-│   └── usedStore.ts
 │
 ├── types/
-│   ├── auth.ts
-│   ├── chat.ts
-│   ├── naverMaps.d.ts
-│   └── used.ts
 │
 ├── utils/
-│   ├── chatAdapter.ts
-│   ├── dateFormat.ts
-│   ├── formatPrice.ts
-│   ├── naverGeocoder.ts
-│   ├── naverMap.ts
-│   └── usedListUtils.ts
 │
 ├── App.tsx
 ├── index.css
 └── main.tsx
 ```
 
-> `mocks/`는 MSW(Mock Service Worker) 기반 API 목킹 데이터, `stores/`는 Zustand 스토어가 위치합니다.
+> `mocks/msw`는 MSW는 핸들러·인메모리 DB, 그 외 `mocks/` 하위 폴더는 도메인별 목업 데이터입니다. `stores/`는 Zustand 스토어가 위치합니다.
 
 ---
 
@@ -141,10 +125,11 @@ src/
 ```
 
 예시
+
 - `feat/junyoung/login`
 - `fix/hyewon/home`
 - `docs/goeun/readme`
-- `refactor/sangyeop/market`
+- `refactor/sangyeop/used`
 
 **브랜치 작업 순서**
 
@@ -163,20 +148,20 @@ src/
 타입: 내용
 ```
 
-| 타입 | 설명 | 예시 |
-| --- | --- | --- |
-| `build` | 빌드 시스템, 의존성 관련 추가 및 수정 | `build: vite 설정 수정` |
-| `chore` | 빌드, 설정, 패키지 등 기타 작업 | `chore: 프로젝트 초기 세팅` |
-| `design` | CSS 디자인 관련 변경 | `design: 버튼 컴포넌트 색상 변경` |
-| `docs` | 문서 수정 | `docs: README 수정` |
-| `feat` | 새로운 기능 구현 | `feat: 로그인 기능 구현` |
-| `fix` | 버그 수정 | `fix: 로그인 시 토큰 만료 오류 수정` |
-| `perf` | 성능 개선 | `perf: 이미지 lazy loading 적용` |
-| `refactor` | 코드 리팩토링 | `refactor: axios 인스턴스 분리` |
-| `remove` | 코드 또는 파일 삭제 | `remove: 사용하지 않는 App.css 삭제` |
-| `rename` | 파일명 또는 폴더명 변경 | `rename: HomePage.tsx를 Home.tsx로 이름 변경` |
-| `style` | 코드 포맷팅 | `style: prettier 적용` |
-| `test` | 테스트 코드 추가 및 수정 | `test: 로그인 API 테스트 추가` |
+| 타입       | 설명                                  | 예시                                          |
+| ---------- | ------------------------------------- | --------------------------------------------- |
+| `build`    | 빌드 시스템, 의존성 관련 추가 및 수정 | `build: vite 설정 수정`                       |
+| `chore`    | 빌드, 설정, 패키지 등 기타 작업       | `chore: 프로젝트 초기 세팅`                   |
+| `design`   | CSS 디자인 관련 변경                  | `design: 버튼 컴포넌트 색상 변경`             |
+| `docs`     | 문서 수정                             | `docs: README 수정`                           |
+| `feat`     | 새로운 기능 구현                      | `feat: 로그인 기능 구현`                      |
+| `fix`      | 버그 수정                             | `fix: 로그인 시 토큰 만료 오류 수정`          |
+| `perf`     | 성능 개선                             | `perf: 이미지 lazy loading 적용`              |
+| `refactor` | 코드 리팩토링                         | `refactor: axios 인스턴스 분리`               |
+| `remove`   | 코드 또는 파일 삭제                   | `remove: 사용하지 않는 App.css 삭제`          |
+| `rename`   | 파일명 또는 폴더명 변경               | `rename: HomePage.tsx를 Home.tsx로 이름 변경` |
+| `style`    | 코드 포맷팅                           | `style: prettier 적용`                        |
+| `test`     | 테스트 코드 추가 및 수정              | `test: 로그인 API 테스트 추가`                |
 
 **커밋 규칙**
 
@@ -195,20 +180,20 @@ src/
 타입: 내용
 ```
 
-| 타입 | 설명 | 예시 |
-| --- | --- | --- |
-| `build` | 빌드 시스템, 의존성 관련 추가 및 수정 | `build: vite 설정 수정` |
-| `chore` | 빌드, 설정, 패키지 등 기타 작업 | `chore: 프로젝트 초기 세팅` |
-| `design` | CSS 디자인 관련 변경 | `design: 버튼 컴포넌트 색상 변경` |
-| `docs` | 문서 수정 | `docs: README 수정` |
-| `feat` | 새로운 기능 구현 | `feat: 로그인 기능 구현` |
-| `fix` | 버그 수정 | `fix: 로그인 시 토큰 만료 오류 수정` |
-| `perf` | 성능 개선 | `perf: 이미지 lazy loading 적용` |
-| `refactor` | 코드 리팩토링 | `refactor: axios 인스턴스 분리` |
-| `remove` | 코드 또는 파일 삭제 | `remove: 사용하지 않는 App.css 삭제` |
-| `rename` | 파일명 또는 폴더명 변경 | `rename: HomePage.tsx를 Home.tsx로 이름 변경` |
-| `style` | 코드 포맷팅 | `style: prettier 적용` |
-| `test` | 테스트 코드 추가 및 수정 | `test: 로그인 API 테스트 추가` |
+| 타입       | 설명                                  | 예시                                          |
+| ---------- | ------------------------------------- | --------------------------------------------- |
+| `build`    | 빌드 시스템, 의존성 관련 추가 및 수정 | `build: vite 설정 수정`                       |
+| `chore`    | 빌드, 설정, 패키지 등 기타 작업       | `chore: 프로젝트 초기 세팅`                   |
+| `design`   | CSS 디자인 관련 변경                  | `design: 버튼 컴포넌트 색상 변경`             |
+| `docs`     | 문서 수정                             | `docs: README 수정`                           |
+| `feat`     | 새로운 기능 구현                      | `feat: 로그인 기능 구현`                      |
+| `fix`      | 버그 수정                             | `fix: 로그인 시 토큰 만료 오류 수정`          |
+| `perf`     | 성능 개선                             | `perf: 이미지 lazy loading 적용`              |
+| `refactor` | 코드 리팩토링                         | `refactor: axios 인스턴스 분리`               |
+| `remove`   | 코드 또는 파일 삭제                   | `remove: 사용하지 않는 App.css 삭제`          |
+| `rename`   | 파일명 또는 폴더명 변경               | `rename: HomePage.tsx를 Home.tsx로 이름 변경` |
+| `style`    | 코드 포맷팅                           | `style: prettier 적용`                        |
+| `test`     | 테스트 코드 추가 및 수정              | `test: 로그인 API 테스트 추가`                |
 
 **PR 본문 템플릿**
 
@@ -290,9 +275,9 @@ npm run build
 
 ```js
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(["dist"]),
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     extends: [
       // Other configs...
 
@@ -307,42 +292,42 @@ export default defineConfig([
     ],
     languageOptions: {
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
         tsconfigRootDir: import.meta.dirname,
       },
       // other options...
     },
   },
-])
+]);
 ```
 
 React 전용 lint 규칙을 위해 [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x)와 [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom)도 설치할 수 있습니다.
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from "eslint-plugin-react-x";
+import reactDom from "eslint-plugin-react-dom";
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(["dist"]),
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     extends: [
       // Other configs...
       // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
+      reactX.configs["recommended-typescript"],
       // Enable lint rules for React DOM
       reactDom.configs.recommended,
     ],
     languageOptions: {
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
         tsconfigRootDir: import.meta.dirname,
       },
       // other options...
     },
   },
-])
+]);
 ```
 
 ---
@@ -351,37 +336,34 @@ export default defineConfig([
 
 `src/constants/routes.ts`에 정의된 라우트와 `src/App.tsx`의 라우팅 기준으로 정리한 전체 화면 목록입니다.
 
-| 화면 이름 | Route Path | Page Component | 담당 파트 |
-| --- | --- | --- | --- |
-| 스플래시 | `/splash` | `SplashPage` | 진준영 |
-| 로그인 | `/login` | `LoginPage` | 진준영 |
-| 서비스 약관 동의 | `/terms` | `TermsPage` | 진준영 |
-| 홈 | `/` | `HomePage` | 송혜원 |
-| AI 일정 생성 | `/ai` | `AIPage` | 송혜원 |
-| AI 일정표 | `/ai/plan` | `AIPlanPage` | 송혜원 |
-| 사장님 폐업 가이드 목록 | `/guides` | `GuideListPage` | 박고은 |
-| 가이드 상세 (STEP) | `/guides/:stepId` | `GuideDetailPage` | 박고은 |
-| 가이드 작성 템플릿 (안내문) | `/guides/2/template` | `GuideNoticeTemplatePage` | 박고은 |
-| 가이드 작성 템플릿 (신고서) | `/guides/6/template` | `GuideReportTemplatePage` | 박고은 |
-| 지원정보 목록 | `/supports` | `SupportListPage` | 박고은 |
-| 지원정보 북마크 목록 | `/supports/bookmark` | `SupportListPage` | 박고은 |
-| 지원정보 상세 | `/supports/:supportId` | `SupportDetailPage` | 박고은 |
-| 중고거래 목록 | `/used` | `UsedListPage` | 김상엽 |
-| 중고거래 상세 | `/used/:productId` | `UsedDetailPage` | 김상엽 |
-| 중고거래 검색 | `/used/search` | `UsedSearchPage` | 김상엽 |
-| 중고거래 검색 결과 | `/used/search/result` | `UsedSearchResultPage` | 김상엽 |
-| 중고거래 등록/수정 | `/used/write` | `UsedWritePage` | 김상엽 |
-| 나의 판매물품 | `/used/my` | `UsedMyProductsPage` | 김상엽 |
-| 관심 물품 | `/used/liked` | `UsedLikedProductsPage` | 김상엽 |
-| 채팅 목록 | `/chats` | `ChatListPage` | 진준영 |
-| 채팅방 | `/chats/:productId` | `ChatRoomPage` | 진준영 |
-| 프로필 · 사업자 정보 수정 | `/profile` | `ProfileEditPage` | 박고은 (마이페이지) |
-| 사업자 인증 | `/business` | `BusinessAuthPage` | 김상엽 |
-| 1:1 문의하기 | `/inquiry` | `InquiryPage` | 박고은 (마이페이지) |
-| 나의 문의내역 | `/inquiry/history` | `InquiryHistoryPage` | 박고은 (마이페이지) |
-| 약관 및 정책 | `/policy` | `PolicyPage` | 박고은 (마이페이지) |
-| 컴포넌트 프리뷰 (개발용) | `/dev` | `ComponentsPage` | 확인 필요 (공용/개발용) |
-| 404 Not Found | `*` | `NotFoundPage` | 확인 필요 (공용) |
-
-> 사이드바(`SideMenu`)에서 진입하는 "나의 판매물품·관심 물품·채팅"은 각 도메인(상품/채팅) 소유이며,
-> "프로필 수정·문의·약관"만 마이페이지(사이드바) 담당인 박고은 파트로 분류했습니다.
+| 화면 이름                   | Route Path             | Page Component            | 담당 파트 |
+| --------------------------- | ---------------------- | ------------------------- | --------- |
+| 스플래시                    | `/splash`              | `SplashPage`              | 진준영    |
+| 로그인                      | `/login`               | `LoginPage`               | 진준영    |
+| 서비스 약관 동의            | `/terms`               | `TermsPage`               | 진준영    |
+| 홈                          | `/`                    | `HomePage`                | 송혜원    |
+| AI 일정 생성                | `/ai`                  | `AIPage`                  | 송혜원    |
+| AI 일정표                   | `/ai/plan`             | `AIPlanPage`              | 송혜원    |
+| 사장님 폐업 가이드 목록     | `/guides`              | `GuideListPage`           | 박고은    |
+| 가이드 상세                 | `/guides/:stepId`      | `GuideDetailPage`         | 박고은    |
+| 가이드 작성 템플릿 (안내문) | `/guides/2/template`   | `GuideNoticeTemplatePage` | 박고은    |
+| 가이드 작성 템플릿 (신고서) | `/guides/6/template`   | `GuideReportTemplatePage` | 박고은    |
+| 지원정보 목록               | `/supports`            | `SupportListPage`         | 박고은    |
+| 지원정보 북마크 목록        | `/supports/bookmark`   | `SupportListPage`         | 박고은    |
+| 지원정보 상세               | `/supports/:supportId` | `SupportDetailPage`       | 박고은    |
+| 중고거래 목록               | `/used`                | `UsedListPage`            | 김상엽    |
+| 중고거래 상세               | `/used/:productId`     | `UsedDetailPage`          | 김상엽    |
+| 중고거래 검색               | `/used/search`         | `UsedSearchPage`          | 김상엽    |
+| 중고거래 검색 결과          | `/used/search/result`  | `UsedSearchResultPage`    | 김상엽    |
+| 중고거래 등록               | `/used/write`          | `UsedWritePage`           | 김상엽    |
+| 나의 판매물품               | `/used/my`             | `UsedMyProductsPage`      | 김상엽    |
+| 관심 물품                   | `/used/liked`          | `UsedLikedProductsPage`   | 김상엽    |
+| 채팅 목록                   | `/chats`               | `ChatListPage`            | 진준영    |
+| 채팅방                      | `/chats/:productId`    | `ChatRoomPage`            | 진준영    |
+| 프로필 · 사업자 정보 수정   | `/profile`             | `ProfileEditPage`         | 박고은    |
+| 사업자 인증                 | `/business`            | `BusinessAuthPage`        | 김상엽    |
+| 1:1 문의하기                | `/inquiry`             | `InquiryPage`             | 박고은    |
+| 나의 문의내역               | `/inquiry/history`     | `InquiryHistoryPage`      | 박고은    |
+| 약관 및 정책                | `/policy`              | `PolicyPage`              | 박고은    |
+| 컴포넌트 프리뷰 (개발용)    | `/dev`                 | `ComponentsPage`          | 김상엽    |
+| 404 Not Found               | `*`                    | `NotFoundPage`            | 김상엽    |
