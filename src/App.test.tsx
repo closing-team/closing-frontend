@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
@@ -15,11 +16,15 @@ function LocationProbe() {
 
 describe("App legacy routes", () => {
   it("/splash로 진입하면 홈으로 replace 이동한다", () => {
+    const queryClient = new QueryClient();
+
     render(
-      <MemoryRouter initialEntries={["/splash"]}>
-        <App />
-        <LocationProbe />
-      </MemoryRouter>,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/splash"]}>
+          <App />
+          <LocationProbe />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByText("홈 화면")).toBeInTheDocument();

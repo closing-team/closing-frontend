@@ -1,4 +1,4 @@
-import type { CategoryGroup } from "../../types/used";
+import type { CategoryGroup } from "../types/used";
 
 export const RECOMMENDED_KEYWORDS = [
   "쇼케이스",
@@ -26,7 +26,7 @@ export const INDUSTRY_CATEGORIES: CategoryGroup[] = [
   },
   {
     title: "체육/기타 업종",
-    items: ["헬스/필라테스", "의류/무인 점포"],
+    items: ["헬스/필라테스", "의류 매장/무인 점포"],
   },
 ];
 
@@ -50,24 +50,15 @@ export const ITEM_CATEGORIES: CategoryGroup[] = [
       "사무용 책상/의자",
       "그릇/식기/소모품",
       "냉난방기/가전",
-      "POS/키오스크/벨",
+      "POS/키오스크/빌지프린터",
     ],
   },
 ];
 
-export const INDUSTRY_OPTIONS = [
-  { value: "외식/식당", label: "외식/식당" },
-  { value: "카페/베이커리", label: "카페/베이커리" },
-  { value: "사무실/교육", label: "사무실/교육" },
-  { value: "뷰티/생활 서비스", label: "뷰티/생활 서비스" },
-  { value: "체육/기타 업종", label: "체육/기타 업종" },
-];
+export const INDUSTRY_OPTIONS = INDUSTRY_CATEGORIES.flatMap((group) =>
+  group.items.map((item) => ({ value: item, label: item })),
+);
 
-export const ITEM_OPTIONS = [
-  { value: "냉장고/냉동고", label: "냉장고/냉동고" },
-  { value: "식기세척기/튀김기", label: "식기세척기/튀김기" },
-  { value: "싱크대/작업대", label: "싱크대/작업대" },
-  { value: "제빙기/쇼케이스", label: "제빙기/쇼케이스" },
-  { value: "업소용 테이블", label: "업소용 테이블" },
-  { value: "POS/키오스크/벨", label: "POS/키오스크/벨" },
-];
+export const ITEM_OPTIONS = ITEM_CATEGORIES.flatMap((group) =>
+  group.items.map((item) => ({ value: item, label: item })),
+);

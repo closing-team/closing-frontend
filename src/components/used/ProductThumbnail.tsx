@@ -6,7 +6,6 @@ interface ProductThumbnailProps {
   iconClassName?: string;
 }
 
-// 부모 컨테이너를 채우는 상품 이미지. 이미지가 없으면 회색 배경 + ImageIcon 폴백을 보여준다.
 export default function ProductThumbnail({
   imageUrl,
   alt,

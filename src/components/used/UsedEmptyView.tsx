@@ -1,5 +1,5 @@
 import Button from "../common/Button";
-import { BagIcon } from "../../assets/icons";
+import { PackageIcon } from "../../assets/icons";
 
 interface UsedEmptyViewProps {
   onWrite: () => void;
@@ -7,16 +7,20 @@ interface UsedEmptyViewProps {
 
 export default function UsedEmptyView({ onWrite }: UsedEmptyViewProps) {
   return (
-    <div className="flex flex-col items-center px-8 pt-24 text-center">
-      <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-200">
-        <BagIcon className="h-[34px] w-[34px]" />
+    <div className="flex flex-col items-center pt-16">
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex h-20 w-20 items-center justify-center">
+          <PackageIcon className="h-[50px] w-[54px]" />
+        </div>
+        <div className="flex flex-col items-center gap-1 text-center">
+          <p className="text-title-3 text-gray-700">아직 등록한 물품이 없어요.</p>
+          <p className="text-body-2 text-gray-700">
+            판매할 집기나 재고를 등록해 정리를 시작해보세요.
+          </p>
+        </div>
       </div>
-      <p className="text-title-3 text-gray-900">아직 등록된 상품이 없어요</p>
-      <p className="mt-2 text-body-2 text-gray-500">
-        가게 집기와 재고를 첫 번째로 등록해 보세요.
-      </p>
-      <Button size="lg" onClick={onWrite} className="mt-6 px-6">
-        글쓰기
+      <Button size="lg" onClick={onWrite} className="mt-8 px-5">
+        물품 등록
       </Button>
     </div>
   );

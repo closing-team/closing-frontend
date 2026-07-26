@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import Chip from "../../components/common/Chip";
@@ -6,15 +5,17 @@ import Button from "../../components/common/Button";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
 import { ChevronRightIcon } from "../../assets/icons";
-import { getSupportPostById } from "../../mocks/support/mockSupport";
+import { useSupportStore } from "../../stores/supportStore";
 import { ROUTES } from "../../constants/routes";
 
 export default function SupportDetailPage() {
   const navigate = useNavigate();
   const { supportId = "" } = useParams();
   // TODO: API 연동
-  const post = getSupportPostById(Number(supportId));
-  const [bookmarked, setBookmarked] = useState(post?.bookmarked ?? false);
+  const post = useSupportStore((s) =>
+    s.posts.find((p) => p.id === Number(supportId)),
+  );
+  const toggleBookmark = useSupportStore((s) => s.toggleBookmark);
 
   if (!post) {
     return (
@@ -42,8 +43,8 @@ export default function SupportDetailPage() {
 
       <div className="relative mx-4 mt-5 overflow-hidden rounded-xl bg-white">
         <BookmarkButton
-          bookmarked={bookmarked}
-          onToggle={() => setBookmarked((v) => !v)}
+          bookmarked={post.isBookmarked}
+          onToggle={() => toggleBookmark(post.id)}
           className="absolute right-3 top-3 z-10"
         />
 

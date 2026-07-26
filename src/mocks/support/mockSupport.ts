@@ -19,7 +19,7 @@ export const SUPPORT_POSTS: SupportPostDetail[] = [
     period: "2026.01.01 - 2026.03.05",
     startDate: "2026-01-01",
     endDate: "2026-03-05",
-    bookmarked: true,
+    isBookmarked: true,
     overview:
       "소상공인의 신속·안전한 폐업 및 폐업부담 경감을 위해 사업 정리 컨설팅, 점포 철거비, 법률 자문, 채무 조정 등을 원스톱으로 지원합니다.",
     target: "폐업(예정) 소상공인",
@@ -40,7 +40,7 @@ export const SUPPORT_POSTS: SupportPostDetail[] = [
     period: "2026.03.03 - 예산 소진시까지",
     startDate: "2026-03-03",
     endDate: null,
-    bookmarked: true,
+    isBookmarked: true,
     // TODO: 임시 데이터, 실제 공고 내용으로 교체 필요
     overview:
       "서울 소재 폐업(예정) 소상공인을 대상으로 사업 정리 및 재기 지원을 위한 컨설팅과 자금을 지원합니다.",
@@ -65,7 +65,7 @@ export const SUPPORT_POSTS: SupportPostDetail[] = [
     period: "2026.03.05 - 예산 소진시까지",
     startDate: "2026-03-05",
     endDate: null,
-    bookmarked: false,
+    isBookmarked: false,
     // TODO: 임시 데이터, 실제 공고 내용으로 교체 필요
     overview:
       "전북 소재 폐업 소상공인의 원활한 사업정리를 위해 철거비 및 법률 상담을 지원합니다.",
@@ -90,7 +90,7 @@ export const SUPPORT_POSTS: SupportPostDetail[] = [
     period: "2026.03.26 - 예산 소진시까지",
     startDate: "2026-03-26",
     endDate: null,
-    bookmarked: false,
+    isBookmarked: false,
     // TODO: 임시 데이터, 실제 공고 내용으로 교체 필요
     overview:
       "폐업 후 재창업을 준비하는 소상공인을 대상으로 재기 자금과 컨설팅을 지원합니다.",
@@ -109,8 +109,3 @@ export const SUPPORT_POSTS: SupportPostDetail[] = [
     applyUrlLabel: "바로가기: https://www.jb.go.kr",
   },
 ];
-
-// TODO: API 연동 시 이 함수를 해당 API 호출로 교체
-export function getSupportPostById(id: number): SupportPostDetail | undefined {
-  return SUPPORT_POSTS.find((post) => post.id === id);
-}

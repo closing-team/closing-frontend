@@ -3,7 +3,7 @@ import Category from "./Category";
 import {
   INDUSTRY_CATEGORIES,
   ITEM_CATEGORIES,
-} from "../../mocks/used/mockUsedMeta";
+} from "../../constants/usedCategories";
 
 type CategoryTab = "industry" | "item";
 
@@ -13,7 +13,7 @@ const TABS: { key: CategoryTab; label: string }[] = [
 ];
 
 interface CategoryPanelProps {
-  onSelect: (label: string) => void;
+  onSelect: (type: CategoryTab, label: string) => void;
 }
 
 export default function CategoryPanel({ onSelect }: CategoryPanelProps) {
@@ -53,7 +53,7 @@ export default function CategoryPanel({ onSelect }: CategoryPanelProps) {
                 <Category
                   key={item}
                   label={item}
-                  onClick={() => onSelect(item)}
+                  onClick={() => onSelect(tab, item)}
                 />
               ))}
             </div>

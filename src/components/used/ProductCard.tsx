@@ -1,6 +1,6 @@
 import LikeButton from "./LikeButton";
 import ProductThumbnail from "./ProductThumbnail";
-import { formatPrice } from "../../utils/formatPrice";
+import { formatPrice, isFreePrice } from "../../utils/formatPrice";
 import type { Product } from "../../types/used";
 
 interface ProductCardProps {
@@ -40,17 +40,21 @@ export default function ProductCard({
         />
       </div>
 
-      {/* 상품명 (최대 2줄) */}
       <p className="mt-2 line-clamp-2 text-subtitle-2 text-gray-700">
         {product.title}
       </p>
 
       <p className="mt-0.5 truncate text-caption-3 text-gray-500">{meta}</p>
 
-      {/* 가격 */}
       <p className="mt-1 flex text-subtitle-2 text-gray-900">
-        <span className="min-w-0 truncate">{formatPrice(product.price)}</span>
-        <span className="shrink-0">원</span>
+        {isFreePrice(product.price) ? (
+          "나눔"
+        ) : (
+          <>
+            <span className="min-w-0 truncate">{formatPrice(product.price)}</span>
+            <span className="shrink-0">원</span>
+          </>
+        )}
       </p>
     </button>
   );

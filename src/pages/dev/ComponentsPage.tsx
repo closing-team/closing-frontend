@@ -80,7 +80,7 @@ const SAMPLE_SUPPORT_POST: SupportPost = {
   period: "2000.00.00 - 2000.00.00",
   startDate: "2000-01-01",
   endDate: "2000-01-01",
-  bookmarked: false,
+  isBookmarked: false,
 };
 
 const SAMPLE_PLAN: Plan = {
@@ -474,7 +474,7 @@ export default function ComponentsPage() {
         <Section title="StepCard / SupportCard">
           <StepCard step={SAMPLE_GUIDE_STEP} />
           <SupportCard
-            post={{ ...SAMPLE_SUPPORT_POST, bookmarked: supportBookmarked }}
+            post={{ ...SAMPLE_SUPPORT_POST, isBookmarked: supportBookmarked }}
             onToggleBookmark={() => setSupportBookmarked((v) => !v)}
           />
         </Section>
