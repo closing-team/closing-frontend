@@ -7,7 +7,7 @@ import MyProductCard from "../../components/used/MyProductCard";
 import ProductActionSheets from "../../components/used/ProductActionSheets";
 import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
 import { PlusMdIcon } from "../../assets/icons";
-import { ROUTES, usedDetailPath } from "../../constants/routes";
+import { ROUTES, usedDetailPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
 import { useMyProductsQuery } from "../../hooks/useProducts";
 import { useProductActionsSheet } from "../../hooks/useProductActionsSheet";
@@ -71,45 +71,47 @@ export default function UsedMyProductsPage() {
         />
       </div>
 
-      <p className="flex items-center gap-2.5 self-stretch px-0.5 text-subtitle-2 text-gray-500">
-        상품 {currentCount}개
-      </p>
-
-      {visibleProducts.length === 0 ? (
-        <p className="px-4 pt-20 text-center text-body-2 text-gray-400">
-          해당하는 상품이 없어요.
+      <div className="mt-2 flex flex-col gap-3 px-4">
+        <p className="flex items-center gap-2.5 self-stretch pl-0.5 text-subtitle-2 text-gray-500">
+          상품 {currentCount}개
         </p>
-      ) : (
-        <>
-          <div className="mt-2 flex flex-col gap-2.5 px-4">
-            {visibleProducts.map((product) => (
-              <div
-                key={product.id}
-                className="rounded-2xl border border-gray-100"
-              >
-                <MyProductCard
-                  status={product.status ?? "selling"}
-                  imageUrl={product.imageUrl}
-                  title={product.title}
-                  meta={[...product.dealTypes, product.neighborhood, product.timeAgo].join(
-                    " · ",
-                  )}
-                  price={product.price}
-                  likeCount={product.likes}
-                  liked={product.liked}
-                  onClick={() => navigate(usedDetailPath(product.id))}
-                  onMenuClick={() => actions.openMenu(product.id)}
-                />
-              </div>
-            ))}
-          </div>
-          <InfiniteScrollTrigger
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-            onLoadMore={fetchNextPage}
-          />
-        </>
-      )}
+
+        {visibleProducts.length === 0 ? (
+          <p className="pt-20 text-center text-body-2 text-gray-400">
+            해당하는 상품이 없어요.
+          </p>
+        ) : (
+          <>
+            <div className="flex flex-col gap-2.5">
+              {visibleProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="rounded-2xl border border-gray-100"
+                >
+                  <MyProductCard
+                    status={product.status ?? "selling"}
+                    imageUrl={product.imageUrl}
+                    title={product.title}
+                    meta={[...product.dealTypes, product.neighborhood, product.timeAgo].join(
+                      " · ",
+                    )}
+                    price={product.price}
+                    likeCount={product.likes}
+                    liked={product.liked}
+                    onClick={() => navigate(usedDetailPath(product.id))}
+                    onMenuClick={() => actions.openMenu(product.id)}
+                  />
+                </div>
+              ))}
+            </div>
+            <InfiniteScrollTrigger
+              hasNextPage={hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              onLoadMore={fetchNextPage}
+            />
+          </>
+        )}
+      </div>
 
       <Fab
         variant="used"
@@ -124,6 +126,11 @@ export default function UsedMyProductsPage() {
         deleteOpen={actions.deleteProductId !== null}
         onChangeToReserved={() => actions.changeStatus("reserved")}
         onChangeToCompleted={() => actions.changeStatus("completed")}
+        onEdit={() => {
+          const editingId = actions.menuProductId;
+          actions.closeMenu();
+          if (editingId !== null) navigate(usedEditPath(editingId));
+        }}
         onRequestDelete={actions.requestDelete}
         onCloseMenu={actions.closeMenu}
         onCancelDelete={actions.cancelDelete}

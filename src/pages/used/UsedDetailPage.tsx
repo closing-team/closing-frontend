@@ -8,7 +8,7 @@ import { MenuKebabIcon, SearchIcon } from "../../assets/icons";
 import NaverMap from "../../components/used/NaverMap";
 import ProductThumbnail from "../../components/used/ProductThumbnail";
 import { formatPriceLabel } from "../../utils/formatPrice";
-import { ROUTES, chatRoomPath } from "../../constants/routes";
+import { ROUTES, chatRoomPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
 import { useProductDetailQuery } from "../../hooks/useProducts";
 import { useToggleBookmarkMutation } from "../../hooks/useProductMutations";
@@ -169,14 +169,16 @@ export default function UsedDetailPage() {
         >
           {hasChat ? `대화중인 채팅 ${chatMessageCount}` : "구매 문의"}
         </Button>
-        <LikeButton
-          liked={product.liked}
-          onToggle={() =>
-            toggleBookmark.mutate({ productId: product.id, liked: product.liked })
-          }
-          unlikedClassName="text-gray-500"
-          className="h-10 w-10"
-        />
+        {!isMine && (
+          <LikeButton
+            liked={product.liked}
+            onToggle={() =>
+              toggleBookmark.mutate({ productId: product.id, liked: product.liked })
+            }
+            unlikedClassName="text-gray-500"
+            className="h-10 w-10"
+          />
+        )}
       </div>
 
       <ProductActionSheets
@@ -184,6 +186,10 @@ export default function UsedDetailPage() {
         deleteOpen={actions.deleteProductId === product.id}
         onChangeToReserved={() => actions.changeStatus("reserved")}
         onChangeToCompleted={() => actions.changeStatus("completed")}
+        onEdit={() => {
+          actions.closeMenu();
+          navigate(usedEditPath(product.id));
+        }}
         onRequestDelete={actions.requestDelete}
         onCloseMenu={actions.closeMenu}
         onCancelDelete={actions.cancelDelete}

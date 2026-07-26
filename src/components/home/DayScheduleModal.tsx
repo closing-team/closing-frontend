@@ -30,7 +30,7 @@ export default function DayScheduleModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-[343px] rounded-2xl bg-white">
+      <div className="relative flex max-h-[85vh] w-full max-w-[343px] flex-col overflow-x-hidden overflow-y-auto rounded-2xl bg-white">
         {/* 헤더 */}
         <div className="flex items-center justify-between px-4 py-[14px]">
           <p className="text-title-2 text-gray-900">

@@ -6,6 +6,7 @@ interface ProductActionSheetsProps {
   deleteOpen: boolean;
   onChangeToReserved: () => void;
   onChangeToCompleted: () => void;
+  onEdit: () => void;
   onRequestDelete: () => void;
   onCloseMenu: () => void;
   onCancelDelete: () => void;
@@ -17,6 +18,7 @@ export default function ProductActionSheets({
   deleteOpen,
   onChangeToReserved,
   onChangeToCompleted,
+  onEdit,
   onRequestDelete,
   onCloseMenu,
   onCancelDelete,
@@ -28,7 +30,7 @@ export default function ProductActionSheets({
         <ProductStatusSheet
           onChangeToReserved={onChangeToReserved}
           onChangeToCompleted={onChangeToCompleted}
-          onEdit={onCloseMenu}
+          onEdit={onEdit}
           onDelete={onRequestDelete}
           onClose={onCloseMenu}
         />
