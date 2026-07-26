@@ -4,15 +4,17 @@ import {
   createProduct,
   deleteProduct,
   removeBookmark,
+  updateProduct,
   updateProductStatus,
 } from "../api/used";
 import {
   saleStatusToStatusCode,
   toCreateProductRequest,
+  toUpdateProductRequest,
 } from "../utils/productAdapter";
 import type { DealType, SaleStatus } from "../types/used";
 
-interface ProductFormInput {
+export interface ProductFormInput {
   title: string;
   industry: string;
   itemCategory: string;
@@ -50,6 +52,30 @@ export function useCreateProductMutation() {
       input: ProductFormInput;
       images: File[];
     }) => createProduct(toCreateProductRequest(input), images),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateProductMutation() {
+  const invalidate = useInvalidateProducts();
+
+  return useMutation({
+    mutationFn: ({
+      productId,
+      input,
+      retainedImages,
+      newImages,
+    }: {
+      productId: number;
+      input: ProductFormInput;
+      retainedImages: string[];
+      newImages: File[];
+    }) =>
+      updateProduct(
+        productId,
+        toUpdateProductRequest(input, retainedImages),
+        newImages,
+      ),
     onSuccess: invalidate,
   });
 }

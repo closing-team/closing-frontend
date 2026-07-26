@@ -21,7 +21,7 @@ export default function LocationPermissionSheet({
         className="absolute inset-0 bg-black/40"
       />
 
-      <div className="relative flex w-full max-w-app min-w-[var(--container-app-min)] flex-col rounded-t-[20px] bg-white px-4 pb-5 pt-2">
+      <div className="relative flex max-h-[85vh] w-full max-w-app min-w-[var(--container-app-min)] flex-col overflow-y-auto rounded-t-[20px] bg-white px-4 pb-5 pt-2">
         <div className="flex h-4 items-center justify-center">
           <span className="h-1 w-[41px] shrink-0 rounded-[2.5px] bg-gray-200" />
         </div>

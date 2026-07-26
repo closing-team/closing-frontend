@@ -69,7 +69,7 @@ export default function SideMenu({
           className="absolute inset-0 bg-black/40"
         />
 
-        <aside className="absolute inset-y-0 right-0 flex w-[300px] flex-col bg-white py-5">
+        <aside className="absolute inset-y-0 right-0 flex w-[300px] flex-col overflow-y-auto bg-white py-5">
           <div className="flex h-10 items-center justify-end gap-2.5 px-4">
             <button
               type="button"

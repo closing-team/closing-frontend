@@ -1,42 +1,53 @@
 import { useEffect, useMemo, useRef } from "react";
 import { PlusMdIcon, XFilledIcon } from "../../assets/icons";
 
+export type PhotoItem = { kind: "existing"; url: string } | { kind: "new"; file: File };
+
 interface PhotoUploaderProps {
-  files: File[];
-  onChange: (files: File[]) => void;
+  items: PhotoItem[];
+  onChange: (items: PhotoItem[]) => void;
   max?: number;
   label?: string;
 }
 
 export default function PhotoUploader({
-  files,
+  items,
   onChange,
   max = 10,
   label = "실물 사진",
 }: PhotoUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const canAdd = files.length < max;
-  const previewUrls = useMemo(
-    () => files.map((file) => URL.createObjectURL(file)),
-    [files],
-  );
+  const canAdd = items.length < max;
+
+  const newFileUrls = useMemo(() => {
+    const map = new Map<File, string>();
+    for (const item of items) {
+      if (item.kind === "new") map.set(item.file, URL.createObjectURL(item.file));
+    }
+    return map;
+  }, [items]);
 
   useEffect(() => {
     return () => {
-      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      newFileUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [previewUrls]);
+  }, [newFileUrls]);
+
+  const previewUrl = (item: PhotoItem) =>
+    item.kind === "existing" ? item.url : (newFileUrls.get(item.file) ?? "");
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []);
+    const selected = Array.from(e.target.files ?? []).map(
+      (file): PhotoItem => ({ kind: "new", file }),
+    );
     if (selected.length > 0) {
-      onChange([...files, ...selected].slice(0, max));
+      onChange([...items, ...selected].slice(0, max));
     }
     e.target.value = "";
   };
 
   const handleRemove = (index: number) => {
-    onChange(files.filter((_, i) => i !== index));
+    onChange(items.filter((_, i) => i !== index));
   };
 
   return (
@@ -55,7 +66,7 @@ export default function PhotoUploader({
         >
           <PlusMdIcon className="h-6 w-6" />
           <span className="text-caption-3">
-            {files.length} / {max}
+            {items.length} / {max}
           </span>
         </button>
         <input
@@ -67,12 +78,16 @@ export default function PhotoUploader({
           onChange={handleFilesSelected}
         />
 
-        {previewUrls.map((url, i) => (
+        {items.map((item, i) => (
           <div
             key={i}
             className="relative aspect-square w-[100px] shrink-0 overflow-hidden rounded-lg bg-gray-100"
           >
-            <img src={url} alt="" className="h-full w-full object-cover" />
+            <img
+              src={previewUrl(item)}
+              alt=""
+              className="h-full w-full object-cover"
+            />
             <button
               type="button"
               aria-label="사진 삭제"

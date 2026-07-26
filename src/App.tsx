@@ -69,6 +69,7 @@ export default function App() {
           element={<UsedSearchResultPage />}
         />
         <Route path={ROUTES.USED_WRITE} element={<UsedWritePage />} />
+        <Route path={ROUTES.USED_EDIT} element={<UsedWritePage />} />
         <Route path={ROUTES.USED_MY} element={<UsedMyProductsPage />} />
         <Route path={ROUTES.USED_LIKED} element={<UsedLikedProductsPage />} />
 

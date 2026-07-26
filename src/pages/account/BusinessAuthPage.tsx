@@ -1,19 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
 import Callout, { CalloutItem } from "../../components/common/Callout";
+import Toast from "../../components/used/Toast";
 import { ROUTES } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
+import { useVerifyBusinessMutation } from "../../hooks/useBusinessMutations";
+
+const DEFAULT_ERROR_MESSAGE =
+  "인증 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 
 export default function BusinessAuthPage() {
   const navigate = useNavigate();
   const setAuthenticated = useUsedStore((s) => s.setAuthenticated);
+  const verifyBusiness = useVerifyBusinessMutation();
 
   const [bizNumber, setBizNumber] = useState("");
   const [owner, setOwner] = useState("");
   const [openedAt, setOpenedAt] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const canSubmit =
     bizNumber.length === 10 && owner.trim().length > 0 && openedAt.length === 8;
@@ -25,10 +33,23 @@ export default function BusinessAuthPage() {
         ? `${bizNumber.slice(0, 3)}-${bizNumber.slice(3)}`
         : bizNumber;
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!canSubmit) return;
-    setAuthenticated(true);
-    navigate(ROUTES.USED_WRITE, { replace: true });
+    setErrorMessage(null);
+    try {
+      await verifyBusiness.mutateAsync({
+        businessNumber: bizNumber,
+        ownerName: owner.trim(),
+        openDate: openedAt,
+      });
+      setAuthenticated(true);
+      navigate(ROUTES.USED_WRITE, { replace: true });
+    } catch (error) {
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
+      setErrorMessage(message ?? DEFAULT_ERROR_MESSAGE);
+    }
   };
 
   return (
@@ -87,7 +108,12 @@ export default function BusinessAuthPage() {
         </Callout>
 
         <div className="flex flex-col items-center gap-3 pb-5 pt-2.5">
-          <Button fullWidth disabled={!canSubmit} onClick={handleVerify}>
+          {errorMessage && <Toast message={errorMessage} />}
+          <Button
+            fullWidth
+            disabled={!canSubmit || verifyBusiness.isPending}
+            onClick={handleVerify}
+          >
             인증
           </Button>
 

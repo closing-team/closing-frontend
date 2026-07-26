@@ -25,7 +25,7 @@ export default function DeleteConfirmModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative w-full max-w-[343px] rounded-[12px] bg-white">
+      <div className="relative flex max-h-[85vh] w-full max-w-[343px] flex-col overflow-x-hidden overflow-y-auto rounded-[12px] bg-white">
         {/* 타이틀 */}
         <div className="pt-5 pb-4 text-center">
           <p className="text-title-3 text-gray-900">일정을 완전히 삭제할까요?</p>

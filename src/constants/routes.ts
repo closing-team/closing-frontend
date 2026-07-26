@@ -27,6 +27,7 @@ export const ROUTES = {
   USED_SEARCH: "/used/search",
   USED_SEARCH_RESULT: "/used/search/result",
   USED_WRITE: "/used/write",
+  USED_EDIT: "/used/write/:productId",
   USED_MY: "/used/my",
   USED_LIKED: "/used/liked",
 
@@ -57,6 +58,9 @@ export const supportDetailPath = (id: number | string) =>
 
 export const usedDetailPath = (id: number | string) =>
   ROUTES.USED_DETAIL.replace(":productId", encodeURIComponent(id));
+
+export const usedEditPath = (id: number | string) =>
+  ROUTES.USED_EDIT.replace(":productId", encodeURIComponent(id));
 
 export const chatRoomPath = (id: number | string) =>
   ROUTES.CHAT_ROOM.replace(":productId", encodeURIComponent(id));

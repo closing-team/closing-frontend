@@ -12,6 +12,8 @@ import type {
   MyProductListDataDto,
   ProductDetailDto,
   ProductListDataDto,
+  UpdateProductRequestJson,
+  UpdateProductResponseData,
   UpdateProductStatusResponseData,
 } from "../types/productApi";
 
@@ -67,6 +69,23 @@ export async function createProduct(
   }
   const res = await api.post<ApiEnvelope<CreateProductResponseData>>(
     "/api/v1/products",
+    formData,
+  );
+  return res.data.data;
+}
+
+export async function updateProduct(
+  productId: number,
+  request: UpdateProductRequestJson,
+  newImages: File[],
+): Promise<UpdateProductResponseData> {
+  const formData = new FormData();
+  formData.append("request", toRequestBlob(request));
+  for (const image of newImages) {
+    formData.append("newImages", image);
+  }
+  const res = await api.put<ApiEnvelope<UpdateProductResponseData>>(
+    `/api/v1/products/${productId}`,
     formData,
   );
   return res.data.data;
