@@ -28,3 +28,31 @@ export function reverseGeocode(
     );
   });
 }
+
+export function reverseGeocodeNeighborhood(
+  lat: number,
+  lng: number,
+): Promise<string | null> {
+  return new Promise((resolve) => {
+    if (!window.naver?.maps.Service) {
+      resolve(null);
+      return;
+    }
+
+    window.naver.maps.Service.reverseGeocode(
+      {
+        coords: `${lng},${lat}`,
+        orders: [window.naver.maps.Service.OrderType.ADDR],
+      },
+      (status, response) => {
+        if (status !== window.naver!.maps.Service.Status.OK) {
+          resolve(null);
+          return;
+        }
+
+        const region = response.v2?.results?.[0]?.region;
+        resolve(region?.area3?.name || null);
+      },
+    );
+  });
+}

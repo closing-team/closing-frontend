@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, passthrough } from "msw";
 import {
   CURRENT_USER_ID,
   findRecord,
@@ -7,6 +7,7 @@ import {
   listRecords,
   paginate,
   updateRecord,
+  upsertBusinessVerification,
 } from "./db";
 import {
   fromBusinessCategoryCode,
@@ -22,6 +23,11 @@ import type {
   UpdateProductRequestJson,
   UpdateProductStatusRequest,
 } from "../../types/productApi";
+import type { VerifyBusinessRequestJson } from "../../types/businessApi";
+
+function formatBusinessNumber(digits: string): string {
+  return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
+}
 
 const OK = { success: true, code: "COMMON200", message: "성공입니다." } as const;
 
@@ -37,6 +43,9 @@ function forbidden(code: string, message: string) {
 }
 
 export const handlers = [
+  http.get("https://oapi.map.naver.com/*", () => passthrough()),
+  http.get("https://naveropenapi.apigw.ntruss.com/*", () => passthrough()),
+
   http.get("*/api/v1/products/me", ({ request }) => {
     const url = new URL(request.url);
     const status = url.searchParams.get("status") as ProductStatusCode | null;
@@ -330,7 +339,7 @@ export const handlers = [
       seller: {
         memberId: record.ownerId,
         nickname: record.ownerNickname,
-        location: null,
+        location: record.neighborhood || null,
       },
       createdAt: record.createdAt,
     };
@@ -465,5 +474,31 @@ export const handlers = [
       bookmarkCount: Math.max(0, record.bookmarkCount - 1),
     });
     return HttpResponse.json({ ...OK, data: { productId, isBookmarked: false } });
+  }),
+
+  http.put("*/api/v1/businesses", async ({ request }) => {
+    const body = (await request.json()) as VerifyBusinessRequestJson;
+    if (!body.businessNumber || !body.ownerName || !body.openDate) {
+      return HttpResponse.json(
+        { success: false, code: "COMMON500", message: "요청값 검증에 실패했습니다." },
+        { status: 500 },
+      );
+    }
+
+    const record = upsertBusinessVerification(CURRENT_USER_ID, {
+      businessNumber: body.businessNumber,
+      ownerName: body.ownerName,
+      openDate: body.openDate,
+    });
+
+    return HttpResponse.json({
+      ...OK,
+      message: "사업자 인증이 완료되었습니다.",
+      data: {
+        registrationId: record.registrationId,
+        businessNumber: formatBusinessNumber(record.businessNumber),
+        verifiedAt: record.verifiedAt,
+      },
+    });
   }),
 ];

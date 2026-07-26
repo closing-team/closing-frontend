@@ -5,6 +5,7 @@ import type {
   ProductStatusCode,
   TradeMethodCode,
   CreateProductRequestJson,
+  UpdateProductRequestJson,
 } from "../types/productApi";
 import type { DealType, Product, SaleStatus } from "../types/used";
 import { formatTimeAgo } from "./timeAgo";
@@ -79,6 +80,7 @@ export function productDetailDtoToProduct(dto: ProductDetailDto): Product {
     title: dto.title,
     price: dto.price,
     imageUrl: dto.imageUrls[0] ?? null,
+    images: dto.imageUrls,
     dealTypes: tradeMethodsToDealTypes(dto.tradeMethods),
     distanceM: dto.tradeLocation?.distanceKm != null
       ? Math.round(dto.tradeLocation.distanceKm * 1000)
@@ -126,6 +128,16 @@ export function toCreateProductRequest(
     latitude: input.dealTypes.includes("직거래") ? input.lat : undefined,
     longitude: input.dealTypes.includes("직거래") ? input.lng : undefined,
     description: input.description,
+  };
+}
+
+export function toUpdateProductRequest(
+  input: ProductFormInput,
+  retainedImages: string[],
+): UpdateProductRequestJson {
+  return {
+    ...toCreateProductRequest(input),
+    retainedImages,
   };
 }
 

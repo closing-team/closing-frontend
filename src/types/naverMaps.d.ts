@@ -64,14 +64,30 @@ declare global {
         ROAD_ADDR = "roadaddr",
       }
 
+      interface ReverseGeocodeRegionArea {
+        name: string;
+      }
+
       interface ReverseGeocodeAddress {
         roadAddress?: string;
         jibunAddress?: string;
       }
 
+      interface ReverseGeocodeResult {
+        name: string;
+        region?: {
+          area0?: ReverseGeocodeRegionArea;
+          area1?: ReverseGeocodeRegionArea;
+          area2?: ReverseGeocodeRegionArea;
+          area3?: ReverseGeocodeRegionArea;
+          area4?: ReverseGeocodeRegionArea;
+        };
+      }
+
       interface ReverseGeocodeResponse {
         v2?: {
           address?: ReverseGeocodeAddress;
+          results?: ReverseGeocodeResult[];
         };
       }
 

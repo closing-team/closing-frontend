@@ -13,7 +13,7 @@ import LocationPermissionSheet from "../../components/used/LocationPermissionShe
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { MenuHamburgerIcon, PlusMdIcon, SearchIcon } from "../../assets/icons";
 import { ROUTES, usedDetailPath } from "../../constants/routes";
-import { DEFAULT_NEARBY_LABEL } from "../../constants/location";
+import { useNearbyLabel } from "../../hooks/useNearbyLabel";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
@@ -38,6 +38,7 @@ export default function UsedListPage() {
   const [sort, setSort] = useState<UsedSort>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
+  const nearbyLabel = useNearbyLabel(location);
 
   const {
     products: visibleProducts,
@@ -100,7 +101,7 @@ export default function UsedListPage() {
           <FilterTabs
             value={filter}
             onChange={setFilter}
-            nearbyLabel={DEFAULT_NEARBY_LABEL}
+            nearbyLabel={nearbyLabel}
             showNearby={locationGranted}
           />
 

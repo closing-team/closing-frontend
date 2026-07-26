@@ -95,6 +95,44 @@ export function updateRecord(
   return target;
 }
 
+export interface MockBusinessVerification {
+  registrationId: number;
+  userId: number;
+  businessNumber: string;
+  ownerName: string;
+  openDate: string;
+  verifiedAt: string;
+}
+
+let businessVerifications: MockBusinessVerification[] = [];
+let nextRegistrationId = 1;
+
+export function findBusinessVerification(
+  userId: number,
+): MockBusinessVerification | undefined {
+  return businessVerifications.find((v) => v.userId === userId);
+}
+
+export function upsertBusinessVerification(
+  userId: number,
+  data: { businessNumber: string; ownerName: string; openDate: string },
+): MockBusinessVerification {
+  const existing = findBusinessVerification(userId);
+  const verifiedAt = new Date().toISOString();
+  if (existing) {
+    Object.assign(existing, { ...data, verifiedAt });
+    return existing;
+  }
+  const created: MockBusinessVerification = {
+    registrationId: nextRegistrationId++,
+    userId,
+    ...data,
+    verifiedAt,
+  };
+  businessVerifications = [...businessVerifications, created];
+  return created;
+}
+
 export function haversineKm(
   lat1: number,
   lon1: number,

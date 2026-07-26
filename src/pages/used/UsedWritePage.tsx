@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import TextArea from "../../components/common/TextArea";
@@ -8,9 +8,16 @@ import Button from "../../components/common/Button";
 import Radio from "../../components/used/Radio";
 import PriceField from "../../components/used/PriceField";
 import PhotoUploader from "../../components/used/PhotoUploader";
+import type { PhotoItem } from "../../components/used/PhotoUploader";
 import NaverMapPicker from "../../components/used/NaverMapPicker";
-import type { DealType } from "../../types/used";
-import { useCreateProductMutation } from "../../hooks/useProductMutations";
+import Toast from "../../components/used/Toast";
+import type { DealType, Product } from "../../types/used";
+import { useUsedStore } from "../../stores/usedStore";
+import { useProductDetailQuery } from "../../hooks/useProducts";
+import {
+  useCreateProductMutation,
+  useUpdateProductMutation,
+} from "../../hooks/useProductMutations";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../constants/usedCategories";
 import { usedDetailPath } from "../../constants/routes";
 
@@ -48,65 +55,134 @@ function RadioRow({
   );
 }
 
-export default function UsedWritePage() {
+interface UsedWriteFormProps {
+  isEditMode: boolean;
+  productId?: number;
+  existingProduct?: Product;
+}
+
+function UsedWriteForm({
+  isEditMode,
+  productId,
+  existingProduct,
+}: UsedWriteFormProps) {
   const navigate = useNavigate();
   const createProduct = useCreateProductMutation();
+  const updateProduct = useUpdateProductMutation();
 
-  const [photos, setPhotos] = useState<File[]>([]);
-  const [title, setTitle] = useState("");
-  const [industry, setIndustry] = useState<string | null>(null);
-  const [itemCategory, setItemCategory] = useState<string | null>(null);
-  const [price, setPrice] = useState("");
-  const [directAvailable, setDirectAvailable] = useState(true);
+  const [photos, setPhotos] = useState<PhotoItem[]>(() =>
+    (existingProduct?.images ?? []).map((url) => ({
+      kind: "existing" as const,
+      url,
+    })),
+  );
+  const [title, setTitle] = useState(() => existingProduct?.title ?? "");
+  const [industry, setIndustry] = useState<string | null>(
+    () => existingProduct?.industry ?? null,
+  );
+  const [itemCategory, setItemCategory] = useState<string | null>(
+    () => existingProduct?.itemCategory ?? null,
+  );
+  const [price, setPrice] = useState(() =>
+    existingProduct ? String(existingProduct.price) : "",
+  );
+  const [directAvailable, setDirectAvailable] = useState(() =>
+    existingProduct ? existingProduct.dealTypes.includes("직거래") : true,
+  );
   const [address, setAddress] = useState(DEFAULT_ADDRESS);
-  const [addressDetail, setAddressDetail] = useState("");
-  const [lat, setLat] = useState(DEFAULT_LAT);
-  const [lng, setLng] = useState(DEFAULT_LNG);
-  const [parcelAvailable, setParcelAvailable] = useState(true);
-  const [description, setDescription] = useState("");
+  const [addressDetail, setAddressDetail] = useState(
+    () => existingProduct?.dealLocation ?? "",
+  );
+  const [lat, setLat] = useState(() => existingProduct?.lat ?? DEFAULT_LAT);
+  const [lng, setLng] = useState(() => existingProduct?.lng ?? DEFAULT_LNG);
+  const [parcelAvailable, setParcelAvailable] = useState(() =>
+    existingProduct ? existingProduct.dealTypes.includes("택배거래") : true,
+  );
+  const [description, setDescription] = useState(
+    () => existingProduct?.description ?? "",
+  );
 
-  const canSubmit =
-    title.trim().length > 0 &&
-    price.length > 0 &&
-    !!industry &&
-    !!itemCategory &&
-    (directAvailable || parcelAvailable);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = window.setTimeout(() => setToastMessage(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
+
+  const isSubmitting = createProduct.isPending || updateProduct.isPending;
+
+  const getValidationError = (): string | null => {
+    if (title.trim().length === 0) return "물품명을 입력해 주세요.";
+    if (!industry) return "업종 카테고리를 선택해 주세요.";
+    if (!itemCategory) return "품목 카테고리를 선택해 주세요.";
+    if (price.length === 0) return "판매 가격을 입력해 주세요.";
+    if (!directAvailable && !parcelAvailable) return "거래 방식을 선택해 주세요.";
+    if (description.trim().length < 10) return "물품 설명을 10자 이상 입력해 주세요.";
+    return null;
+  };
 
   const handleSubmit = async () => {
-    if (!canSubmit || !industry || !itemCategory) return;
+    const validationError = getValidationError();
+    if (validationError) {
+      setToastMessage(validationError);
+      return;
+    }
+    if (!industry || !itemCategory) return;
     const dealTypes: DealType[] = [];
     if (directAvailable) dealTypes.push("직거래");
     if (parcelAvailable) dealTypes.push("택배거래");
 
-    const created = await createProduct.mutateAsync({
-      input: {
-        title: title.trim(),
-        industry,
-        itemCategory,
-        price: Number(price),
-        dealTypes,
-        description: description.trim(),
-        tradeLocation: directAvailable
-          ? [address, addressDetail.trim()].filter(Boolean).join(" ")
-          : undefined,
-        lat: directAvailable ? lat : undefined,
-        lng: directAvailable ? lng : undefined,
-      },
-      images: photos,
-    });
+    const input = {
+      title: title.trim(),
+      industry,
+      itemCategory,
+      price: Number(price),
+      dealTypes,
+      description: description.trim(),
+      tradeLocation: directAvailable
+        ? [address, addressDetail.trim()].filter(Boolean).join(" ")
+        : undefined,
+      lat: directAvailable ? lat : undefined,
+      lng: directAvailable ? lng : undefined,
+    };
+
+    if (isEditMode && productId !== undefined) {
+      const retainedImages = photos
+        .filter((p) => p.kind === "existing")
+        .map((p) => p.url);
+      const newImages = photos
+        .filter((p) => p.kind === "new")
+        .map((p) => p.file);
+
+      await updateProduct.mutateAsync({
+        productId,
+        input,
+        retainedImages,
+        newImages,
+      });
+      navigate(usedDetailPath(productId), { replace: true });
+      return;
+    }
+
+    const images = photos.filter((p) => p.kind === "new").map((p) => p.file);
+    const created = await createProduct.mutateAsync({ input, images });
     navigate(usedDetailPath(created.productId), { replace: true });
   };
 
   return (
     <div className="min-h-screen bg-white pb-28">
-      <TopBar title="물품 등록" onBack={() => navigate(-1)} />
+      <TopBar
+        title={isEditMode ? "물품 수정" : "물품 등록"}
+        onBack={() => navigate(-1)}
+      />
 
       <div className="px-4 pt-5">
         <section className="flex flex-col gap-4 border-b border-gray-100 pb-7">
           <h2 className="pl-0.5 text-title-3 text-gray-900">물품 정보</h2>
 
           <div className="flex flex-col gap-3">
-            <PhotoUploader files={photos} onChange={setPhotos} />
+            <PhotoUploader items={photos} onChange={setPhotos} />
 
             <TextField
               className="mb-0!"
@@ -204,15 +280,51 @@ export default function UsedWritePage() {
         </section>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-white px-4 pb-5 pt-2.5">
-        <Button
-          fullWidth
-          disabled={!canSubmit || createProduct.isPending}
-          onClick={handleSubmit}
-        >
-          등록
+      <div className="fixed bottom-0 left-1/2 z-40 flex w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 flex-col gap-3 bg-white px-4 pb-5 pt-2.5">
+        {toastMessage && <Toast message={toastMessage} />}
+        <Button fullWidth disabled={isSubmitting} onClick={handleSubmit}>
+          {isEditMode ? "수정 완료" : "등록"}
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function UsedWritePage() {
+  const navigate = useNavigate();
+  const { productId: productIdParam } = useParams();
+  const productId = productIdParam ? Number(productIdParam) : undefined;
+  const isEditMode = productId !== undefined;
+
+  const location = useUsedStore((s) => s.location);
+  const { data: existingProduct, isLoading: isLoadingExisting } =
+    useProductDetailQuery(productId, location);
+
+  if (isEditMode && isLoadingExisting) {
+    return (
+      <div className="min-h-screen bg-white">
+        <TopBar title="물품 수정" onBack={() => navigate(-1)} />
+      </div>
+    );
+  }
+
+  if (isEditMode && !existingProduct) {
+    return (
+      <div className="min-h-screen bg-white">
+        <TopBar title="물품 수정" onBack={() => navigate(-1)} />
+        <p className="px-4 pt-10 text-center text-body-2 text-gray-400">
+          상품을 찾을 수 없습니다.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <UsedWriteForm
+      key={productId ?? "create"}
+      isEditMode={isEditMode}
+      productId={productId}
+      existingProduct={isEditMode ? existingProduct : undefined}
+    />
   );
 }
