@@ -1,9 +1,9 @@
-import { useUsedStore } from "../stores/usedStore";
+import { useChatStore } from "../stores/chatStore";
 import { useSupportStore } from "../stores/supportStore";
 import { useInterestCount } from "./useInterestCount";
 
 export function useSideMenuCounts() {
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const messagesByProduct = useChatStore((s) => s.messagesByProduct);
   const bookmarkCount = useSupportStore(
     (s) => s.posts.filter((post) => post.isBookmarked).length,
   );

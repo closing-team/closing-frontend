@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
+import VerifyField from "../../components/account/VerifyField";
 import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
-import cloyMd from "../../assets/images/cloy-md.png";
+import packageCircle from "../../assets/images/package-circle.png";
 import { PlusSmIcon } from "../../assets/icons";
 
 const INITIAL_NICKNAME = "원흥동 상사";
@@ -54,7 +55,7 @@ export default function ProfileEditPage() {
       <div className="flex flex-col items-center py-8">
         <div className="relative h-[90px] w-[90px]">
           <div className="h-full w-full overflow-hidden rounded-full bg-gray-200">
-            <img src={cloyMd} alt="" className="h-full w-full object-cover" />
+            <img src={packageCircle} alt="" className="h-full w-full object-cover" />
           </div>
           <button
             type="button"
@@ -86,27 +87,15 @@ export default function ProfileEditPage() {
 
         <TextField label="전화번호" value={phone} disabled />
 
-        <div>
-          <label className="mb-2 ml-0.5 block text-title-3 text-gray-900">
-            사업자 등록 번호
-          </label>
-          <div className="flex items-start gap-2">
-            <TextField
-              value={businessNumber}
-              disabled
-              success={verified ? "사업자 인증이 완료되었습니다." : undefined}
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-[90px] shrink-0"
-              onClick={handleReverify}
-            >
-              재인증
-            </Button>
-          </div>
-        </div>
+        <VerifyField
+          label="사업자 등록 번호"
+          value={businessNumber}
+          onChange={() => {}}
+          onVerify={handleReverify}
+          status={verified ? "verified" : "idle"}
+          successMessage="사업자 인증이 완료되었습니다."
+          disabled
+        />
       </div>
 
       <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-white px-4 pb-5 pt-2.5">

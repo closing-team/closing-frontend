@@ -5,7 +5,7 @@ import TopBar from "../../components/common/TopBar";
 import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatInput from "../../components/ai/ChatInput";
 import { CheckIcon } from "../../assets/icons";
-import characterRight from "../../assets/images/cloy-lg.png";
+import cloyCircle from "../../assets/images/cloy-circle.png";
 
 const CHECKLIST = [
   {
@@ -46,9 +46,9 @@ export default function AIPage() {
       <div className="flex flex-col items-center px-4 py-8">
         <div className="flex w-full flex-col items-start gap-3">
           <img
-            src={characterRight}
+            src={cloyCircle}
             alt=""
-            style={{ width: "80px", height: "80px", objectFit: "contain" }}
+            style={{ width: "72px", height: "72px", objectFit: "contain" }}
           />
           <p className="text-title-1 text-gray-900">
             사장님의 상황을 알려주시면

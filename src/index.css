@@ -83,6 +83,21 @@
   --color-delay-50: #fff5ea;
 }
 
+@keyframes wordmark-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-wordmark-bounce {
+  animation: wordmark-bounce 1.2s ease-in-out infinite;
+}
+
 @layer base {
   html {
     overflow-y: scroll;

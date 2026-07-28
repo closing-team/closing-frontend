@@ -10,9 +10,10 @@ import PriceField from "../../components/used/PriceField";
 import PhotoUploader from "../../components/used/PhotoUploader";
 import type { PhotoItem } from "../../components/used/PhotoUploader";
 import NaverMapPicker from "../../components/used/NaverMapPicker";
-import Toast from "../../components/used/Toast";
+import Toast from "../../components/common/Toast";
 import type { DealType, Product } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
+import type { GeoLocation } from "../../stores/usedStore";
 import { useProductDetailQuery } from "../../hooks/useProducts";
 import {
   useCreateProductMutation,
@@ -59,12 +60,14 @@ interface UsedWriteFormProps {
   isEditMode: boolean;
   productId?: number;
   existingProduct?: Product;
+  currentLocation: GeoLocation | null;
 }
 
 function UsedWriteForm({
   isEditMode,
   productId,
   existingProduct,
+  currentLocation,
 }: UsedWriteFormProps) {
   const navigate = useNavigate();
   const createProduct = useCreateProductMutation();
@@ -93,8 +96,12 @@ function UsedWriteForm({
   const [addressDetail, setAddressDetail] = useState(
     () => existingProduct?.dealLocation ?? "",
   );
-  const [lat, setLat] = useState(() => existingProduct?.lat ?? DEFAULT_LAT);
-  const [lng, setLng] = useState(() => existingProduct?.lng ?? DEFAULT_LNG);
+  const [lat, setLat] = useState(
+    () => existingProduct?.lat ?? currentLocation?.lat ?? DEFAULT_LAT,
+  );
+  const [lng, setLng] = useState(
+    () => existingProduct?.lng ?? currentLocation?.lng ?? DEFAULT_LNG,
+  );
   const [parcelAvailable, setParcelAvailable] = useState(() =>
     existingProduct ? existingProduct.dealTypes.includes("택배거래") : true,
   );
@@ -325,6 +332,7 @@ export default function UsedWritePage() {
       isEditMode={isEditMode}
       productId={productId}
       existingProduct={isEditMode ? existingProduct : undefined}
+      currentLocation={location}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import SearchBar from "../../components/used/SearchBar";
@@ -64,6 +64,10 @@ export default function UsedSearchResultPage() {
     location,
   });
   const handleToggleLike = useProductLikeToggle(results);
+  const handleProductClick = useCallback(
+    (id: number) => navigate(usedDetailPath(id)),
+    [navigate],
+  );
 
   const runSearch = () => {
     const q = commitSearch(keyword);
@@ -155,7 +159,7 @@ export default function UsedSearchResultPage() {
           <>
             <ProductGrid
               products={results}
-              onProductClick={(id) => navigate(usedDetailPath(id))}
+              onProductClick={handleProductClick}
               onToggleLike={handleToggleLike}
             />
             <InfiniteScrollTrigger

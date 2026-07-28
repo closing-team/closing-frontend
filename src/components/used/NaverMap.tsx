@@ -37,5 +37,10 @@ export default function NaverMap({ lat, lng, className = "" }: NaverMapProps) {
     return <NaverMapFallback className={className} />;
   }
 
-  return <div ref={containerRef} className={`bg-gray-100 ${className}`} />;
+  return (
+    <div
+      ref={containerRef}
+      className={`relative isolate bg-gray-100 ${className}`}
+    />
+  );
 }

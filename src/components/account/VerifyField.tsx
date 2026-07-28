@@ -12,6 +12,7 @@ interface VerifyFieldProps {
   errorMessage?: string;
   successMessage?: string;
   placeholder?: string;
+  disabled?: boolean;
   className?: string;
 }
 
@@ -24,6 +25,7 @@ export default function VerifyField({
   errorMessage,
   successMessage,
   placeholder,
+  disabled = false,
   className = "",
 }: VerifyFieldProps) {
   const verified = status === "verified";
@@ -42,6 +44,7 @@ export default function VerifyField({
           onClear={() => onChange("")}
           placeholder={placeholder}
           inputMode="numeric"
+          disabled={disabled}
           error={status === "error" ? errorMessage : undefined}
           success={verified ? successMessage : undefined}
           className="flex-1"

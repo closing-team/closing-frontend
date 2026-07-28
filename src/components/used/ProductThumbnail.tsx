@@ -13,7 +13,13 @@ export default function ProductThumbnail({
 }: ProductThumbnailProps) {
   if (imageUrl) {
     return (
-      <img src={imageUrl} alt={alt} className="h-full w-full object-cover" />
+      <img
+        src={imageUrl}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="h-full w-full object-cover"
+      />
     );
   }
 

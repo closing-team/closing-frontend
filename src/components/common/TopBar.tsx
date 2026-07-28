@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Wordmark from "../../assets/images/wordmark.svg";
+import wordmark from "../../assets/images/wordmark.svg";
 import { ChevronLeftIcon } from "../../assets/icons";
 
 interface TopBarProps {
@@ -38,7 +38,7 @@ export default function TopBar({
         </button>
       )}
       {logo && (
-        <img src={Wordmark} alt="클로징" className="h-[18px] object-contain" />
+        <img src={wordmark} alt="클로징" className="h-[18px] object-contain" />
       )}
       {title &&
         (onBack ? (

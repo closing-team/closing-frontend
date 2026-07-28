@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import cloyMd from "../../assets/images/cloy-md.png";
+import packageCircle from "../../assets/images/package-circle.png";
 import Button from "../common/Button";
 import { XLgIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
@@ -90,7 +90,7 @@ export default function SideMenu({
             </div>
             <div className="h-[60px] w-[60px] shrink-0 overflow-hidden rounded-full bg-gray-100">
               <img
-                src={cloyMd}
+                src={packageCircle}
                 alt=""
                 className="h-full w-full object-cover"
               />

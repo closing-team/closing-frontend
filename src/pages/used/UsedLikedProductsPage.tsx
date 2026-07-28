@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import ProductGrid from "../../components/used/ProductGrid";
@@ -18,6 +19,10 @@ export default function UsedLikedProductsPage() {
     isFetchingNextPage,
   } = useBookmarkedProductsQuery(location);
   const handleToggleLike = useProductLikeToggle(likedProducts);
+  const handleProductClick = useCallback(
+    (id: number) => navigate(usedDetailPath(id)),
+    [navigate],
+  );
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -29,7 +34,7 @@ export default function UsedLikedProductsPage() {
         <>
           <ProductGrid
             products={likedProducts}
-            onProductClick={(id) => navigate(usedDetailPath(id))}
+            onProductClick={handleProductClick}
             onToggleLike={handleToggleLike}
             className="grid grid-cols-2 gap-x-3 gap-y-4 px-4 py-3"
           />

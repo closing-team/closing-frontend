@@ -48,6 +48,7 @@ export const ROUTES = {
 
   // dev
   DEV: "/dev",
+  DEV_EMPTY_VIEWS: "/dev/empty-views",
 } as const;
 
 export const guideDetailPath = (id: number | string) =>

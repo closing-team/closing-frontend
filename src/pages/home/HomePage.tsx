@@ -4,6 +4,7 @@ import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
+import Banner from "../../components/home/Banner";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
@@ -22,10 +23,7 @@ import {
   ChevronUpIcon,
   ChevronDownIcon,
 } from "../../assets/icons";
-import cubeIllust from "../../assets/images/package-banner.png";
-import aiCharacter from "../../assets/images/cloy-fab.png";
-import characterImg from "../../assets/images/cloy-banner.png";
-import curtainImg from "../../assets/images/curtain-banner.png";
+import cloyTransparent from "../../assets/images/cloy-transparent.png";
 import {
   MOCK_PROGRESS,
   MOCK_SCHEDULES,
@@ -36,104 +34,6 @@ const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function toDateKey(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
-
-function ProgressCard({
-  completed,
-  total,
-}: {
-  completed: number;
-  total: number;
-}) {
-  const pct = Math.round((completed / total) * 100);
-
-  return (
-    <div
-      className="mx-4 flex flex-col justify-between"
-      style={{
-        height: "148px",
-        borderRadius: "12px",
-        padding: "20px 16px 28px 16px",
-        background:
-          "linear-gradient(165deg, #4A3BF2 0%, #6659FF 50%, #9389FF 70%, #BDB7FF 85%, #D7D4FF 100%)",
-      }}
-    >
-      <div className="flex items-center justify-between">
-        <p className="text-title-3 text-white">전체 진행률</p>
-        <p className="text-caption-2 text-white">
-          총 {total}개의 작업 중 {completed}개 완료
-        </p>
-      </div>
-
-      {/* 중단: % + 일러스트 */}
-      <div className="flex items-center justify-between">
-        <p
-          className="font-bold text-white"
-          style={{
-            fontSize: "40px",
-            lineHeight: "160%",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {pct}%
-        </p>
-        <img
-          src={cubeIllust}
-          alt=""
-          style={{ width: "40px", height: "43px", objectFit: "contain" }}
-        />
-      </div>
-
-      {/* 하단: 진행 바 */}
-      <div className="h-2 w-full rounded-full bg-primary-400">
-        <div
-          className="h-2 rounded-full bg-white transition-all duration-300"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function EmptyCard() {
-  return (
-    <div
-      className="mx-4 relative overflow-hidden flex items-center justify-between"
-      style={{
-        height: "148px",
-        borderRadius: "12px",
-        background:
-          "linear-gradient(190deg, #4B3BF3 0%, #7F74F9 70%, #9C94FC 90%, #C4BFFF 100%)",
-      }}
-    >
-      <img
-        src={curtainImg}
-        alt=""
-        className="absolute top-0 left-0 w-full object-cover z-0"
-      />
-
-      <div className="relative z-10 pl-5 self-end pb-10">
-        <p className="text-body-2 text-gray-100">막막한 폐업 준비,</p>
-        <p className="text-title-3 text-white">
-          클로징이 순서대로 도와드릴게요.
-        </p>
-      </div>
-
-      {/* 캐릭터 - 우측 (z-20, 커튼 앞) */}
-      <img
-        src={characterImg}
-        alt=""
-        className="relative z-20"
-        style={{
-          width: "93.25px",
-          height: "108.47px",
-          objectFit: "contain",
-          marginRight: "16px",
-          marginTop: "20px",
-        }}
-      />
-    </div>
-  );
 }
 
 // ─── 캘린더 ──────────────────────────────────────────────────
@@ -365,7 +265,7 @@ export default function HomePage() {
         chatCount={chatCount}
       />
 
-      {todos.length === 0 ? <EmptyCard /> : <ProgressCard {...MOCK_PROGRESS} />}
+      <Banner {...MOCK_PROGRESS} />
 
       <Calendar
         year={year}
@@ -399,7 +299,11 @@ export default function HomePage() {
       <Fab
         variant="ai"
         icon={
-          <img src={aiCharacter} alt="" className="h-6 w-6 object-contain" />
+          <img
+            src={cloyTransparent}
+            alt=""
+            className="h-6 w-[17px] shrink-0 object-contain"
+          />
         }
         label="AI 맞춤 계획"
         onClick={() => navigate(ROUTES.AI)}

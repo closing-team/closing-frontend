@@ -92,7 +92,7 @@ declare global {
       }
 
       function reverseGeocode(
-        options: { coords: string; orders?: OrderType[] },
+        options: { coords: string; orders?: OrderType | string },
         callback: (status: string, response: ReverseGeocodeResponse) => void,
       ): void;
     }

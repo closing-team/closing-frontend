@@ -6,8 +6,8 @@ import TextArea from "../../components/common/TextArea";
 import Checkbox from "../../components/common/Checkbox";
 import Radio from "../../components/used/Radio";
 import SelectField from "../../components/common/SelectField";
-import VerifyField from "../../components/sidemenu/VerifyField";
-import type { VerifyStatus } from "../../components/sidemenu/VerifyField";
+import VerifyField from "../../components/account/VerifyField";
+import type { VerifyStatus } from "../../components/account/VerifyField";
 import PriceField from "../../components/used/PriceField";
 import Chip from "../../components/common/Chip";
 import TopBar from "../../components/common/TopBar";
@@ -44,7 +44,7 @@ import PlanCard from "../../components/common/PlanCard";
 import type { Plan } from "../../components/common/PlanCard";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import type { Product, UsedFilter, UsedSort } from "../../types/used";
-import aiCharacter from "../../assets/images/cloy-fab.png";
+import cloyTransparent from "../../assets/images/cloy-transparent.png";
 import {
   ChevronRightIcon,
   SearchIcon,
@@ -546,9 +546,9 @@ export default function ComponentsPage() {
               variant="ai"
               icon={
                 <img
-                  src={aiCharacter}
+                  src={cloyTransparent}
                   alt=""
-                  className="h-6 w-6 object-contain"
+                  className="h-6 w-[17px] shrink-0 object-contain"
                 />
               }
               label="AI 맞춤 계획"

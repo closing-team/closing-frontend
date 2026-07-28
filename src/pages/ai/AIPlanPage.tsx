@@ -9,7 +9,7 @@ import DeletePlanModal from "../../components/ai/DeletePlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
 import type { Plan } from "../../components/common/PlanCard";
 import { MOCK_PLANS } from "../../mocks/ai/mockAIPlans";
-import cloySm from "../../assets/images/cloy-sm.png";
+import cloyCircle from "../../assets/images/cloy-circle.png";
 
 type TextMessage = {
   id: number;
@@ -120,7 +120,7 @@ export default function AIPlanPage() {
             return (
               <div key={msg.id} className="flex flex-col items-start">
                 <img
-                  src={cloySm}
+                  src={cloyCircle}
                   alt=""
                   className="h-8 w-8 rounded-full object-contain"
                 />

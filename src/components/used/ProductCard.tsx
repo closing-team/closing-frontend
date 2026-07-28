@@ -1,3 +1,4 @@
+import { memo } from "react";
 import LikeButton from "./LikeButton";
 import ProductThumbnail from "./ProductThumbnail";
 import { formatPrice, isFreePrice } from "../../utils/formatPrice";
@@ -9,11 +10,7 @@ interface ProductCardProps {
   onToggleLike: (id: number) => void;
 }
 
-export default function ProductCard({
-  product,
-  onClick,
-  onToggleLike,
-}: ProductCardProps) {
+function ProductCard({ product, onClick, onToggleLike }: ProductCardProps) {
   const meta = [
     ...product.dealTypes,
     `${formatDistance(product.distanceM)}`,
@@ -64,3 +61,5 @@ function formatDistance(distanceM: number) {
   if (distanceM < 1000) return `${distanceM}m`;
   return `${(distanceM / 1000).toFixed(1)}km`;
 }
+
+export default memo(ProductCard);
