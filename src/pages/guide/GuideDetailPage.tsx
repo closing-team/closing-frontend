@@ -13,7 +13,7 @@ import HighlightBox from "../../components/guide/HighlightBox";
 import OptionBox from "../../components/guide/OptionBox";
 import UtilityItemCard from "../../components/guide/UtilityItemCard";
 import { CheckIcon } from "../../assets/icons";
-import cloyFab from "../../assets/images/cloy-fab.png";
+import cloyCircle from "../../assets/images/cloy-circle.png";
 import { ROUTES, guideDetailPath } from "../../constants/routes";
 
 interface StepContent {
@@ -1207,9 +1207,7 @@ function Step9Page() {
         </SectionCard>
 
         <div className="flex w-full flex-col items-center gap-3 py-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-b from-primary-100 to-primary-50">
-            <img src={cloyFab} alt="" className="h-6 w-6" />
-          </div>
+          <img src={cloyCircle} alt="" className="h-12 w-12 shrink-0" />
           <p className="text-title-2 text-primary-500">
             {STEP9_HEADER.celebrationTitle}
           </p>

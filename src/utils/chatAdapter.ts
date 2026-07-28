@@ -1,4 +1,4 @@
-import cloySm from "../assets/images/cloy-sm.png";
+import packageCircle from "../assets/images/package-circle.png";
 import type { Product, ChatMessage as UsedChatMessage } from "../types/used";
 import type {
   ChatMessage,
@@ -26,7 +26,7 @@ export function toChatRoomDetail(
   return {
     id: String(product.id),
     partnerNickname: product.sellerName ?? "판매자",
-    partnerAvatarUrl: cloySm,
+    partnerAvatarUrl: packageCircle,
     dateLabel,
     product: {
       id: String(product.id),
@@ -75,7 +75,7 @@ export function toChatRoomSummaries(
         productName: product.title,
         productImageUrl: product.imageUrl ?? "",
         partnerNickname: product.sellerName ?? "판매자",
-        partnerAvatarUrl: cloySm,
+        partnerAvatarUrl: packageCircle,
         location: product.sellerNeighborhood ?? "",
         lastMessage: last.text,
         lastMessageAt: last.sentAt,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
@@ -52,6 +52,10 @@ export default function UsedListPage() {
     location,
   });
   const handleToggleLike = useProductLikeToggle(visibleProducts);
+  const handleProductClick = useCallback(
+    (id: number) => navigate(usedDetailPath(id)),
+    [navigate],
+  );
 
   const handleWrite = () => {
     navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
@@ -120,7 +124,7 @@ export default function UsedListPage() {
               <>
                 <ProductGrid
                   products={visibleProducts}
-                  onProductClick={(id) => navigate(usedDetailPath(id))}
+                  onProductClick={handleProductClick}
                   onToggleLike={handleToggleLike}
                 />
                 <InfiniteScrollTrigger

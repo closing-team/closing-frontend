@@ -5,7 +5,7 @@ import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
 import Callout, { CalloutItem } from "../../components/common/Callout";
-import Toast from "../../components/used/Toast";
+import Toast from "../../components/common/Toast";
 import { ROUTES } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
 import { useVerifyBusinessMutation } from "../../hooks/useBusinessMutations";

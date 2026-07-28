@@ -1,16 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import kakaoIcon from "../../assets/images/auth/kakao-icon.svg";
-import buttonSpacer from "../../assets/images/auth/login-button-spacer.svg";
-import heroBody from "../../assets/images/auth/login-hero-body.png";
-import heroEyeLeft from "../../assets/images/auth/login-hero-eye-left.svg";
-import heroEyeRight from "../../assets/images/auth/login-hero-eye-right.svg";
-import heroHair from "../../assets/images/auth/login-hero-hair.png";
-import heroHat from "../../assets/images/auth/login-hero-hat.png";
-import heroMouth from "../../assets/images/auth/login-hero-mouth.svg";
-import heroTop from "../../assets/images/auth/login-hero-top.png";
-import loginLogo from "../../assets/images/auth/login-logo.png";
-import loginWordmark from "../../assets/images/auth/login-wordmark.svg";
+import { Link, useNavigate } from "react-router-dom";
+import kakao from "../../assets/images/kakao.png";
+import cloyBlur from "../../assets/images/cloy-blur.png";
+import logo from "../../assets/images/logo.png";
+import wordmark from "../../assets/images/wordmark.svg";
 import { ROUTES } from "../../constants/routes";
 import type { KakaoLoginHandler } from "../../types/auth";
 
@@ -42,47 +35,54 @@ export default function LoginPage({ onKakaoLogin = defaultKakaoLogin }: LoginPag
   };
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-primary-50">
+    <main className="relative min-h-dvh bg-primary-50">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <img src={heroBody} alt="" className="absolute left-[119px] top-[336px] h-[448px] w-[444px] -scale-x-100 opacity-30" />
-        <img src={heroEyeLeft} alt="" className="absolute left-[261px] top-[500px] h-[66px] w-[33px] -scale-x-100 opacity-30" />
-        <img src={heroEyeRight} alt="" className="absolute left-[194px] top-[500px] h-[66px] w-[33px] -scale-x-100 opacity-30" />
-        <img src={heroHat} alt="" className="absolute left-[175px] top-[308px] h-[102px] w-[122px] -scale-x-100 opacity-30" />
-        <img src={heroHair} alt="" className="absolute left-[75px] top-[82px] h-[267px] w-[186px] -scale-x-100 opacity-30" />
-        <img src={heroTop} alt="" className="absolute left-[131px] top-[238px] h-[134px] w-[153px] -scale-x-100 opacity-30" />
-        <img src={heroMouth} alt="" className="absolute left-[270px] top-[592px] h-[29px] w-[46px] -scale-x-100 opacity-30" />
+        <img
+          src={cloyBlur}
+          alt=""
+          className="absolute left-[74.5px] top-[82px] h-[702.457px] w-[488.133px]"
+        />
       </div>
 
-      <section className="absolute inset-x-0 top-[302px] z-10">
-        <div className="px-5">
-          <img src={loginLogo} alt="" className="h-[70px] w-[70px]" />
-          <img src={loginWordmark} alt="클로징" className="mt-5 h-[22px] w-[60px]" />
-          <p className="mt-5 px-0.5 text-subtitle-1 text-[#48464A]">
+      <section className="relative z-10 flex min-h-dvh flex-col pt-[302px] pb-8">
+        <div className="flex flex-col items-start justify-center gap-5 self-stretch px-5">
+          <img src={logo} alt="" className="h-[70px] w-[70px]" />
+          <img src={wordmark} alt="클로징" className="h-[22px] w-[60px]" />
+          <p className="px-0.5 text-subtitle-1 text-gray-700">
             혼란 없이 정리하고, 더 빠르게 다시 시작하세요.
           </p>
         </div>
 
-        <button
-          type="button"
-          className="mx-4 mt-[212px] flex h-14 w-[calc(100%-32px)] items-center justify-between rounded-xl border border-gray-200 bg-white px-4 text-title-3 text-[#232224] transition-colors enabled:hover:bg-gray-5 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-          onClick={handleKakaoLogin}
-          disabled={isLoggingIn}
-          aria-busy={isLoggingIn}
-        >
-          <img src={kakaoIcon} alt="" className="h-6 w-6" />
-          <span>{isLoggingIn ? "카카오 로그인 중..." : "카카오로 시작하기"}</span>
-          <img src={buttonSpacer} alt="" className="h-6 w-6" />
-        </button>
+        <div className="mx-4 mt-[212px] flex flex-col gap-4">
+          <button
+            type="button"
+            className="flex h-14 items-center justify-between rounded-xl border border-gray-200 bg-white p-4 text-title-3 text-[#232224] backdrop-blur-sm transition-colors enabled:hover:bg-gray-5 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+            onClick={handleKakaoLogin}
+            disabled={isLoggingIn}
+            aria-busy={isLoggingIn}
+          >
+            <img src={kakao} alt="" className="h-6 w-6" />
+            <span>{isLoggingIn ? "카카오 로그인 중..." : "카카오로 시작하기"}</span>
+            <span className="h-6 w-6" aria-hidden="true" />
+          </button>
 
-        {errorMessage && (
-          <p role="alert" className="mx-5 mt-3 text-body-3 text-warning-600">
-            {errorMessage}
+          {errorMessage && (
+            <p role="alert" className="text-center text-body-3 text-warning-600">
+              {errorMessage}
+            </p>
+          )}
+
+          <p className="text-center text-body-3 text-gray-400">
+            로그인 시 서비스 이용약관 및 개인정보 처리방침에 동의하게 됩니다.
           </p>
-        )}
 
-        <p className="mt-4 px-2.5 text-center text-body-3 text-gray-400">
-          로그인 시 서비스 이용약관 및 개인정보 처리방침에 동의하게 됩니다.
-        </p>
+          {import.meta.env.DEV && (
+            <div className="mt-6 flex justify-center gap-4 text-caption-2 text-gray-300">
+              <Link to={ROUTES.DEV}>컴포넌트 모음</Link>
+              <Link to={ROUTES.DEV_EMPTY_VIEWS}>EmptyView 모음</Link>
+            </div>
+          )}
+        </div>
       </section>
     </main>
   );

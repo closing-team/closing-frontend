@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getBookmarkedProducts,
@@ -55,10 +56,13 @@ function filterToParams(filter: UsedFilter): {
 }
 
 export const productKeys = {
+  lists: () => ["products", "list"] as const,
   list: (params: unknown) => ["products", "list", params] as const,
   detail: (id: number) => ["products", "detail", id] as const,
+  mes: () => ["products", "me"] as const,
   me: (status: ProductStatusCode | undefined) =>
     ["products", "me", status] as const,
+  bookmarksAll: () => ["products", "bookmarks"] as const,
   bookmarks: (location: GeoLocation | null) =>
     ["products", "bookmarks", location] as const,
 };
@@ -101,8 +105,12 @@ export function useProductListQuery({
       lastPage.page.hasNext ? (lastPage.page.nextCursor ?? undefined) : undefined,
   });
 
-  const products = (query.data?.pages.flatMap((page) => page.products) ?? []).map(
-    productSummaryDtoToProduct,
+  const products = useMemo(
+    () =>
+      (query.data?.pages.flatMap((page) => page.products) ?? []).map(
+        productSummaryDtoToProduct,
+      ),
+    [query.data],
   );
 
   return {
@@ -141,8 +149,12 @@ export function useMyProductsQuery(status?: ProductStatusCode) {
       lastPage.page.hasNext ? (lastPage.page.nextCursor ?? undefined) : undefined,
   });
 
-  const products = (query.data?.pages.flatMap((page) => page.products) ?? []).map(
-    myProductSummaryDtoToProduct,
+  const products = useMemo(
+    () =>
+      (query.data?.pages.flatMap((page) => page.products) ?? []).map(
+        myProductSummaryDtoToProduct,
+      ),
+    [query.data],
   );
   const counts = query.data?.pages[0]?.counts ?? DEFAULT_COUNTS;
 
@@ -171,8 +183,12 @@ export function useBookmarkedProductsQuery(location: GeoLocation | null) {
       lastPage.page.hasNext ? (lastPage.page.nextCursor ?? undefined) : undefined,
   });
 
-  const products = (query.data?.pages.flatMap((page) => page.products) ?? []).map(
-    productSummaryDtoToProduct,
+  const products = useMemo(
+    () =>
+      (query.data?.pages.flatMap((page) => page.products) ?? []).map(
+        productSummaryDtoToProduct,
+      ),
+    [query.data],
   );
 
   return {

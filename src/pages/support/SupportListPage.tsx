@@ -6,9 +6,13 @@ import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import type { SupportPost } from "../../components/support/SupportCard";
-import SupportEmptyView from "../../components/support/SupportEmptyView";
+import EmptyView from "../../components/common/EmptyView";
 import SideMenu from "../../components/sidemenu/SideMenu";
-import { MenuHamburgerIcon } from "../../assets/icons";
+import {
+  MenuHamburgerIcon,
+  FileSearchIcon,
+  BookmarkEmptyIcon,
+} from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSupportStore } from "../../stores/supportStore";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
@@ -130,9 +134,24 @@ export default function SupportListPage() {
 
       {/* 공고 목록 */}
       {visiblePosts.length === 0 ? (
-        <SupportEmptyView
+        <EmptyView
+          icon={
+            <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full bg-gray-100">
+              {activeTab === "bookmark" ? (
+                <BookmarkEmptyIcon className="h-8 w-8 text-gray-200" />
+              ) : (
+                <FileSearchIcon className="h-8 w-8 text-gray-200" />
+              )}
+            </div>
+          }
           title={EMPTY_STATE[activeTab].title}
           description={EMPTY_STATE[activeTab].description}
+          actionLabel={activeTab === "bookmark" ? "공고 보러가기" : undefined}
+          onAction={
+            activeTab === "bookmark"
+              ? () => setActiveTab("notice")
+              : undefined
+          }
         />
       ) : (
         <div className="flex flex-col gap-3 px-4">

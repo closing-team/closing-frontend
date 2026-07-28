@@ -1,6 +1,6 @@
 import { api } from "./axios";
+import type { ApiEnvelope } from "../types/api";
 import type {
-  ApiEnvelope,
   BookmarkResponseData,
   CreateProductRequestJson,
   CreateProductResponseData,

@@ -87,7 +87,7 @@ export default function NaverMapPicker({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className={`relative ${className}`}>
+      <div className={`relative isolate ${className}`}>
         <div ref={containerRef} className="h-full w-full bg-gray-100" />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center pb-4">
           <MarkerIcon className="h-8 w-8 text-primary-500" />

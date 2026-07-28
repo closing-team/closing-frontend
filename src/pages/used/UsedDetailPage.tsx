@@ -10,6 +10,7 @@ import ProductThumbnail from "../../components/used/ProductThumbnail";
 import { formatPriceLabel } from "../../utils/formatPrice";
 import { ROUTES, chatRoomPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
+import { useChatStore } from "../../stores/chatStore";
 import { useProductDetailQuery } from "../../hooks/useProducts";
 import { useToggleBookmarkMutation } from "../../hooks/useProductMutations";
 import { useProductActionsSheet } from "../../hooks/useProductActionsSheet";
@@ -41,7 +42,7 @@ export default function UsedDetailPage() {
   const id = Number(productId);
 
   const location = useUsedStore((s) => s.location);
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const messagesByProduct = useChatStore((s) => s.messagesByProduct);
   const { data: product, isLoading } = useProductDetailQuery(id, location);
   const toggleBookmark = useToggleBookmarkMutation();
   const actions = useProductActionsSheet();

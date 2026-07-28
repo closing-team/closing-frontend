@@ -1,5 +1,5 @@
 import { SendEnabledIcon } from "../../assets/icons";
-import cloySm from "../../assets/images/cloy-sm.png";
+import cloyCircle from "../../assets/images/cloy-circle.png";
 
 interface ChatInputProps {
   value: string;
@@ -37,7 +37,7 @@ export default function ChatInput({
       />
       <div className="mt-2 flex items-center justify-between">
         <span className="flex items-center gap-2">
-          <img src={cloySm} alt="" className="h-6 w-6 shrink-0 rounded-full" />
+          <img src={cloyCircle} alt="" className="h-6 w-6 shrink-0 rounded-full" />
           <span className="text-caption-1 text-gray-500">{helper}</span>
         </span>
         <button

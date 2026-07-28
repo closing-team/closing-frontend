@@ -2,11 +2,13 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ChatComposer from "../../components/chat/ChatComposer";
 import ProductBanner from "../../components/chat/ProductBanner";
+import ChatRoomEmptyView from "../../components/chat/ChatRoomEmptyView";
 import ChatBubble from "../../components/common/ChatBubble";
 import TopBar from "../../components/common/TopBar";
 import InvalidChatRoomPage from "./InvalidChatRoomPage";
 import { usedDetailPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
+import { useChatStore } from "../../stores/chatStore";
 import { useProductDetailQuery } from "../../hooks/useProducts";
 import { toChatMessages, toChatRoomDetail } from "../../utils/chatAdapter";
 import type {
@@ -177,9 +179,13 @@ function ChatRoomView({
             target.scrollHeight - target.scrollTop - target.clientHeight <= 24;
         }}
       >
-        <p className="mt-5 self-stretch text-center text-body-3 text-gray-500">
-          {room.dateLabel}
-        </p>
+        {messageGroups.length === 0 ? (
+          <ChatRoomEmptyView partnerNickname={room.partnerNickname} />
+        ) : (
+          <p className="mt-5 self-stretch text-center text-body-3 text-gray-500">
+            {room.dateLabel}
+          </p>
+        )}
         {messageGroups.map((group) => {
           const firstMessage = group[0];
           const isMine = firstMessage.sender === "me";
@@ -248,8 +254,8 @@ export default function ChatRoomPage() {
   const location = useUsedStore((s) => s.location);
   const { data: product } = useProductDetailQuery(Number(productId), location);
   const messages =
-    useUsedStore((s) => s.messagesByProduct[Number(productId)]) ?? [];
-  const sendMessage = useUsedStore((s) => s.sendMessage);
+    useChatStore((s) => s.messagesByProduct[Number(productId)]) ?? [];
+  const sendMessage = useChatStore((s) => s.sendMessage);
 
   if (!product) return <InvalidChatRoomPage />;
 

@@ -1,5 +1,5 @@
 import { api } from "./axios";
-import type { ApiEnvelope } from "../types/productApi";
+import type { ApiEnvelope } from "../types/api";
 import type {
   VerifyBusinessRequestJson,
   VerifyBusinessResponseData,

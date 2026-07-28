@@ -4,7 +4,7 @@ import TopBar from "../../components/common/TopBar";
 import ChatEmptyView from "../../components/chat/ChatEmptyView";
 import ChatCard from "../../components/chat/ChatCard";
 import { ROUTES, chatRoomPath } from "../../constants/routes";
-import { useUsedStore } from "../../stores/usedStore";
+import { useChatStore } from "../../stores/chatStore";
 import { getProductDetail } from "../../api/used";
 import { productDetailDtoToProduct } from "../../utils/productAdapter";
 import { productKeys } from "../../hooks/useProducts";
@@ -22,7 +22,7 @@ function sortRoomsByLatestMessage(rooms: ChatRoomSummary[]) {
 
 export default function ChatListPage() {
   const navigate = useNavigate();
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
+  const messagesByProduct = useChatStore((s) => s.messagesByProduct);
   const productIds = Object.keys(messagesByProduct).map(Number);
 
   const productQueries = useQueries({
