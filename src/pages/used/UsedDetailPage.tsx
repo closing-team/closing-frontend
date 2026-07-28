@@ -167,8 +167,13 @@ export default function UsedDetailPage() {
           variant={hasChat ? "secondary" : "primary"}
           className={hasChat ? "text-primary-500" : ""}
           onClick={() => navigate(chatRoomPath(product.id))}
+          disabled={isMine}
         >
-          {hasChat ? `대화중인 채팅 ${chatMessageCount}` : "구매 문의"}
+          {isMine
+            ? "대화중인 채팅 0"
+            : hasChat
+              ? `대화중인 채팅 ${chatMessageCount}`
+              : "구매 문의"}
         </Button>
         {!isMine && (
           <LikeButton

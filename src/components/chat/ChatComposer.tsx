@@ -7,6 +7,8 @@ import {
 } from "../../assets/icons";
 import type { PendingChatMessage } from "../../types/chat";
 
+const MAX_TEXTAREA_HEIGHT = 60;
+
 interface ChatComposerProps {
   onSend: (message: PendingChatMessage) => void | Promise<void>;
 }
@@ -16,10 +18,19 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [failedMessage, setFailedMessage] = useState<PendingChatMessage | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const ownedPreviewUrlRef = useRef<string | null>(null);
   const canSend = value.trim().length > 0 || selectedFile !== null;
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT)}px`;
+  }, [value]);
 
   const revokeOwnedPreview = () => {
     const ownedPreviewUrl = ownedPreviewUrlRef.current;
@@ -171,32 +182,42 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
           disabled={isSending}
           onChange={handleFileChange}
         />
-        <textarea
-          aria-label="메시지 입력"
-          value={value}
-          onChange={(event) => {
-            if (isSending) {
-              return;
-            }
+        <div
+          className={`flex min-h-10 min-w-0 flex-1 items-center justify-between rounded-lg border bg-gray-30 py-2 pl-3 pr-2 ${
+            isFocused ? "border-primary-500" : "border-gray-200"
+          }`}
+        >
+          <textarea
+            ref={textareaRef}
+            aria-label="메시지 입력"
+            value={value}
+            onChange={(event) => {
+              if (isSending) {
+                return;
+              }
 
-            setValue(event.target.value);
-            setFailedMessage(null);
-          }}
-          onKeyDown={(event) => {
-            if (event.nativeEvent.isComposing) {
-              return;
-            }
+              setValue(event.target.value);
+              setFailedMessage(null);
+            }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onKeyDown={(event) => {
+              if (event.nativeEvent.isComposing) {
+                return;
+              }
 
-            if (event.key === "Enter" && !event.shiftKey) {
-              event.preventDefault();
-              void send();
-            }
-          }}
-          placeholder="메시지를 입력하세요..."
-          rows={1}
-          disabled={isSending}
-          className="h-10 min-w-0 flex-1 resize-none rounded-lg bg-gray-30 py-2 pl-3 pr-2 text-body-2 text-gray-900 outline-none placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-primary-500"
-        />
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                void send();
+              }
+            }}
+            placeholder="메시지를 입력하세요..."
+            rows={1}
+            disabled={isSending}
+            style={{ maxHeight: MAX_TEXTAREA_HEIGHT }}
+            className="w-full flex-1 resize-none overflow-y-auto text-[14px] font-normal leading-[1.4] tracking-[-0.28px] text-gray-900 outline-none placeholder:text-gray-400 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400"
+          />
+        </div>
         <button
           type="button"
           aria-label="전송"

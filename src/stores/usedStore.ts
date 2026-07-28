@@ -17,6 +17,7 @@ interface UsedState {
   locationGranted: boolean;
   setLocationGranted: (value: boolean) => void;
   location: GeoLocation | null;
+  locationUpdatedAt: number | null;
   setLocation: (location: GeoLocation) => void;
 
   locationPromptAnswered: boolean;
@@ -51,8 +52,14 @@ export const useUsedStore = create<UsedState>()(
       locationGranted: false,
       setLocationGranted: (value) => set({ locationGranted: value }),
       location: null,
+      locationUpdatedAt: null,
       setLocation: (location) =>
-        set({ locationGranted: true, locationPromptAnswered: true, location }),
+        set({
+          locationGranted: true,
+          locationPromptAnswered: true,
+          location,
+          locationUpdatedAt: Date.now(),
+        }),
 
       locationPromptAnswered: false,
       setLocationPromptAnswered: (value) =>
@@ -64,6 +71,7 @@ export const useUsedStore = create<UsedState>()(
         locationGranted: state.locationGranted,
         locationPromptAnswered: state.locationPromptAnswered,
         location: state.location,
+        locationUpdatedAt: state.locationUpdatedAt,
         recentSearches: state.recentSearches,
       }),
     },
