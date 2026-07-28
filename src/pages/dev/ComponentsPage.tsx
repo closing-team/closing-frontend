@@ -39,7 +39,7 @@ import BookmarkButton from "../../components/support/BookmarkButton";
 import StepCard from "../../components/guide/StepCard";
 import type { GuideStep } from "../../components/guide/StepCard";
 import SupportCard from "../../components/support/SupportCard";
-import type { SupportPost } from "../../components/support/SupportCard";
+import type { SupportListItem } from "../../types/supportApi";
 import PlanCard from "../../components/common/PlanCard";
 import type { Plan } from "../../components/common/PlanCard";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
@@ -73,14 +73,16 @@ const SAMPLE_GUIDE_STEP: GuideStep = {
     "매장 안의 물건 정리부터 세금 확정까지, 사장님이 발로 뛰는 순서 그대로 정렬했습니다.",
 };
 
-const SAMPLE_SUPPORT_POST: SupportPost = {
-  id: 1,
-  organization: "지원기관 텍스트",
+const SAMPLE_SUPPORT_POST: SupportListItem = {
+  supportId: 1,
+  organizationName: "지원기관 텍스트",
   title: "제목 텍스트",
-  period: "2000.00.00 - 2000.00.00",
-  startDate: "2000-01-01",
-  endDate: "2000-01-01",
+  applyStartDate: "2000-01-01",
+  applyEndDate: "2000-01-01",
+  applicationPeriod: "2000.00.00 - 2000.00.00",
+  status: "ONGOING",
   isBookmarked: false,
+  viewCount: 0,
 };
 
 const SAMPLE_PLAN: Plan = {

@@ -24,6 +24,7 @@ import type {
   UpdateProductStatusRequest,
 } from "../../types/productApi";
 import type { VerifyBusinessRequestJson } from "../../types/businessApi";
+import { supportHandlers } from "../support/handlers";
 
 function formatBusinessNumber(digits: string): string {
   return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
@@ -501,4 +502,6 @@ export const handlers = [
       },
     });
   }),
+
+  ...supportHandlers,
 ];
