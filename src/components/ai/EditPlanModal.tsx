@@ -10,7 +10,7 @@ import type { TimeValue } from "../common/TimeWheel";
 interface EditPlanModalProps {
   plan: Plan;
   onCancel: () => void;
-  onConfirm: (updated: Plan) => void;
+  onConfirm: (updated: Plan, memo?: string) => void;
 }
 
 export default function EditPlanModal({
@@ -112,7 +112,10 @@ export default function EditPlanModal({
             size="lg"
             fullWidth
             onClick={() =>
-              onConfirm({ ...plan, title, startDate, startTime, endDate, endTime })
+              onConfirm(
+                { ...plan, title, startDate, startTime, endDate, endTime },
+                memo,
+              )
             }
           >
             완료
