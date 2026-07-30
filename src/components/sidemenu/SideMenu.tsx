@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import packageCircle from "../../assets/images/package-circle.png";
 import Button from "../common/Button";
+import ConfirmModal from "../common/ConfirmModal";
 import { XLgIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
 
@@ -51,6 +53,8 @@ export default function SideMenu({
   chatCount = 0,
 }: SideMenuProps) {
   const navigate = useNavigate();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
 
   if (!open) return null;
 
@@ -151,13 +155,14 @@ export default function SideMenu({
             <MenuRow
               label="로그아웃"
               muted
-              onClick={() => go(ROUTES.LOGIN)}
+              onClick={() => setShowLogoutConfirm(true)}
             />
           </div>
 
           <div className="mt-auto flex justify-center">
             <button
               type="button"
+              onClick={() => setShowWithdrawConfirm(true)}
               className="flex h-[52px] w-[167px] shrink-0 items-center justify-center gap-2 rounded-lg p-2.5 text-body-2 text-gray-500 underline underline-offset-2"
             >
               클로징 탈퇴
@@ -165,6 +170,33 @@ export default function SideMenu({
           </div>
         </aside>
       </div>
+
+      {showLogoutConfirm && (
+        <ConfirmModal
+          title="로그아웃 할까요?"
+          confirmLabel="로그아웃"
+          confirmVariant="primary"
+          onCancel={() => setShowLogoutConfirm(false)}
+          onConfirm={() => {
+            setShowLogoutConfirm(false);
+            go(ROUTES.LOGIN);
+          }}
+        />
+      )}
+
+      {showWithdrawConfirm && (
+        <ConfirmModal
+          title="정말 클로징 회원에서 탈퇴할까요?"
+          description="삭제된 데이터는 복구되지 않습니다."
+          confirmLabel="탈퇴"
+          onCancel={() => setShowWithdrawConfirm(false)}
+          onConfirm={() => {
+            // TODO: 실제 탈퇴 API 연동 (기능명세서 A202: 탈퇴 확인 후 계정 삭제 및 LOG001)
+            setShowWithdrawConfirm(false);
+            go(ROUTES.LOGIN);
+          }}
+        />
+      )}
     </div>
   );
 }
