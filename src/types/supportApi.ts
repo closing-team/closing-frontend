@@ -43,3 +43,24 @@ export interface GetSupportsParams {
   cursor?: string;
   size?: number;
 }
+
+export interface BookmarkRequestJson {
+  supportId: number;
+}
+
+export interface BookmarkResponseData {
+  bookmarkId: number;
+  supportId: number;
+  createdAt: string;
+}
+
+export interface BookmarkListDataDto {
+  bookmarks: SupportListItem[];
+  page: PageInfoDto<string>;
+}
+
+export interface GetBookmarksParams {
+  sort?: SupportSortCode;
+  cursor?: string;
+  size?: number;
+}

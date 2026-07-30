@@ -1,13 +1,21 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import Chip from "../../components/common/Chip";
 import Button from "../../components/common/Button";
+import Toast from "../../components/common/Toast";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
 import { ChevronRightIcon } from "../../assets/icons";
-import { useSupportStore } from "../../stores/supportStore";
 import { useSupportDetailQuery } from "../../hooks/useSupports";
-import { formatApplicationPeriod } from "../../utils/supportAdapter";
+import {
+  useAddBookmarkMutation,
+  useRemoveBookmarkMutation,
+} from "../../hooks/useSupportMutations";
+import {
+  formatApplicationPeriod,
+  getBookmarkErrorMessage,
+} from "../../utils/supportAdapter";
 import { ROUTES } from "../../constants/routes";
 
 export default function SupportDetailPage() {
@@ -16,8 +24,15 @@ export default function SupportDetailPage() {
   const numericSupportId = Number(supportId);
 
   const { data: detail, isLoading } = useSupportDetailQuery(numericSupportId);
-  const isFlipped = useSupportStore((s) => s.flippedIds.has(numericSupportId));
-  const toggleBookmark = useSupportStore((s) => s.toggleBookmark);
+  const addBookmark = useAddBookmarkMutation();
+  const removeBookmark = useRemoveBookmarkMutation();
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = window.setTimeout(() => setToastMessage(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
 
   if (isLoading) {
     return (
@@ -38,18 +53,21 @@ export default function SupportDetailPage() {
     );
   }
 
-  const post = {
-    ...detail,
-    isBookmarked: isFlipped ? !detail.isBookmarked : detail.isBookmarked,
-  };
+  const post = detail;
 
   const todayStr = new Date().toISOString().slice(0, 10);
   const isExpired = post.applyEndDate !== null && post.applyEndDate < todayStr;
 
   const handleApply = () => {
     // TODO: 외부 링크 접속 실패 시 토스트 노출 + URL 클립보드 복사 처리 필요
-    // TODO: 토스트 컴포넌트 도입 후 구현
     window.open(post.externalUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleToggleBookmark = () => {
+    const mutation = post.isBookmarked ? removeBookmark : addBookmark;
+    mutation.mutate(post.supportId, {
+      onError: (error) => setToastMessage(getBookmarkErrorMessage(error)),
+    });
   };
 
   return (
@@ -59,7 +77,7 @@ export default function SupportDetailPage() {
       <div className="relative mx-4 mt-5 overflow-hidden rounded-xl bg-white">
         <BookmarkButton
           bookmarked={post.isBookmarked}
-          onToggle={() => toggleBookmark(post.supportId)}
+          onToggle={handleToggleBookmark}
           className="absolute right-3 top-3 z-10"
         />
 
@@ -110,6 +128,7 @@ export default function SupportDetailPage() {
         </div>
 
         <div className="flex flex-col items-center gap-3 px-4 pb-4 pt-5">
+          {toastMessage && <Toast message={toastMessage} />}
           <Button
             variant="primary"
             fullWidth

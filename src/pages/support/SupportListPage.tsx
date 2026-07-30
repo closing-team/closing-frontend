@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
@@ -7,6 +7,7 @@ import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
 import EmptyView from "../../components/common/EmptyView";
 import SideMenu from "../../components/sidemenu/SideMenu";
+import Toast from "../../components/common/Toast";
 import {
   MenuHamburgerIcon,
   FileSearchIcon,
@@ -14,7 +15,8 @@ import {
 } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSupportStore } from "../../stores/supportStore";
-import { useSupportListQuery } from "../../hooks/useSupports";
+import { useBookmarksQuery, useSupportListQuery } from "../../hooks/useSupports";
+import { useSupportBookmarkToggle } from "../../hooks/useSupportBookmarkToggle";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
 import type { SupportListItem, SupportSortCode } from "../../types/supportApi";
@@ -89,24 +91,24 @@ export default function SupportListPage() {
   const authenticated = useUsedStore((s) => s.authenticated);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
-  useSupportListQuery(SORT_TO_CODE[sort]);
+  const sortCode = SORT_TO_CODE[sort];
+  useSupportListQuery(sortCode);
   const posts = useSupportStore((s) => s.posts);
-  const flippedIds = useSupportStore((s) => s.flippedIds);
-  const toggleBookmark = useSupportStore((s) => s.toggleBookmark);
+  const { bookmarks } = useBookmarksQuery(sortCode);
 
-  const visiblePosts = useMemo(() => {
-    const withBookmarkState = posts.map((post) => ({
-      ...post,
-      isBookmarked: flippedIds.has(post.supportId)
-        ? !post.isBookmarked
-        : post.isBookmarked,
-    }));
-    const filtered =
-      activeTab === "bookmark"
-        ? withBookmarkState.filter((post) => post.isBookmarked)
-        : withBookmarkState;
-    return sortPosts(filtered, sort);
-  }, [posts, flippedIds, activeTab, sort]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = window.setTimeout(() => setToastMessage(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
+
+  const isBookmarkTab = activeTab === "bookmark";
+  const visiblePosts = useMemo(
+    () => (isBookmarkTab ? bookmarks : sortPosts(posts, sort)),
+    [isBookmarkTab, bookmarks, posts, sort],
+  );
+  const toggleBookmark = useSupportBookmarkToggle(visiblePosts, setToastMessage);
 
   return (
     <div className="min-h-screen bg-gray-30 pb-20">
@@ -183,6 +185,12 @@ export default function SupportListPage() {
               onToggleBookmark={toggleBookmark}
             />
           ))}
+        </div>
+      )}
+
+      {toastMessage && (
+        <div className="fixed bottom-24 left-1/2 z-40 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 px-4">
+          <Toast message={toastMessage} />
         </div>
       )}
 
