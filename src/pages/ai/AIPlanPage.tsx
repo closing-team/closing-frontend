@@ -7,9 +7,14 @@ import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/ai/DeletePlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
+import Toast from "../../components/common/Toast";
+import { AlertIcon } from "../../assets/icons";
 import type { Plan } from "../../components/common/PlanCard";
 import { MOCK_PLANS } from "../../mocks/ai/mockAIPlans";
 import cloyCircle from "../../assets/images/cloy-circle.png";
+
+// TODO: AI 세션 API 연동 후 세션 조회/메세지 전송 응답의 remainingTurns 필드로 교체
+const MAX_FREE_TURNS = 2;
 
 type TextMessage = {
   id: number;
@@ -46,6 +51,9 @@ export default function AIPlanPage() {
   const [input, setInput] = useState("");
   const [deletingPlan, setDeletingPlan] = useState<Plan | null>(null);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+  const [turnCount, setTurnCount] = useState(0);
+  const remainingTurns = Math.max(MAX_FREE_TURNS - turnCount, 0);
+  const isExhausted = turnCount >= MAX_FREE_TURNS;
   const [messages, setMessages] = useState<Message[]>(() => {
     const initial = (location.state as { initialMessage?: string } | null)
       ?.initialMessage;
@@ -97,7 +105,7 @@ export default function AIPlanPage() {
   };
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isExhausted) return;
     setMessages((prev) => [
       ...prev,
       {
@@ -108,6 +116,7 @@ export default function AIPlanPage() {
       },
     ]);
     setInput("");
+    setTurnCount((c) => c + 1);
   };
 
   return (
@@ -167,10 +176,26 @@ export default function AIPlanPage() {
       </div>
 
       <div className="fixed bottom-0 left-1/2 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 p-4">
+        {turnCount > 0 &&
+          (isExhausted ? (
+            <Toast
+              variant="danger"
+              icon={<AlertIcon className="h-5 w-5 shrink-0 text-warning-500" />}
+              message={`무료 질문 횟수(${MAX_FREE_TURNS}회)를 모두 사용하셨어요.`}
+              className="mb-3"
+            />
+          ) : (
+            <Toast
+              icon={<AlertIcon className="h-5 w-5 shrink-0 text-white" />}
+              message={`남은 질문 횟수: ${remainingTurns}/${MAX_FREE_TURNS}`}
+              className="mb-3"
+            />
+          ))}
         <ChatInput
           value={input}
           onChange={setInput}
           onSend={handleSend}
+          disabled={isExhausted}
           className="w-full"
         />
       </div>
