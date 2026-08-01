@@ -1,4 +1,4 @@
-export type InquiryStatus = "waiting" | "answered";
+export type InquiryStatus = "pending" | "answered";
 
 export interface InquiryAnswer {
   content: string;
@@ -19,7 +19,7 @@ export const MOCK_INQUIRIES: Inquiry[] = [
   {
     id: 1,
     type: "세무 신고 서류 문의",
-    status: "waiting",
+    status: "pending",
     content:
       "폐업 세무 신고 서류 검토 관련 문의\nAI가 추천해 준 서류 목록 중에서 부가세 확정 신고서 관련한 내용이 정확한지 확인하고 싶어 문의드립니다. 폐업 시 추가로 제출해야 하는 서류가 있다면 함께 안내받을 수 있을까요?",
     createdAt: new Date(2026, 4, 1),

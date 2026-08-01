@@ -9,6 +9,7 @@ import {
   updateRecord,
   upsertBusinessVerification,
 } from "./db";
+import { inquiryHandlers } from "../inquiry/handlers";
 import {
   fromBusinessCategoryCode,
   fromProductCategoryCode,
@@ -503,5 +504,6 @@ export const handlers = [
     });
   }),
 
+  ...inquiryHandlers,
   ...supportHandlers,
 ];
