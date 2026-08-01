@@ -7,6 +7,7 @@ import VerifyField from "../../components/account/VerifyField";
 import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
 import packageCircle from "../../assets/images/package-circle.png";
 import { PlusSmIcon } from "../../assets/icons";
+import { ROUTES } from "../../constants/routes";
 
 const INITIAL_NICKNAME = "원흥동 상사";
 
@@ -32,7 +33,9 @@ export default function ProfileEditPage() {
   };
 
   const handleReverify = () => {
-    // TODO: 사업자 재인증 플로우 연동
+    // TODO: BusinessAuthPage 인증완료 후 리다이렉트가 USED_WRITE로 고정되어 있어
+    // 재인증 후 프로필로 안 돌아옴 — BusinessAuthPage 담당자에게 개선 요청 필요
+    navigate(ROUTES.BUSINESS_AUTH);
   };
 
   const handleSubmit = () => {
