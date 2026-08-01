@@ -61,7 +61,7 @@ export default function AIPage() {
           title="막막한 폐업 준비가 처음이시라면?"
           description="전체적인 절차 가이드를 먼저 읽어보세요."
           actionLabel="읽기"
-          onAction={() => navigate(ROUTES.GUIDE)}
+          onAction={() => navigate(ROUTES.GUIDE, { state: { from: "ai" } })}
           className="mt-5 w-full"
         />
 
