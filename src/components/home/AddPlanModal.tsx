@@ -9,7 +9,7 @@ import type { TimeValue } from "../common/TimeWheel";
 
 interface AddPlanModalProps {
   onCancel: () => void;
-  onConfirm: (plan: Plan) => void;
+  onConfirm: (plan: Plan, memo: string) => void;
 }
 
 export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps) {
@@ -108,7 +108,10 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
             size="lg"
             fullWidth
             onClick={() =>
-              onConfirm({ id: Date.now(), title, startDate, startTime, endDate, endTime })
+              onConfirm(
+                { id: Date.now(), title, startDate, startTime, endDate, endTime },
+                memo,
+              )
             }
           >
             저장

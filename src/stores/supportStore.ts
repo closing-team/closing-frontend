@@ -1,19 +1,13 @@
 import { create } from "zustand";
-import type { SupportPostDetail } from "../mocks/support/mockSupport";
-import { SUPPORT_POSTS } from "../mocks/support/mockSupport";
+import type { SupportListItem } from "../types/supportApi";
 
 interface SupportState {
-  posts: SupportPostDetail[];
-  toggleBookmark: (id: number) => void;
+  posts: SupportListItem[];
+  setPosts: (posts: SupportListItem[]) => void;
 }
 
 export const useSupportStore = create<SupportState>((set) => ({
-  posts: SUPPORT_POSTS,
+  posts: [],
 
-  toggleBookmark: (id) =>
-    set((state) => ({
-      posts: state.posts.map((post) =>
-        post.id === id ? { ...post, isBookmarked: !post.isBookmarked } : post,
-      ),
-    })),
+  setPosts: (posts) => set({ posts }),
 }));
