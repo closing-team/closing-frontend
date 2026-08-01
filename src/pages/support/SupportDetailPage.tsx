@@ -6,18 +6,28 @@ import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
 import { ChevronRightIcon } from "../../assets/icons";
 import { useSupportStore } from "../../stores/supportStore";
+import { useSupportDetailQuery } from "../../hooks/useSupports";
+import { formatApplicationPeriod } from "../../utils/supportAdapter";
 import { ROUTES } from "../../constants/routes";
 
 export default function SupportDetailPage() {
   const navigate = useNavigate();
   const { supportId = "" } = useParams();
-  // TODO: API 연동
-  const post = useSupportStore((s) =>
-    s.posts.find((p) => p.id === Number(supportId)),
-  );
+  const numericSupportId = Number(supportId);
+
+  const { data: detail, isLoading } = useSupportDetailQuery(numericSupportId);
+  const isFlipped = useSupportStore((s) => s.flippedIds.has(numericSupportId));
   const toggleBookmark = useSupportStore((s) => s.toggleBookmark);
 
-  if (!post) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-30">
+        <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
+      </div>
+    );
+  }
+
+  if (!detail) {
     return (
       <div className="min-h-screen bg-gray-30">
         <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
@@ -28,13 +38,18 @@ export default function SupportDetailPage() {
     );
   }
 
+  const post = {
+    ...detail,
+    isBookmarked: isFlipped ? !detail.isBookmarked : detail.isBookmarked,
+  };
+
   const todayStr = new Date().toISOString().slice(0, 10);
-  const isExpired = post.endDate !== null && post.endDate < todayStr;
+  const isExpired = post.applyEndDate !== null && post.applyEndDate < todayStr;
 
   const handleApply = () => {
     // TODO: 외부 링크 접속 실패 시 토스트 노출 + URL 클립보드 복사 처리 필요
     // TODO: 토스트 컴포넌트 도입 후 구현
-    window.open(post.applyUrl, "_blank", "noopener,noreferrer");
+    window.open(post.externalUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -44,7 +59,7 @@ export default function SupportDetailPage() {
       <div className="relative mx-4 mt-5 overflow-hidden rounded-xl bg-white">
         <BookmarkButton
           bookmarked={post.isBookmarked}
-          onToggle={() => toggleBookmark(post.id)}
+          onToggle={() => toggleBookmark(post.supportId)}
           className="absolute right-3 top-3 z-10"
         />
 
@@ -52,12 +67,14 @@ export default function SupportDetailPage() {
           <div className="flex flex-col gap-2 py-6">
             {isExpired && <Chip label="마감된 공고입니다." variant="badge" />}
             <p className="text-caption-1 text-gray-700">
-              {post.organization}
+              {post.organizationName}
             </p>
             <p className="text-title-3 text-gray-900">{post.title}</p>
             <div className="flex items-center gap-1 text-caption-2 text-gray-700">
               <span>신청기간</span>
-              <span>{post.period}</span>
+              <span>
+                {formatApplicationPeriod(post.applyStartDate, post.applyEndDate)}
+              </span>
             </div>
           </div>
 

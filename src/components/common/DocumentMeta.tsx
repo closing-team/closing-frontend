@@ -56,7 +56,7 @@ export default function DocumentMeta() {
 
     if (matched?.key === "SUPPORT_DETAIL") {
       const post = SUPPORT_POSTS.find(
-        (p) => String(p.id) === matched.params.supportId,
+        (p) => String(p.supportId) === matched.params.supportId,
       );
       if (post) title = post.title;
     }
