@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import Banner from "../../components/home/Banner";
+import HomeContentSkeleton from "../../components/home/HomeContentSkeleton";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
@@ -24,11 +26,9 @@ import {
   ChevronDownIcon,
 } from "../../assets/icons";
 import cloyTransparent from "../../assets/images/cloy-transparent.png";
-import {
-  MOCK_PROGRESS,
-  MOCK_SCHEDULES,
-  INITIAL_TODOS,
-} from "../../mocks/home/mockHome";
+import { getHomeTasks, createTask, updateTask, deleteTask, completeTask } from "../../api/schedule";
+import type { UpdateTaskRequestJson } from "../../types/scheduleApi";
+import { groupPlansByDate, toTodayTodos, toTaskRequest } from "../../utils/scheduleAdapter";
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -202,7 +202,6 @@ export default function HomePage() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const [todos, setTodos] = useState(INITIAL_TODOS);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -213,6 +212,56 @@ export default function HomePage() {
   const navigate = useNavigate();
   const authenticated = useUsedStore((s) => s.authenticated);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
+
+  const yearMonth = `${year}-${String(month + 1).padStart(2, "0")}`;
+  const queryClient = useQueryClient();
+  const { data: homeData, isLoading: isHomeLoading } = useQuery({
+    queryKey: ["homeTasks", yearMonth],
+    queryFn: () => getHomeTasks(yearMonth),
+  });
+
+  const calendarItems = homeData?.calendar ?? [];
+  const schedules = groupPlansByDate(calendarItems);
+  const todos = toTodayTodos(calendarItems);
+  const progress = {
+    completed: homeData?.summary.completedCount ?? 0,
+    total: homeData?.summary.totalCount ?? 1,
+  };
+
+  const invalidateHomeTasks = () =>
+    queryClient.invalidateQueries({ queryKey: ["homeTasks"] });
+
+  const createMutation = useMutation({
+    mutationFn: createTask,
+    onSuccess: invalidateHomeTasks,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({
+      taskId,
+      request,
+    }: {
+      taskId: number;
+      request: UpdateTaskRequestJson;
+    }) => updateTask(taskId, request),
+    onSuccess: invalidateHomeTasks,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: invalidateHomeTasks,
+  });
+
+  const completeMutation = useMutation({
+    mutationFn: ({
+      taskId,
+      isCompleted,
+    }: {
+      taskId: number;
+      isCompleted: boolean;
+    }) => completeTask(taskId, { isCompleted }),
+    onSuccess: invalidateHomeTasks,
+  });
 
   const handlePrevMonth = () => {
     if (month === 0) {
@@ -233,9 +282,9 @@ export default function HomePage() {
   };
 
   const handleToggle = (id: number) => {
-    setTodos((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
-    );
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    completeMutation.mutate({ taskId: id, isCompleted: !todo.done });
   };
 
   return (
@@ -265,35 +314,41 @@ export default function HomePage() {
         chatCount={chatCount}
       />
 
-      <Banner {...MOCK_PROGRESS} />
+      {isHomeLoading ? (
+        <HomeContentSkeleton />
+      ) : (
+        <>
+          <Banner {...progress} />
 
-      <Calendar
-        year={year}
-        month={month}
-        onPrev={handlePrevMonth}
-        onNext={handleNextMonth}
-        schedules={MOCK_SCHEDULES}
-        onAddPlan={() => setIsAddingPlan(true)}
-        onDayClick={(date, plans) => {
-          setSelectedDate(date);
-          setSelectedPlans(plans);
-        }}
-      />
+          <Calendar
+            year={year}
+            month={month}
+            onPrev={handlePrevMonth}
+            onNext={handleNextMonth}
+            schedules={schedules}
+            onAddPlan={() => setIsAddingPlan(true)}
+            onDayClick={(date, plans) => {
+              setSelectedDate(date);
+              setSelectedPlans(plans);
+            }}
+          />
 
-      <div className="mt-4 flex flex-col gap-2">
-        <div className="flex h-12 items-center justify-between pl-[18px] pr-4">
-          <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
-          {/* 할일 추가 버튼 — HOME004 모달 연동 예정 */}
-          <button
-            type="button"
-            aria-label="할 일 추가"
-            className="text-gray-700"
-          >
-            <PlusMdIcon className="h-5 w-5" />
-          </button>
-        </div>
-        <TodoList todos={todos} onToggle={handleToggle} />
-      </div>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex h-12 items-center justify-between pl-[18px] pr-4">
+              <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
+              {/* 할일 추가 버튼 — HOME004 모달 연동 예정 */}
+              <button
+                type="button"
+                aria-label="할 일 추가"
+                className="text-gray-700"
+              >
+                <PlusMdIcon className="h-5 w-5" />
+              </button>
+            </div>
+            <TodoList todos={todos} onToggle={handleToggle} />
+          </div>
+        </>
+      )}
 
       {/* AI 맞춤 계획 버튼 — LLM001 연동 예정 */}
       <Fab
@@ -338,7 +393,10 @@ export default function HomePage() {
       {isAddingPlan && (
         <AddPlanModal
           onCancel={() => setIsAddingPlan(false)}
-          onConfirm={() => setIsAddingPlan(false)}
+          onConfirm={(plan, memo) => {
+            createMutation.mutate(toTaskRequest(plan, memo));
+            setIsAddingPlan(false);
+          }}
         />
       )}
 
@@ -346,7 +404,11 @@ export default function HomePage() {
         <EditPlanModal
           plan={selectedPlan}
           onCancel={() => setIsEditing(false)}
-          onConfirm={() => {
+          onConfirm={(updated, memo) => {
+            updateMutation.mutate({
+              taskId: updated.id,
+              request: toTaskRequest(updated, memo ?? ""),
+            });
             setIsEditing(false);
             setSelectedPlan(null);
             setSelectedDate(null);
@@ -359,6 +421,7 @@ export default function HomePage() {
           plan={selectedPlan}
           onCancel={() => setIsDeleting(false)}
           onConfirm={() => {
+            deleteMutation.mutate(selectedPlan.id);
             setIsDeleting(false);
             setSelectedPlan(null);
             setSelectedDate(null);
