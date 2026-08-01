@@ -28,6 +28,42 @@ interface StepContent {
   nextStepId: number;
 }
 
+function parseDueDate(value: string): Date | null {
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(4, 6));
+  const day = Number(value.slice(6, 8));
+  if (month < 1 || month > 12) return null;
+
+  const date = new Date(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+  return date;
+}
+
+function validateDueDate(value: string): string | null {
+  if (value.length !== 8) {
+    return "희망 종료일 8자리를 입력해 주세요.";
+  }
+
+  const parsed = parseDueDate(value);
+  if (!parsed) {
+    return "올바른 희망 종료일을 입력해 주세요.";
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (parsed <= today) {
+    return "희망 종료일은 오늘 이후 날짜만 입력할 수 있습니다.";
+  }
+
+  return null;
+}
+
 const STEP_CONTENT: Record<string, StepContent> = {
   "1": {
     title: "STEP 1. 영업 종료일(폐업일) 산정",
@@ -1234,15 +1270,8 @@ function Step9Page() {
           />
         </div>
         <div className="flex flex-col items-center gap-3 px-4 pb-5 pt-2.5">
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() =>
-              // TODO: 폐업 캘린더 페이지가 만들어지면 해당 라우트로 navigate 하도록 교체
-              alert("준비 중입니다")
-            }
-          >
-            폐업 캘린더 보기
+          <Button variant="primary" fullWidth onClick={() => navigate(ROUTES.AI)}>
+            폐업 맞춤 일정 생성하러 가기
           </Button>
           <p className="text-center text-caption-2 text-gray-400">
             {STEP9_HEADER.footerNote}
@@ -1291,6 +1320,7 @@ export default function GuideDetailPage() {
   }
 
   const content = STEP_CONTENT[stepId];
+  const dueDateError = validateDueDate(dueDate);
 
   if (!content) {
     return (
@@ -1325,7 +1355,10 @@ export default function GuideDetailPage() {
           label={content.inputLabel}
           placeholder={content.inputPlaceholder}
           value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+          onChange={(e) =>
+            setDueDate(e.target.value.replace(/\D/g, "").slice(0, 8))
+          }
+          error={dueDate.length > 0 ? (dueDateError ?? undefined) : undefined}
         />
         <NoteBox title={content.noteTitle} items={content.noteItems} />
       </div>
@@ -1334,6 +1367,7 @@ export default function GuideDetailPage() {
         <Button
           variant="primary"
           fullWidth
+          disabled={dueDateError !== null}
           onClick={() => navigate(guideDetailPath(content.nextStepId))}
         >
           다음으로
