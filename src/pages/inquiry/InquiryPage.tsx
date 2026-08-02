@@ -1,30 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import TopBar from "../../components/common/TopBar";
 import Dropdown from "../../components/common/Dropdown";
 import TextArea from "../../components/common/TextArea";
 import Button from "../../components/common/Button";
+import Toast from "../../components/common/Toast";
 import FileAttachField from "../../components/inquiry/FileAttachField";
 import { ROUTES } from "../../constants/routes";
+import { useCreateInquiryMutation } from "../../hooks/useInquiries";
 
 const INQUIRY_TYPE_OPTIONS = [
   { key: "restriction", label: "이용 제한" },
   { key: "withdrawal", label: "탈퇴" },
 ];
 
+const DEFAULT_ERROR_MESSAGE =
+  "문의 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+
 export default function InquiryPage() {
   const navigate = useNavigate();
+  const createInquiry = useCreateInquiryMutation();
 
   const [inquiryType, setInquiryType] = useState("");
   const [content, setContent] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const canSubmit = inquiryType !== "" && content.trim().length > 0;
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = window.setTimeout(() => setToastMessage(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
+
+  const handleSubmit = async () => {
     if (!canSubmit) return;
-    // TODO: 실제 문의 등록 API 연동 (문의 유형, 내용, 첨부파일 전송)
-    navigate(ROUTES.INQUIRY_HISTORY);
+    try {
+      await createInquiry.mutateAsync({
+        input: { type: inquiryType, content: content.trim() },
+        images: attachments,
+      });
+      navigate(ROUTES.INQUIRY_HISTORY);
+    } catch (error) {
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
+      setToastMessage(message ?? DEFAULT_ERROR_MESSAGE);
+    }
   };
 
   return (
@@ -56,8 +80,13 @@ export default function InquiryPage() {
         <FileAttachField files={attachments} onChange={setAttachments} max={3} />
       </div>
 
-      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-white px-4 pb-5 pt-2.5">
-        <Button fullWidth disabled={!canSubmit} onClick={handleSubmit}>
+      <div className="fixed bottom-0 left-1/2 z-40 flex w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 flex-col gap-3 bg-white px-4 pb-5 pt-2.5">
+        {toastMessage && <Toast message={toastMessage} />}
+        <Button
+          fullWidth
+          disabled={!canSubmit || createInquiry.isPending}
+          onClick={handleSubmit}
+        >
           문의 등록
         </Button>
       </div>
