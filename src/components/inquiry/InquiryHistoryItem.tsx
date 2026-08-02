@@ -63,7 +63,20 @@ export default function InquiryHistoryItem({
           </div>
         </button>
 
-        {/* // TODO: 첨부 이미지 필드 확정 후 UI 복구 (백엔드 질문 예정) */}
+        {inquiry.status === "answered" &&
+          inquiry.imageUrls &&
+          inquiry.imageUrls.length > 0 && (
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {inquiry.imageUrls.map((url, index) => (
+                <img
+                  key={`${url}-${index}`}
+                  src={url}
+                  alt=""
+                  className="size-[70px] shrink-0 rounded-lg object-cover"
+                />
+              ))}
+            </div>
+          )}
 
         <p className="mt-3 text-caption-2 text-gray-500">
           {formatDate(new Date(inquiry.createdAt))}
