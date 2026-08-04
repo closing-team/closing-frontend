@@ -20,3 +20,15 @@ export interface GetInquiriesResponse {
   summary: InquirySummary;
   inquiries: InquiryListItem[];
 }
+
+export interface CreateInquiryRequestJson {
+  type: string;
+  content: string;
+}
+
+export interface CreateInquiryResponseData {
+  inquiryId: number;
+  title: string;
+  status: InquiryStatus;
+  createdAt: string;
+}

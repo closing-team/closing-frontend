@@ -33,9 +33,7 @@ export default function ProfileEditPage() {
   };
 
   const handleReverify = () => {
-    // TODO: BusinessAuthPage 인증완료 후 리다이렉트가 USED_WRITE로 고정되어 있어
-    // 재인증 후 프로필로 안 돌아옴 — BusinessAuthPage 담당자에게 개선 요청 필요
-    navigate(ROUTES.BUSINESS_AUTH);
+    navigate(ROUTES.BUSINESS_AUTH, { state: { redirectTo: ROUTES.PROFILE_EDIT } });
   };
 
   const handleSubmit = () => {
