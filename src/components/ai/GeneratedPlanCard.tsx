@@ -4,8 +4,8 @@ import type { Plan } from "../common/PlanCard";
 
 interface GeneratedPlanCardProps {
   plan: Plan;
-  onEdit?: (id: number) => void;
-  onDelete?: (id: number) => void;
+  onEdit?: (id: Plan["id"]) => void;
+  onDelete?: (id: Plan["id"]) => void;
 }
 
 export default function GeneratedPlanCard({

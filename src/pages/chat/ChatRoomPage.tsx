@@ -1,14 +1,21 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ChatComposer from "../../components/chat/ChatComposer";
 import ProductBanner from "../../components/chat/ProductBanner";
+import ChatRoomEmptyView from "../../components/chat/ChatRoomEmptyView";
 import ChatBubble from "../../components/common/ChatBubble";
 import TopBar from "../../components/common/TopBar";
 import InvalidChatRoomPage from "./InvalidChatRoomPage";
 import { usedDetailPath } from "../../constants/routes";
-import { useUsedStore } from "../../stores/usedStore";
-import { useProductDetailQuery } from "../../hooks/useProducts";
+import {
+  useChatMessagesQuery,
+  useChatRoomsQuery,
+  useMarkChatRoomReadMutation,
+  useSendChatImagesMutation,
+  useSendChatTextMutation,
+} from "../../hooks/useChat";
 import { toChatMessages, toChatRoomDetail } from "../../utils/chatAdapter";
+import type { CreateChatRoomResponseData } from "../../types/chatApi";
 import type {
   ChatMessage,
   ChatRoomDetail,
@@ -56,106 +63,28 @@ function ChatRoomView({
   onSelectProduct,
   onSendMessage,
 }: ChatRoomViewProps) {
-  const [localMessages, setLocalMessages] = useState(() => [...messages]);
-  const sentBlobUrlsRef = useRef(new Set<string>());
-  const localMessageIdsRef = useRef(new Set<string>());
-  const previousRoomIdRef = useRef(room.id);
-  const activeRoomIdRef = useRef(room.id);
+  const sortedMessages = sortMessagesBySentAt(messages);
+  const messageGroups = groupAdjacentMessages(sortedMessages);
   const conversationEndRef = useRef<HTMLDivElement>(null);
   const isNearBottomRef = useRef(true);
-  const shouldScrollToBottomRef = useRef(true);
-  const sortedMessages = sortMessagesBySentAt(localMessages);
-  const messageGroups = groupAdjacentMessages(sortedMessages);
+  const previousRoomIdRef = useRef(room.id);
 
   useLayoutEffect(() => {
-    activeRoomIdRef.current = room.id;
-  }, [room.id]);
-
-  useEffect(
-    () => () => {
-      sentBlobUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-    },
-    [],
-  );
-
-  useLayoutEffect(() => {
-    const roomChanged = previousRoomIdRef.current !== room.id;
-
-    if (roomChanged) {
-      sentBlobUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-      sentBlobUrlsRef.current.clear();
-      localMessageIdsRef.current.clear();
+    if (previousRoomIdRef.current !== room.id) {
       previousRoomIdRef.current = room.id;
       isNearBottomRef.current = true;
-      shouldScrollToBottomRef.current = true;
     }
-
-    setLocalMessages((currentMessages) => {
-      if (roomChanged) {
-        return [...messages];
-      }
-
-      const incomingIds = new Set(messages.map((message) => message.id));
-      incomingIds.forEach((id) => localMessageIdsRef.current.delete(id));
-      const unacknowledgedLocalMessages = currentMessages.filter(
-        (message) =>
-          localMessageIdsRef.current.has(message.id) &&
-          !incomingIds.has(message.id),
-      );
-
-      return [...messages, ...unacknowledgedLocalMessages];
-    });
-  }, [messages, room.id]);
+  }, [room.id]);
 
   useEffect(() => {
-    if (shouldScrollToBottomRef.current || isNearBottomRef.current) {
+    if (isNearBottomRef.current) {
       conversationEndRef.current?.scrollIntoView?.({ block: "end" });
-      shouldScrollToBottomRef.current = false;
     }
-  }, [room.id, localMessages]);
+  }, [messages]);
 
   const handleSend = async (pendingMessage: PendingChatMessage) => {
-    const sendingRoomId = room.id;
+    isNearBottomRef.current = true;
     await onSendMessage(pendingMessage);
-
-    if (activeRoomIdRef.current !== sendingRoomId) {
-      return;
-    }
-
-    const sentAt = new Date();
-    const messageId = crypto.randomUUID();
-    const message: ChatMessage = {
-      id: messageId,
-      roomId: sendingRoomId,
-      sender: "me",
-      type: pendingMessage.type,
-      content: pendingMessage.content,
-      ...(pendingMessage.type === "image" && pendingMessage.caption
-        ? { caption: pendingMessage.caption }
-        : {}),
-      sentAt: sentAt.toISOString(),
-      displayTime: new Intl.DateTimeFormat("ko-KR", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }).format(sentAt),
-      read: false,
-    };
-
-    if (
-      pendingMessage.type === "image" &&
-      pendingMessage.content.startsWith("blob:")
-    ) {
-      if (message.content === pendingMessage.content) {
-        sentBlobUrlsRef.current.add(pendingMessage.content);
-      } else {
-        URL.revokeObjectURL(pendingMessage.content);
-      }
-    }
-
-    localMessageIdsRef.current.add(message.id);
-    shouldScrollToBottomRef.current = true;
-    setLocalMessages((currentMessages) => [...currentMessages, message]);
   };
 
   return (
@@ -177,9 +106,13 @@ function ChatRoomView({
             target.scrollHeight - target.scrollTop - target.clientHeight <= 24;
         }}
       >
-        <p className="mt-5 self-stretch text-center text-body-3 text-gray-500">
-          {room.dateLabel}
-        </p>
+        {messageGroups.length === 0 ? (
+          <ChatRoomEmptyView partnerNickname={room.partnerNickname} />
+        ) : (
+          <p className="mt-5 self-stretch text-center text-body-3 text-gray-500">
+            {room.dateLabel}
+          </p>
+        )}
         {messageGroups.map((group) => {
           const firstMessage = group[0];
           const isMine = firstMessage.sender === "me";
@@ -244,24 +177,60 @@ function ChatRoomView({
 
 export default function ChatRoomPage() {
   const navigate = useNavigate();
-  const { productId = "" } = useParams();
-  const location = useUsedStore((s) => s.location);
-  const { data: product } = useProductDetailQuery(Number(productId), location);
-  const messages =
-    useUsedStore((s) => s.messagesByProduct[Number(productId)]) ?? [];
-  const sendMessage = useUsedStore((s) => s.sendMessage);
+  const location = useLocation();
+  const { chatRoomId: chatRoomIdParam = "" } = useParams();
+  const chatRoomId = Number(chatRoomIdParam);
 
-  if (!product) return <InvalidChatRoomPage />;
+  const stateRoom = (
+    location.state as { room?: CreateChatRoomResponseData } | null
+  )?.room;
+  const { data: roomsData } = useChatRoomsQuery();
+  const fallbackItem = roomsData?.chatRooms.find(
+    (r) => r.chatRoomId === chatRoomId,
+  );
+
+  const room: CreateChatRoomResponseData | null =
+    stateRoom && stateRoom.chatRoomId === chatRoomId
+      ? stateRoom
+      : fallbackItem
+        ? {
+            chatRoomId: fallbackItem.chatRoomId,
+            product: fallbackItem.product,
+            otherMember: fallbackItem.otherMember,
+            createdAt: fallbackItem.lastMessageAt,
+          }
+        : null;
+
+  const { data: messagesData } = useChatMessagesQuery(
+    chatRoomId ? chatRoomId : null,
+  );
+  const sendText = useSendChatTextMutation();
+  const sendImages = useSendChatImagesMutation();
+  const markRead = useMarkChatRoomReadMutation();
+
+  useEffect(() => {
+    if (chatRoomId) markRead.mutate(chatRoomId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatRoomId]);
+
+  if (!chatRoomId || !room) return <InvalidChatRoomPage />;
+
+  const messages = toChatMessages(chatRoomId, messagesData?.messages ?? []);
 
   return (
     <ChatRoomView
-      room={toChatRoomDetail(product, messages)}
-      messages={toChatMessages(product.id, messages)}
+      room={toChatRoomDetail(room, messagesData?.messages ?? [])}
+      messages={messages}
       onBack={() => navigate(-1)}
-      onSelectProduct={() => navigate(usedDetailPath(product.id))}
-      onSendMessage={(pending) => {
+      onSelectProduct={() => navigate(usedDetailPath(room.product.productId))}
+      onSendMessage={async (pending) => {
         if (pending.type === "text") {
-          sendMessage(product.id, pending.content);
+          await sendText.mutateAsync({ chatRoomId, content: pending.content });
+          return;
+        }
+        await sendImages.mutateAsync({ chatRoomId, images: [pending.file] });
+        if (pending.caption) {
+          await sendText.mutateAsync({ chatRoomId, content: pending.caption });
         }
       }}
     />

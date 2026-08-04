@@ -4,14 +4,16 @@ import TopBar from "../../components/common/TopBar";
 import Button from "../../components/common/Button";
 import { ROUTES } from "../../constants/routes";
 import InquiryHistoryItem from "../../components/inquiry/InquiryHistoryItem";
-import { MOCK_INQUIRIES } from "../../mocks/inquiry/mockInquiry";
+import { useInquiriesQuery } from "../../hooks/useInquiries";
 
 export default function InquiryHistoryPage() {
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const totalCount = MOCK_INQUIRIES.length;
-  const answeredCount = MOCK_INQUIRIES.filter(
-    (inquiry) => inquiry.status === "answered",
+  const { data } = useInquiriesQuery();
+  const inquiries = data ?? [];
+  const totalCount = inquiries.length;
+  const answeredCount = inquiries.filter(
+    (inquiry) => inquiry.status === "ANSWERED",
   ).length;
 
   return (
@@ -32,16 +34,15 @@ export default function InquiryHistoryPage() {
             </span>
           </div>
         </div>
-        {/* TODO: 실제 문의 조회 API 연동 */}
         <div className="flex flex-col gap-6">
-          {MOCK_INQUIRIES.map((inquiry) => (
+          {inquiries.map((inquiry) => (
             <InquiryHistoryItem
-              key={inquiry.id}
+              key={inquiry.inquiryId}
               inquiry={inquiry}
-              expanded={expandedId === inquiry.id}
+              expanded={expandedId === inquiry.inquiryId}
               onToggle={() =>
                 setExpandedId((current) =>
-                  current === inquiry.id ? null : inquiry.id,
+                  current === inquiry.inquiryId ? null : inquiry.inquiryId,
                 )
               }
             />

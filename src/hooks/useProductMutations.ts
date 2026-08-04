@@ -1,17 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { QueryKey } from "@tanstack/react-query";
 import {
-  addBookmark,
+  addProductBookmark,
   createProduct,
   deleteProduct,
-  removeBookmark,
+  removeProductBookmark,
   updateProduct,
   updateProductStatus,
-} from "../api/used";
+} from "../api/product";
 import {
   saleStatusToStatusCode,
   toCreateProductRequest,
   toUpdateProductRequest,
 } from "../utils/productAdapter";
+import { productKeys } from "./useProductQueries";
 import type { DealType, SaleStatus } from "../types/used";
 
 export interface ProductFormInput {
@@ -26,23 +28,30 @@ export interface ProductFormInput {
   lng?: number;
 }
 
-function useInvalidateProducts() {
+function useInvalidateProductQueries() {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ queryKey: ["products"] });
+  return (keys: QueryKey[]) =>
+    Promise.all(keys.map((queryKey) => queryClient.invalidateQueries({ queryKey })));
 }
 
 export function useToggleBookmarkMutation() {
-  const invalidate = useInvalidateProducts();
+  const invalidate = useInvalidateProductQueries();
 
   return useMutation({
     mutationFn: ({ productId, liked }: { productId: number; liked: boolean }) =>
-      liked ? removeBookmark(productId) : addBookmark(productId),
-    onSuccess: invalidate,
+      liked ? removeProductBookmark(productId) : addProductBookmark(productId),
+    onSuccess: (_data, { productId }) =>
+      invalidate([
+        productKeys.lists(),
+        productKeys.mes(),
+        productKeys.bookmarksAll(),
+        productKeys.detail(productId),
+      ]),
   });
 }
 
 export function useCreateProductMutation() {
-  const invalidate = useInvalidateProducts();
+  const invalidate = useInvalidateProductQueries();
 
   return useMutation({
     mutationFn: ({
@@ -52,12 +61,12 @@ export function useCreateProductMutation() {
       input: ProductFormInput;
       images: File[];
     }) => createProduct(toCreateProductRequest(input), images),
-    onSuccess: invalidate,
+    onSuccess: () => invalidate([productKeys.lists(), productKeys.mes()]),
   });
 }
 
 export function useUpdateProductMutation() {
-  const invalidate = useInvalidateProducts();
+  const invalidate = useInvalidateProductQueries();
 
   return useMutation({
     mutationFn: ({
@@ -76,25 +85,41 @@ export function useUpdateProductMutation() {
         toUpdateProductRequest(input, retainedImages),
         newImages,
       ),
-    onSuccess: invalidate,
+    onSuccess: (_data, { productId }) =>
+      invalidate([
+        productKeys.lists(),
+        productKeys.mes(),
+        productKeys.detail(productId),
+      ]),
   });
 }
 
 export function useUpdateProductStatusMutation() {
-  const invalidate = useInvalidateProducts();
+  const invalidate = useInvalidateProductQueries();
 
   return useMutation({
     mutationFn: ({ productId, status }: { productId: number; status: SaleStatus }) =>
       updateProductStatus(productId, saleStatusToStatusCode(status)),
-    onSuccess: invalidate,
+    onSuccess: (_data, { productId }) =>
+      invalidate([
+        productKeys.lists(),
+        productKeys.mes(),
+        productKeys.detail(productId),
+      ]),
   });
 }
 
 export function useDeleteProductMutation() {
-  const invalidate = useInvalidateProducts();
+  const invalidate = useInvalidateProductQueries();
 
   return useMutation({
     mutationFn: (productId: number) => deleteProduct(productId),
-    onSuccess: invalidate,
+    onSuccess: (_data, productId) =>
+      invalidate([
+        productKeys.lists(),
+        productKeys.mes(),
+        productKeys.bookmarksAll(),
+        productKeys.detail(productId),
+      ]),
   });
 }

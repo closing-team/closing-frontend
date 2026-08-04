@@ -1,0 +1,83 @@
+// TODO: 진행 중 상태값이 명세에 명시되지 않아 IN_PROGRESS로 임시 지정. 명세 확정 후 값 확인 필요
+export type AiSessionStatus = "NEW" | "IN_PROGRESS" | "CONFIRMED";
+
+export interface AiGeneratedTaskDto {
+  tempId: string;
+  title: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  memo: string;
+}
+
+// POST /api/v1/ai/sessions — AI 세션 시작 요청/응답
+export interface StartAiSessionRequestJson {
+  initialInput: string;
+}
+
+export interface StartAiSessionResponseData {
+  sessionId: string;
+  status: AiSessionStatus;
+  aiMessage: string;
+  turnCount: number;
+  remainingTurns: number;
+  generatedTasks: AiGeneratedTaskDto[];
+}
+
+// POST /api/v1/ai/sessions/{sessionId}/messages — AI 세션 메시지 전송 요청/응답
+export interface SendAiSessionMessageRequestJson {
+  message: string;
+}
+
+export interface SendAiSessionMessageResponseData {
+  aiMessage: string;
+  turnCount: number;
+  remainingTurns: number;
+  isFinal: boolean;
+  generatedTasks: AiGeneratedTaskDto[];
+}
+
+// POST /api/v1/ai/sessions/{sessionId}/confirm — AI 세션 확정 일정 캘린더 반영 응답
+export interface AiConfirmedTaskDto {
+  taskId: number;
+  title: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  description: string;
+  source: "AI_GENERATED";
+}
+
+export interface ConfirmAiSessionResponseData {
+  sessionId: string;
+  status: AiSessionStatus;
+  confirmedTasks: AiConfirmedTaskDto[];
+}
+
+// PATCH /api/v1/ai/sessions/{sessionId}/tasks/{tempId} — AI 생성 임시 일정 수정 요청/응답
+export interface UpdateAiSessionTaskRequestJson {
+  title: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  memo: string;
+}
+
+export type UpdateAiSessionTaskResponseData = AiGeneratedTaskDto;
+
+// GET /api/v1/ai/sessions/{sessionId} — AI 세션 조회 응답
+export interface AiSessionMessage {
+  role: string;
+  content: string;
+}
+
+export interface GetAiSessionResponseData {
+  sessionId: string;
+  status: AiSessionStatus;
+  turnCount: number;
+  remainingTurns: number;
+  messages: AiSessionMessage[];
+}

@@ -1,14 +1,12 @@
-import { useUsedStore } from "../stores/usedStore";
-import { useSupportStore } from "../stores/supportStore";
+import { useSupportBookmarkCount } from "./useSupportQueries";
 import { useInterestCount } from "./useInterestCount";
+import { useChatRoomsQuery } from "./useChat";
 
 export function useSideMenuCounts() {
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
-  const bookmarkCount = useSupportStore(
-    (s) => s.posts.filter((post) => post.isBookmarked).length,
-  );
+  const bookmarkCount = useSupportBookmarkCount();
   const interestCount = useInterestCount();
-  const chatCount = Object.keys(messagesByProduct).length;
+  const { data: chatRoomsData } = useChatRoomsQuery();
+  const chatCount = chatRoomsData?.chatRooms.length ?? 0;
 
   return { bookmarkCount, interestCount, chatCount };
 }

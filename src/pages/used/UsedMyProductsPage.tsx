@@ -4,12 +4,13 @@ import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import Chip from "../../components/common/Chip";
 import MyProductCard from "../../components/used/MyProductCard";
+import MyProductsEmptyView from "../../components/used/MyProductsEmptyView";
 import ProductActionSheets from "../../components/used/ProductActionSheets";
 import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
 import { PlusMdIcon } from "../../assets/icons";
 import { ROUTES, usedDetailPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
-import { useMyProductsQuery } from "../../hooks/useProducts";
+import { useMyProductsQuery } from "../../hooks/useProductQueries";
 import { useProductActionsSheet } from "../../hooks/useProductActionsSheet";
 import { saleStatusToStatusCode } from "../../utils/productAdapter";
 import type { SaleStatus } from "../../types/used";
@@ -77,9 +78,7 @@ export default function UsedMyProductsPage() {
         </p>
 
         {visibleProducts.length === 0 ? (
-          <p className="pt-20 text-center text-body-2 text-gray-400">
-            해당하는 상품이 없어요.
-          </p>
+          <MyProductsEmptyView isFiltered={filter !== "all"} onWrite={handleWrite} />
         ) : (
           <>
             <div className="flex flex-col gap-2.5">

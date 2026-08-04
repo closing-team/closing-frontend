@@ -6,8 +6,8 @@ import TextArea from "../../components/common/TextArea";
 import Checkbox from "../../components/common/Checkbox";
 import Radio from "../../components/used/Radio";
 import SelectField from "../../components/common/SelectField";
-import VerifyField from "../../components/sidemenu/VerifyField";
-import type { VerifyStatus } from "../../components/sidemenu/VerifyField";
+import VerifyField from "../../components/account/VerifyField";
+import type { VerifyStatus } from "../../components/account/VerifyField";
 import PriceField from "../../components/used/PriceField";
 import Chip from "../../components/common/Chip";
 import TopBar from "../../components/common/TopBar";
@@ -39,12 +39,12 @@ import BookmarkButton from "../../components/support/BookmarkButton";
 import StepCard from "../../components/guide/StepCard";
 import type { GuideStep } from "../../components/guide/StepCard";
 import SupportCard from "../../components/support/SupportCard";
-import type { SupportPost } from "../../components/support/SupportCard";
+import type { SupportListItem } from "../../types/supportApi";
 import PlanCard from "../../components/common/PlanCard";
 import type { Plan } from "../../components/common/PlanCard";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import type { Product, UsedFilter, UsedSort } from "../../types/used";
-import aiCharacter from "../../assets/images/cloy-fab.png";
+import cloyTransparent from "../../assets/images/cloy-transparent.png";
 import {
   ChevronRightIcon,
   SearchIcon,
@@ -73,14 +73,16 @@ const SAMPLE_GUIDE_STEP: GuideStep = {
     "매장 안의 물건 정리부터 세금 확정까지, 사장님이 발로 뛰는 순서 그대로 정렬했습니다.",
 };
 
-const SAMPLE_SUPPORT_POST: SupportPost = {
-  id: 1,
-  organization: "지원기관 텍스트",
+const SAMPLE_SUPPORT_POST: SupportListItem = {
+  supportId: 1,
+  organizationName: "지원기관 텍스트",
   title: "제목 텍스트",
-  period: "2000.00.00 - 2000.00.00",
-  startDate: "2000-01-01",
-  endDate: "2000-01-01",
+  applyStartDate: "2000-01-01",
+  applyEndDate: "2000-01-01",
+  applicationPeriod: "2000.00.00 - 2000.00.00",
+  status: "ONGOING",
   isBookmarked: false,
+  viewCount: 0,
 };
 
 const SAMPLE_PLAN: Plan = {
@@ -546,9 +548,9 @@ export default function ComponentsPage() {
               variant="ai"
               icon={
                 <img
-                  src={aiCharacter}
+                  src={cloyTransparent}
                   alt=""
-                  className="h-6 w-6 object-contain"
+                  className="h-6 w-[17px] shrink-0 object-contain"
                 />
               }
               label="AI 맞춤 계획"

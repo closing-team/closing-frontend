@@ -14,7 +14,7 @@ export function reverseGeocode(
         orders: [
           window.naver.maps.Service.OrderType.ROAD_ADDR,
           window.naver.maps.Service.OrderType.ADDR,
-        ],
+        ].join(","),
       },
       (status, response) => {
         if (status !== window.naver!.maps.Service.Status.OK) {
@@ -42,7 +42,7 @@ export function reverseGeocodeNeighborhood(
     window.naver.maps.Service.reverseGeocode(
       {
         coords: `${lng},${lat}`,
-        orders: [window.naver.maps.Service.OrderType.ADDR],
+        orders: window.naver.maps.Service.OrderType.ADDR,
       },
       (status, response) => {
         if (status !== window.naver!.maps.Service.Status.OK) {

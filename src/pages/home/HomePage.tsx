@@ -4,6 +4,8 @@ import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
+import Banner from "../../components/home/Banner";
+import HomeContentSkeleton from "../../components/home/HomeContentSkeleton";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useUsedStore } from "../../stores/usedStore";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
@@ -22,118 +24,26 @@ import {
   ChevronUpIcon,
   ChevronDownIcon,
 } from "../../assets/icons";
-import cubeIllust from "../../assets/images/package-banner.png";
-import aiCharacter from "../../assets/images/cloy-fab.png";
-import characterImg from "../../assets/images/cloy-banner.png";
-import curtainImg from "../../assets/images/curtain-banner.png";
+import cloyTransparent from "../../assets/images/cloy-transparent.png";
 import {
-  MOCK_PROGRESS,
-  MOCK_SCHEDULES,
-  INITIAL_TODOS,
-} from "../../mocks/home/mockHome";
+  useCompleteTaskMutation,
+  useCreateTaskMutation,
+  useDeleteTaskMutation,
+  useHomeTasksQuery,
+  useTaskDetailQuery,
+  useUpdateTaskMutation,
+} from "../../hooks/useSchedule";
+import {
+  groupPlansByDate,
+  taskDetailToPlan,
+  toTodayTodos,
+  toTaskRequest,
+} from "../../utils/scheduleAdapter";
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function toDateKey(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
-
-function ProgressCard({
-  completed,
-  total,
-}: {
-  completed: number;
-  total: number;
-}) {
-  const pct = Math.round((completed / total) * 100);
-
-  return (
-    <div
-      className="mx-4 flex flex-col justify-between"
-      style={{
-        height: "148px",
-        borderRadius: "12px",
-        padding: "20px 16px 28px 16px",
-        background:
-          "linear-gradient(165deg, #4A3BF2 0%, #6659FF 50%, #9389FF 70%, #BDB7FF 85%, #D7D4FF 100%)",
-      }}
-    >
-      <div className="flex items-center justify-between">
-        <p className="text-title-3 text-white">전체 진행률</p>
-        <p className="text-caption-2 text-white">
-          총 {total}개의 작업 중 {completed}개 완료
-        </p>
-      </div>
-
-      {/* 중단: % + 일러스트 */}
-      <div className="flex items-center justify-between">
-        <p
-          className="font-bold text-white"
-          style={{
-            fontSize: "40px",
-            lineHeight: "160%",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {pct}%
-        </p>
-        <img
-          src={cubeIllust}
-          alt=""
-          style={{ width: "40px", height: "43px", objectFit: "contain" }}
-        />
-      </div>
-
-      {/* 하단: 진행 바 */}
-      <div className="h-2 w-full rounded-full bg-primary-400">
-        <div
-          className="h-2 rounded-full bg-white transition-all duration-300"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function EmptyCard() {
-  return (
-    <div
-      className="mx-4 relative overflow-hidden flex items-center justify-between"
-      style={{
-        height: "148px",
-        borderRadius: "12px",
-        background:
-          "linear-gradient(190deg, #4B3BF3 0%, #7F74F9 70%, #9C94FC 90%, #C4BFFF 100%)",
-      }}
-    >
-      <img
-        src={curtainImg}
-        alt=""
-        className="absolute top-0 left-0 w-full object-cover z-0"
-      />
-
-      <div className="relative z-10 pl-5 self-end pb-10">
-        <p className="text-body-2 text-gray-100">막막한 폐업 준비,</p>
-        <p className="text-title-3 text-white">
-          클로징이 순서대로 도와드릴게요.
-        </p>
-      </div>
-
-      {/* 캐릭터 - 우측 (z-20, 커튼 앞) */}
-      <img
-        src={characterImg}
-        alt=""
-        className="relative z-20"
-        style={{
-          width: "93.25px",
-          height: "108.47px",
-          objectFit: "contain",
-          marginRight: "16px",
-          marginTop: "20px",
-        }}
-      />
-    </div>
-  );
 }
 
 // ─── 캘린더 ──────────────────────────────────────────────────
@@ -302,7 +212,6 @@ export default function HomePage() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const [todos, setTodos] = useState(INITIAL_TODOS);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -313,6 +222,29 @@ export default function HomePage() {
   const navigate = useNavigate();
   const authenticated = useUsedStore((s) => s.authenticated);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
+
+  const yearMonth = `${year}-${String(month + 1).padStart(2, "0")}`;
+  const { data: homeData, isLoading: isHomeLoading } = useHomeTasksQuery(yearMonth);
+
+  const calendarItems = homeData?.calendar ?? [];
+  const schedules = groupPlansByDate(calendarItems);
+  const todos = toTodayTodos(calendarItems);
+  const progress = {
+    completed: homeData?.summary.completedCount ?? 0,
+    total: homeData?.summary.totalCount ?? 1,
+  };
+
+  const createMutation = useCreateTaskMutation();
+  const updateMutation = useUpdateTaskMutation();
+  const deleteMutation = useDeleteTaskMutation();
+  const completeMutation = useCompleteTaskMutation();
+
+  const { data: selectedTaskDetail } = useTaskDetailQuery(
+    selectedPlan ? Number(selectedPlan.id) : undefined,
+  );
+  const selectedPlanWithMemo = selectedTaskDetail
+    ? taskDetailToPlan(selectedTaskDetail)
+    : selectedPlan;
 
   const handlePrevMonth = () => {
     if (month === 0) {
@@ -333,14 +265,13 @@ export default function HomePage() {
   };
 
   const handleToggle = (id: number) => {
-    setTodos((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
-    );
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    completeMutation.mutate({ taskId: id, isCompleted: !todo.done });
   };
 
   return (
     <div className="min-h-screen bg-white pb-24">
-      {/* 헤더 */}
       <TopBar
         logo
         bordered={false}
@@ -365,41 +296,42 @@ export default function HomePage() {
         chatCount={chatCount}
       />
 
-      {todos.length === 0 ? <EmptyCard /> : <ProgressCard {...MOCK_PROGRESS} />}
+      {isHomeLoading ? (
+        <HomeContentSkeleton />
+      ) : (
+        <>
+          <Banner {...progress} />
 
-      <Calendar
-        year={year}
-        month={month}
-        onPrev={handlePrevMonth}
-        onNext={handleNextMonth}
-        schedules={MOCK_SCHEDULES}
-        onAddPlan={() => setIsAddingPlan(true)}
-        onDayClick={(date, plans) => {
-          setSelectedDate(date);
-          setSelectedPlans(plans);
-        }}
-      />
+          <Calendar
+            year={year}
+            month={month}
+            onPrev={handlePrevMonth}
+            onNext={handleNextMonth}
+            schedules={schedules}
+            onAddPlan={() => setIsAddingPlan(true)}
+            onDayClick={(date, plans) => {
+              setSelectedDate(date);
+              setSelectedPlans(plans);
+            }}
+          />
 
-      <div className="mt-4 flex flex-col gap-2">
-        <div className="flex h-12 items-center justify-between pl-[18px] pr-4">
-          <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
-          {/* 할일 추가 버튼 — HOME004 모달 연동 예정 */}
-          <button
-            type="button"
-            aria-label="할 일 추가"
-            className="text-gray-700"
-          >
-            <PlusMdIcon className="h-5 w-5" />
-          </button>
-        </div>
-        <TodoList todos={todos} onToggle={handleToggle} />
-      </div>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex h-12 items-center pl-[18px] pr-4">
+              <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
+            </div>
+            <TodoList todos={todos} onToggle={handleToggle} />
+          </div>
+        </>
+      )}
 
-      {/* AI 맞춤 계획 버튼 — LLM001 연동 예정 */}
       <Fab
         variant="ai"
         icon={
-          <img src={aiCharacter} alt="" className="h-6 w-6 object-contain" />
+          <img
+            src={cloyTransparent}
+            alt=""
+            className="h-6 w-[17px] shrink-0 object-contain"
+          />
         }
         label="AI 맞춤 계획"
         onClick={() => navigate(ROUTES.AI)}
@@ -421,6 +353,7 @@ export default function HomePage() {
         <ScheduleDetailModal
           date={selectedDate}
           plan={selectedPlan}
+          detail={selectedTaskDetail?.description}
           onBack={() => setSelectedPlan(null)}
           onClose={() => {
             setSelectedPlan(null);
@@ -434,15 +367,22 @@ export default function HomePage() {
       {isAddingPlan && (
         <AddPlanModal
           onCancel={() => setIsAddingPlan(false)}
-          onConfirm={() => setIsAddingPlan(false)}
+          onConfirm={(plan, memo) => {
+            createMutation.mutate(toTaskRequest(plan, memo));
+            setIsAddingPlan(false);
+          }}
         />
       )}
 
-      {isEditing && selectedPlan && (
+      {isEditing && selectedPlanWithMemo && (
         <EditPlanModal
-          plan={selectedPlan}
+          plan={selectedPlanWithMemo}
           onCancel={() => setIsEditing(false)}
-          onConfirm={() => {
+          onConfirm={(updated, memo) => {
+            updateMutation.mutate({
+              taskId: Number(updated.id),
+              request: toTaskRequest(updated, memo ?? ""),
+            });
             setIsEditing(false);
             setSelectedPlan(null);
             setSelectedDate(null);
@@ -455,6 +395,7 @@ export default function HomePage() {
           plan={selectedPlan}
           onCancel={() => setIsDeleting(false)}
           onConfirm={() => {
+            deleteMutation.mutate(Number(selectedPlan.id));
             setIsDeleting(false);
             setSelectedPlan(null);
             setSelectedDate(null);

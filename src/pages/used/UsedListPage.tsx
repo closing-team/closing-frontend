@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
@@ -17,7 +17,7 @@ import { useNearbyLabel } from "../../hooks/useNearbyLabel";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
-import { useProductListQuery } from "../../hooks/useProducts";
+import { useProductListQuery } from "../../hooks/useProductQueries";
 import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 
@@ -52,6 +52,10 @@ export default function UsedListPage() {
     location,
   });
   const handleToggleLike = useProductLikeToggle(visibleProducts);
+  const handleProductClick = useCallback(
+    (id: number) => navigate(usedDetailPath(id)),
+    [navigate],
+  );
 
   const handleWrite = () => {
     navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
@@ -120,7 +124,7 @@ export default function UsedListPage() {
               <>
                 <ProductGrid
                   products={visibleProducts}
-                  onProductClick={(id) => navigate(usedDetailPath(id))}
+                  onProductClick={handleProductClick}
                   onToggleLike={handleToggleLike}
                 />
                 <InfiniteScrollTrigger

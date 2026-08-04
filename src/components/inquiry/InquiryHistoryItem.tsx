@@ -1,15 +1,15 @@
-import { ChevronDownIcon, ChevronUpIcon, ImageIcon } from "../../assets/icons";
+import { ChevronDownIcon, ChevronUpIcon } from "../../assets/icons";
 import { formatDate } from "../../utils/dateFormat";
-import type { Inquiry } from "../../mocks/inquiry/mockInquiry";
+import type { InquiryListItem } from "../../types/inquiryApi";
 
 interface InquiryHistoryItemProps {
-  inquiry: Inquiry;
+  inquiry: InquiryListItem;
   expanded: boolean;
   onToggle: () => void;
 }
 
-function StatusChip({ status }: { status: Inquiry["status"] }) {
-  const answered = status === "answered";
+function StatusChip({ status }: { status: InquiryListItem["status"] }) {
+  const answered = status === "ANSWERED";
   return (
     <span
       className={`inline-flex items-center rounded px-2 py-1 text-caption-1 ${
@@ -26,8 +26,9 @@ export default function InquiryHistoryItem({
   expanded,
   onToggle,
 }: InquiryHistoryItemProps) {
-  const [title, ...restLines] = inquiry.content.split("\n");
-  const detail = restLines.join("\n");
+  // 백엔드 응답에 별도 title 필드가 없어, content 첫 줄을 제목처럼 사용한다.
+  const [heading, ...rest] = inquiry.content.split("\n");
+  const detail = rest.join("\n");
 
   return (
     <div className="w-full px-4">
@@ -52,7 +53,7 @@ export default function InquiryHistoryItem({
             <p
               className={`text-title-3 text-gray-900 ${expanded ? "" : "truncate"}`}
             >
-              {title}
+              {heading}
             </p>
             {detail && (
               <p
@@ -66,21 +67,23 @@ export default function InquiryHistoryItem({
           </div>
         </button>
 
-        {expanded && inquiry.images && inquiry.images.length > 0 && (
-          <div className="mt-3 flex gap-2">
-            {inquiry.images.map((image) => (
-              <div
-                key={image}
-                className="flex size-[70px] shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-200"
-              >
-                <ImageIcon className="h-7 w-7" />
-              </div>
-            ))}
-          </div>
-        )}
+        {inquiry.status === "ANSWERED" &&
+          inquiry.imageUrls &&
+          inquiry.imageUrls.length > 0 && (
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {inquiry.imageUrls.map((url, index) => (
+                <img
+                  key={`${url}-${index}`}
+                  src={url}
+                  alt=""
+                  className="size-[70px] shrink-0 rounded-lg object-cover"
+                />
+              ))}
+            </div>
+          )}
 
         <p className="mt-3 text-caption-2 text-gray-500">
-          {formatDate(inquiry.createdAt)}
+          {formatDate(new Date(inquiry.createdAt))}
         </p>
 
         {expanded && inquiry.answer && (
@@ -90,12 +93,14 @@ export default function InquiryHistoryItem({
                 A
               </div>
               <p className="flex-1 whitespace-pre-line text-body-2 text-gray-900">
-                {inquiry.answer.content}
+                {inquiry.answer}
               </p>
             </div>
-            <p className="text-caption-2 text-gray-500">
-              {formatDate(inquiry.answer.answeredAt)}
-            </p>
+            {inquiry.answeredAt && (
+              <p className="text-caption-2 text-gray-500">
+                {formatDate(new Date(inquiry.answeredAt))}
+              </p>
+            )}
           </div>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import StepCard from "../../components/guide/StepCard";
@@ -62,10 +63,18 @@ const GUIDE_STEPS: GuideStep[] = [
 ];
 
 export default function GuideListPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isFromAI =
+    (location.state as { from?: string } | null)?.from === "ai";
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-20">
-      <TopBar title="사장님 폐업 가이드" bordered={false} />
+    <div className={`min-h-screen bg-gray-30 ${isFromAI ? "" : "pb-20"}`}>
+      <TopBar
+        title="사장님 폐업 가이드"
+        bordered={false}
+        onBack={isFromAI ? () => navigate(-1) : undefined}
+      />
       <div className="bg-white px-4 pb-5">
         <p className="text-title-2 text-gray-900">
           안전하고 현명한 사업 마무리
@@ -85,7 +94,6 @@ export default function GuideListPage() {
           ))}
         </div>
 
-        {/* 경고 배너 */}
         <div className="mb-2 mt-4 flex items-center gap-3 rounded-2xl border border-warning-100 bg-warning-50 px-4 py-3">
           <AlertIcon className="h-6 w-6 shrink-0 text-warning-500" />
           <p className="text-subtitle-2 font-semibold text-warning-600">
@@ -94,7 +102,7 @@ export default function GuideListPage() {
         </div>
       </div>
 
-      <NavigationBar />
+      {!isFromAI && <NavigationBar />}
     </div>
   );
 }

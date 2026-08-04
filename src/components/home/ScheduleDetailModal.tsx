@@ -74,7 +74,6 @@ export default function ScheduleDetailModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="relative flex max-h-[85vh] w-full max-w-[343px] flex-col overflow-x-hidden overflow-y-auto rounded-2xl bg-white">
-        {/* 헤더 */}
         <div className="flex items-center justify-between pl-3 pr-4 py-[14px]">
           <div className="flex items-center gap-2">
             <button
@@ -99,9 +98,7 @@ export default function ScheduleDetailModal({
           </button>
         </div>
 
-        {/* 본문 - gray-30 배경 */}
         <div className="rounded-b-2xl bg-gray-30 px-4 pt-4 pb-4">
-          {/* 일정 카드 */}
           <div className="flex items-center rounded-[6px] bg-white py-[10px] pl-4 pr-2">
             <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500" />
             <div className="ml-3 flex flex-1 flex-col">
@@ -116,14 +113,12 @@ export default function ScheduleDetailModal({
             </div>
           </div>
 
-          {/* 상세 내용 */}
           {detail && (
             <div className="mt-6">
               <DetailSection text={detail} />
             </div>
           )}
 
-          {/* 액션 버튼 */}
           <div className="mt-7 flex gap-3">
             <button
               type="button"

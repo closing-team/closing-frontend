@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Wordmark from "../../assets/images/wordmark.svg";
+import wordmark from "../../assets/images/wordmark.svg";
 import { ChevronLeftIcon } from "../../assets/icons";
 
 interface TopBarProps {
@@ -23,7 +23,7 @@ export default function TopBar({
 
   return (
     <header
-      className={`relative flex h-14 items-center gap-2 bg-white ${paddingClass} ${
+      className={`sticky top-0 z-40 flex h-14 items-center gap-2 bg-white ${paddingClass} ${
         bordered ? "border-b border-gray-100" : ""
       } ${className}`}
     >
@@ -38,7 +38,7 @@ export default function TopBar({
         </button>
       )}
       {logo && (
-        <img src={Wordmark} alt="클로징" className="h-[18px] object-contain" />
+        <img src={wordmark} alt="클로징" className="h-[18px] object-contain" />
       )}
       {title &&
         (onBack ? (

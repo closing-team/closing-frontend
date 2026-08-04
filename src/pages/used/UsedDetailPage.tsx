@@ -10,9 +10,13 @@ import ProductThumbnail from "../../components/used/ProductThumbnail";
 import { formatPriceLabel } from "../../utils/formatPrice";
 import { ROUTES, chatRoomPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
-import { useProductDetailQuery } from "../../hooks/useProducts";
+import { useProductDetailQuery } from "../../hooks/useProductQueries";
 import { useToggleBookmarkMutation } from "../../hooks/useProductMutations";
 import { useProductActionsSheet } from "../../hooks/useProductActionsSheet";
+import {
+  useChatRoomsQuery,
+  useCreateChatRoomMutation,
+} from "../../hooks/useChat";
 
 function InfoRow({
   label,
@@ -41,10 +45,11 @@ export default function UsedDetailPage() {
   const id = Number(productId);
 
   const location = useUsedStore((s) => s.location);
-  const messagesByProduct = useUsedStore((s) => s.messagesByProduct);
   const { data: product, isLoading } = useProductDetailQuery(id, location);
   const toggleBookmark = useToggleBookmarkMutation();
   const actions = useProductActionsSheet();
+  const { data: chatRoomsData } = useChatRoomsQuery();
+  const createChatRoom = useCreateChatRoomMutation();
 
   if (isLoading) {
     return (
@@ -72,8 +77,19 @@ export default function UsedDetailPage() {
   const isMine = product.isMine ?? true;
   const showDealLocation =
     product.dealTypes.includes("직거래") && product.dealLocation;
-  const chatMessageCount = messagesByProduct[product.id]?.length ?? 0;
-  const hasChat = chatMessageCount > 0;
+  const existingRoom = chatRoomsData?.chatRooms.find(
+    (room) => room.product.productId === product.id,
+  );
+  const hasChat = !!existingRoom;
+
+  const handleChatClick = () => {
+    if (isMine || createChatRoom.isPending) return;
+    createChatRoom.mutate(product.id, {
+      onSuccess: (room) => {
+        navigate(chatRoomPath(room.chatRoomId), { state: { room } });
+      },
+    });
+  };
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -165,9 +181,10 @@ export default function UsedDetailPage() {
           fullWidth
           variant={hasChat ? "secondary" : "primary"}
           className={hasChat ? "text-primary-500" : ""}
-          onClick={() => navigate(chatRoomPath(product.id))}
+          onClick={handleChatClick}
+          disabled={isMine || createChatRoom.isPending}
         >
-          {hasChat ? `대화중인 채팅 ${chatMessageCount}` : "구매 문의"}
+          {isMine ? "대화중인 채팅 0" : hasChat ? "대화중인 채팅 보기" : "구매 문의"}
         </Button>
         {!isMine && (
           <LikeButton

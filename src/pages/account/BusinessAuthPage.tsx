@@ -1,20 +1,24 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
 import Callout, { CalloutItem } from "../../components/common/Callout";
-import Toast from "../../components/used/Toast";
+import Toast from "../../components/common/Toast";
 import { ROUTES } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
-import { useVerifyBusinessMutation } from "../../hooks/useBusinessMutations";
+import { useVerifyBusinessMutation } from "../../hooks/useBusiness";
 
 const DEFAULT_ERROR_MESSAGE =
   "인증 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 
 export default function BusinessAuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo =
+    (location.state as { redirectTo?: string } | null)?.redirectTo ??
+    ROUTES.USED_WRITE;
   const setAuthenticated = useUsedStore((s) => s.setAuthenticated);
   const verifyBusiness = useVerifyBusinessMutation();
 
@@ -43,7 +47,7 @@ export default function BusinessAuthPage() {
         openDate: openedAt,
       });
       setAuthenticated(true);
-      navigate(ROUTES.USED_WRITE, { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message

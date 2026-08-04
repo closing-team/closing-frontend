@@ -1,7 +1,15 @@
+import EmptyView from "../common/EmptyView";
+import { MessageIcon } from "../../assets/icons";
+
 export default function ChatEmptyView() {
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <p className="text-body-2 text-gray-500">아직 채팅 내역이 없습니다.</p>
-    </div>
+    <EmptyView
+      icon={
+        <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full bg-gray-100">
+          <MessageIcon className="h-8 w-8 text-gray-200" />
+        </div>
+      }
+      title="아직 채팅이 없어요."
+    />
   );
 }

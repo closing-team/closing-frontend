@@ -1,5 +1,5 @@
 import { SendEnabledIcon } from "../../assets/icons";
-import cloySm from "../../assets/images/cloy-sm.png";
+import cloyCircle from "../../assets/images/cloy-circle.png";
 
 interface ChatInputProps {
   value: string;
@@ -7,6 +7,7 @@ interface ChatInputProps {
   onSend: () => void;
   placeholder?: string;
   helper?: string;
+  disabled?: boolean;
   className?: string;
 }
 
@@ -16,12 +17,13 @@ export default function ChatInput({
   onSend,
   placeholder = "현재 폐업 상황을 알려주세요...",
   helper = "클로이와 맞춤 일정 생성하기",
+  disabled = false,
   className = "",
 }: ChatInputProps) {
-  const canSend = value.trim().length > 0;
+  const canSend = !disabled && value.trim().length > 0;
 
   return (
-    <div className={`rounded-2xl bg-white p-4 shadow-md ${className}`}>
+    <div className={`rounded-2xl border border-gray-200 bg-white p-4 shadow-md ${className}`}>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -33,11 +35,12 @@ export default function ChatInput({
         }}
         placeholder={placeholder}
         rows={2}
-        className="w-full resize-none text-body-2 text-gray-900 outline-none placeholder:text-gray-400"
+        disabled={disabled}
+        className="w-full resize-none text-body-2 text-gray-900 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
       />
       <div className="mt-2 flex items-center justify-between">
         <span className="flex items-center gap-2">
-          <img src={cloySm} alt="" className="h-6 w-6 shrink-0 rounded-full" />
+          <img src={cloyCircle} alt="" className="h-6 w-6 shrink-0 rounded-full" />
           <span className="text-caption-1 text-gray-500">{helper}</span>
         </span>
         <button

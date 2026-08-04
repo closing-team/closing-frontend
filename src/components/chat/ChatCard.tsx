@@ -9,10 +9,11 @@ interface ChatCardProps {
 export default function ChatCard({ room, onSelect }: ChatCardProps) {
   const unreadMessageLabel =
     room.unreadCount > 0 ? `읽지 않은 메시지 ${room.unreadCount}개` : null;
+  const metaLine = [room.location, room.relativeTime].filter(Boolean).join(" · ");
   const accessibleName = [
     `${room.partnerNickname} 채팅방`,
     room.lastMessage,
-    `${room.location} · ${room.relativeTime}`,
+    metaLine,
     unreadMessageLabel,
   ]
     .filter(Boolean)
@@ -48,9 +49,7 @@ export default function ChatCard({ room, onSelect }: ChatCardProps) {
         <span className="flex w-[216px] shrink-0 flex-col gap-0.5">
           <span className="text-title-3 text-gray-900">{room.partnerNickname}</span>
           <span className="truncate text-body-2 text-gray-900">{room.lastMessage}</span>
-          <span className="text-body-3 text-gray-500">
-            {room.location} · {room.relativeTime}
-          </span>
+          <span className="text-body-3 text-gray-500">{metaLine}</span>
         </span>
 
         <span className="flex h-[17px] w-[17px] shrink-0 items-center justify-center">

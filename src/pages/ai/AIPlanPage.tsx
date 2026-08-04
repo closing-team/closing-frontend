@@ -7,9 +7,19 @@ import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/ai/DeletePlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
+import Toast from "../../components/common/Toast";
+import { AlertIcon } from "../../assets/icons";
 import type { Plan } from "../../components/common/PlanCard";
-import { MOCK_PLANS } from "../../mocks/ai/mockAIPlans";
-import cloySm from "../../assets/images/cloy-sm.png";
+import { toPlan, toUpdateAiTaskRequest } from "../../utils/aiAdapter";
+import {
+  useConfirmAiSessionMutation,
+  useDeleteAiSessionTaskMutation,
+  useSendAiSessionMessageMutation,
+  useUpdateAiSessionTaskMutation,
+} from "../../hooks/useAi";
+import { ROUTES } from "../../constants/routes";
+import cloyCircle from "../../assets/images/cloy-circle.png";
+import type { AiGeneratedTaskDto } from "../../types/aiApi";
 
 type TextMessage = {
   id: number;
@@ -40,75 +50,166 @@ function formatTime(date: Date) {
   return `${ampm} ${h12}:${String(m).padStart(2, "0")}`;
 }
 
+interface AiPlanLocationState {
+  sessionId?: string;
+  initialMessage?: string;
+  aiMessage?: string;
+  generatedTasks?: AiGeneratedTaskDto[];
+  turnCount?: number;
+  remainingTurns?: number;
+}
+
 export default function AIPlanPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const state = (location.state as AiPlanLocationState | null) ?? {};
+  const sessionId = state.sessionId ?? null;
+
   const [input, setInput] = useState("");
   const [deletingPlan, setDeletingPlan] = useState<Plan | null>(null);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+  const [turnCount, setTurnCount] = useState(state.turnCount ?? 0);
+  const [remainingTurns, setRemainingTurns] = useState(
+    state.remainingTurns ?? 0,
+  );
+  const [isFinal, setIsFinal] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
   const [messages, setMessages] = useState<Message[]>(() => {
-    const initial = (location.state as { initialMessage?: string } | null)
-      ?.initialMessage;
     const now = formatTime(new Date());
     const msgs: Message[] = [];
-    if (initial) {
-      msgs.push({ id: 1, me: true, text: initial, time: now });
+    if (state.initialMessage) {
+      msgs.push({ id: msgs.length + 1, me: true, text: state.initialMessage, time: now });
     }
-    // MOCK: AI 일정 생성 결과 — API 연동 후 제거
-    msgs.push({
-      id: 2,
-      me: false,
-      text: "우선순위별 일정을 생성했어요. 확인해 보세요!",
-      plans: MOCK_PLANS,
-      time: now,
-    });
+    if (state.aiMessage) {
+      msgs.push({
+        id: msgs.length + 1,
+        me: false,
+        text: state.aiMessage,
+        plans: (state.generatedTasks ?? []).map(toPlan),
+        time: now,
+      });
+    }
     return msgs;
   });
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const sendMessage = useSendAiSessionMessageMutation();
+  const confirmSession = useConfirmAiSessionMutation();
+  const deleteTask = useDeleteAiSessionTaskMutation();
+  const updateTask = useUpdateAiSessionTaskMutation();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleConfirmDelete = () => {
-    if (!deletingPlan) return;
-    setMessages((prev) =>
-      prev.map((msg) =>
-        isPlanResult(msg)
-          ? { ...msg, plans: msg.plans.filter((p) => p.id !== deletingPlan.id) }
-          : msg,
-      ),
+    if (!deletingPlan || !sessionId) return;
+    const target = deletingPlan;
+
+    deleteTask.mutate(
+      { sessionId, tempId: String(target.id) },
+      {
+        onSuccess: () => {
+          setMessages((prev) =>
+            prev.map((msg) =>
+              isPlanResult(msg)
+                ? { ...msg, plans: msg.plans.filter((p) => p.id !== target.id) }
+                : msg,
+            ),
+          );
+          setDeletingPlan(null);
+        },
+      },
     );
-    setDeletingPlan(null);
   };
 
-  const handleConfirmEdit = (updated: Plan) => {
-    setMessages((prev) =>
-      prev.map((msg) =>
-        isPlanResult(msg)
-          ? {
-              ...msg,
-              plans: msg.plans.map((p) => (p.id === updated.id ? updated : p)),
-            }
-          : msg,
-      ),
+  const handleConfirmEdit = (updated: Plan, memo?: string) => {
+    if (!sessionId) return;
+
+    updateTask.mutate(
+      {
+        sessionId,
+        tempId: String(updated.id),
+        request: toUpdateAiTaskRequest(updated, memo ?? ""),
+      },
+      {
+        onSuccess: (data) => {
+          const updatedPlan = toPlan(data);
+          setMessages((prev) =>
+            prev.map((msg) =>
+              isPlanResult(msg)
+                ? {
+                    ...msg,
+                    plans: msg.plans.map((p) =>
+                      p.id === updatedPlan.id ? updatedPlan : p,
+                    ),
+                  }
+                : msg,
+            ),
+          );
+          setEditingPlan(null);
+        },
+      },
     );
-    setEditingPlan(null);
   };
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    const text = input.trim();
+    if (!text || isFinal || !sessionId || sendMessage.isPending) return;
+
     setMessages((prev) => [
       ...prev,
-      {
-        id: prev.length + 1,
-        me: true,
-        text: input.trim(),
-        time: formatTime(new Date()),
-      },
+      { id: prev.length + 1, me: true, text, time: formatTime(new Date()) },
     ]);
     setInput("");
+
+    sendMessage.mutate(
+      { sessionId, message: text },
+      {
+        onSuccess: (data) => {
+          setTurnCount(data.turnCount);
+          setRemainingTurns(data.remainingTurns);
+          setIsFinal(data.isFinal);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: prev.length + 1,
+              me: false,
+              text: data.aiMessage,
+              plans: data.generatedTasks.map(toPlan),
+              time: formatTime(new Date()),
+            },
+          ]);
+        },
+      },
+    );
   };
+
+  const handleConfirmSession = () => {
+    if (!sessionId || isConfirmed) return;
+
+    confirmSession.mutate(sessionId, {
+      onSuccess: () => {
+        setIsConfirmed(true);
+        navigate(ROUTES.HOME, { replace: true });
+      },
+    });
+  };
+
+  if (!sessionId) {
+    return (
+      <div className="flex min-h-screen flex-col bg-white">
+        <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
+          <p className="text-body-2 text-gray-500">
+            세션 정보를 찾을 수 없어요. 처음부터 다시 시작해 주세요.
+          </p>
+          <Button onClick={() => navigate(ROUTES.AI)}>다시 시작하기</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -120,7 +221,7 @@ export default function AIPlanPage() {
             return (
               <div key={msg.id} className="flex flex-col items-start">
                 <img
-                  src={cloySm}
+                  src={cloyCircle}
                   alt=""
                   className="h-8 w-8 rounded-full object-contain"
                 />
@@ -142,14 +243,18 @@ export default function AIPlanPage() {
                       />
                     ))}
                   </div>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    className="mt-4"
-                  >
-                    캘린더에 모두 추가
-                  </Button>
+                  {msg.plans.length > 0 && (
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      fullWidth
+                      className="mt-4"
+                      disabled={isConfirmed || confirmSession.isPending}
+                      onClick={handleConfirmSession}
+                    >
+                      {isConfirmed ? "캘린더에 추가됨" : "캘린더에 모두 추가"}
+                    </Button>
+                  )}
                 </div>
                 <span className="mt-[5px] text-caption-3 text-gray-400">
                   {msg.time}
@@ -166,11 +271,27 @@ export default function AIPlanPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="fixed bottom-0 left-1/2 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 p-4">
+      <div className="fixed bottom-0 left-1/2 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-gradient-to-t from-white via-white to-white/0 px-4 pb-4 pt-6">
+        {turnCount > 0 &&
+          (isFinal ? (
+            <Toast
+              variant="danger"
+              icon={<AlertIcon className="h-5 w-5 shrink-0 text-warning-500" />}
+              message="더 이상 진행할 수 없는 대화예요."
+              className="mb-3"
+            />
+          ) : (
+            <Toast
+              icon={<AlertIcon className="h-5 w-5 shrink-0 text-white" />}
+              message={`남은 질문 횟수: ${remainingTurns}`}
+              className="mb-3"
+            />
+          ))}
         <ChatInput
           value={input}
           onChange={setInput}
           onSend={handleSend}
+          disabled={isFinal || isConfirmed || sendMessage.isPending}
           className="w-full"
         />
       </div>

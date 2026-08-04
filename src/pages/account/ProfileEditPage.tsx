@@ -3,44 +3,54 @@ import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
+import VerifyField from "../../components/account/VerifyField";
 import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
-import cloyMd from "../../assets/images/cloy-md.png";
+import packageCircle from "../../assets/images/package-circle.png";
 import { PlusSmIcon } from "../../assets/icons";
+import { ROUTES } from "../../constants/routes";
+import { useMyProfileQuery, useUpdateProfileMutation } from "../../hooks/useAccount";
+import type { UserProfileDto } from "../../types/accountApi";
 
-const INITIAL_NICKNAME = "원흥동 상사";
+interface ProfileEditFormProps {
+  profile: UserProfileDto;
+}
 
-export default function ProfileEditPage() {
+function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const updateProfile = useUpdateProfileMutation();
 
-  const [nickname, setNickname] = useState(INITIAL_NICKNAME);
-  const [name] = useState("김철수");
-  const [phone] = useState("01055647756");
+  const [name, setName] = useState(profile.name);
+  const [phone, setPhone] = useState(profile.phone);
   const [businessNumber] = useState("000-00-00000");
   // TODO: 실제 사업자 인증 상태는 API 조회 결과로 대체
   const [verified] = useState(true);
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
+  const isDirty = name !== profile.name || phone !== profile.phone;
+
   const handlePickImage = () => {
     fileInputRef.current?.click();
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = () => {
     // TODO: 실제 프로필 이미지 업로드 API 연동
-    console.log("selected profile image:", e.target.files?.[0]);
   };
 
   const handleReverify = () => {
-    // TODO: 사업자 재인증 플로우 연동
+    navigate(ROUTES.BUSINESS_AUTH, { state: { redirectTo: ROUTES.PROFILE_EDIT } });
   };
 
   const handleSubmit = () => {
-    // TODO: 프로필 정보 저장 API 연동
-    navigate(-1);
+    if (!isDirty) {
+      navigate(-1);
+      return;
+    }
+    updateProfile.mutate({ name, phone }, { onSuccess: () => navigate(-1) });
   };
 
   const handleBack = () => {
-    if (nickname !== INITIAL_NICKNAME) {
+    if (isDirty) {
       setShowUnsavedModal(true);
       return;
     }
@@ -54,7 +64,11 @@ export default function ProfileEditPage() {
       <div className="flex flex-col items-center py-8">
         <div className="relative h-[90px] w-[90px]">
           <div className="h-full w-full overflow-hidden rounded-full bg-gray-200">
-            <img src={cloyMd} alt="" className="h-full w-full object-cover" />
+            <img
+              src={profile.profileImageUrl || packageCircle}
+              alt=""
+              className="h-full w-full object-cover"
+            />
           </div>
           <button
             type="button"
@@ -75,42 +89,39 @@ export default function ProfileEditPage() {
       </div>
 
       <div className="flex flex-col gap-5 px-4">
+        <TextField label="닉네임" value={profile.nickname} disabled />
+
         <TextField
-          label="닉네임"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          onClear={() => setNickname("")}
+          label="이름"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onClear={() => setName("")}
         />
 
-        <TextField label="이름" value={name} disabled />
+        <TextField
+          label="전화번호"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          onClear={() => setPhone("")}
+        />
 
-        <TextField label="전화번호" value={phone} disabled />
-
-        <div>
-          <label className="mb-2 ml-0.5 block text-title-3 text-gray-900">
-            사업자 등록 번호
-          </label>
-          <div className="flex items-start gap-2">
-            <TextField
-              value={businessNumber}
-              disabled
-              success={verified ? "사업자 인증이 완료되었습니다." : undefined}
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-[90px] shrink-0"
-              onClick={handleReverify}
-            >
-              재인증
-            </Button>
-          </div>
-        </div>
+        <VerifyField
+          label="사업자 등록 번호"
+          value={businessNumber}
+          onChange={() => {}}
+          onVerify={handleReverify}
+          status={verified ? "verified" : "idle"}
+          successMessage="사업자 인증이 완료되었습니다."
+          disabled
+        />
       </div>
 
       <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-white px-4 pb-5 pt-2.5">
-        <Button fullWidth onClick={handleSubmit}>
+        <Button
+          fullWidth
+          onClick={handleSubmit}
+          disabled={updateProfile.isPending}
+        >
           완료
         </Button>
       </div>
@@ -123,4 +134,19 @@ export default function ProfileEditPage() {
       )}
     </div>
   );
+}
+
+export default function ProfileEditPage() {
+  const navigate = useNavigate();
+  const { data: profile, isLoading } = useMyProfileQuery();
+
+  if (isLoading || !profile) {
+    return (
+      <div className="min-h-screen bg-gray-30">
+        <TopBar title="프로필 수정" onBack={() => navigate(-1)} />
+      </div>
+    );
+  }
+
+  return <ProfileEditForm profile={profile} />;
 }

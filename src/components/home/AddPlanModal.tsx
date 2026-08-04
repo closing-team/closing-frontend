@@ -9,7 +9,7 @@ import type { TimeValue } from "../common/TimeWheel";
 
 interface AddPlanModalProps {
   onCancel: () => void;
-  onConfirm: (plan: Plan) => void;
+  onConfirm: (plan: Plan, memo: string) => void;
 }
 
 export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps) {
@@ -35,7 +35,6 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
       <div className="relative max-h-[85vh] w-full max-w-[347px] overflow-x-hidden overflow-y-auto rounded-xl bg-white">
-        {/* 헤더 */}
         <div className="flex h-[60px] items-center justify-between pl-4 pr-3">
           <p className="text-title-3 text-gray-900">일정 추가</p>
           <button
@@ -48,9 +47,7 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
           </button>
         </div>
 
-        {/* 바디 */}
         <div className="px-4">
-          {/* 일정 이름 */}
           <TextField
             label="일정 이름"
             labelSize="subtitle-2"
@@ -59,7 +56,6 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
             placeholder="일정 이름을 입력하세요"
           />
 
-          {/* 일정 시작 / 일정 종료 */}
           <ScheduleRangeField
             className="mt-5"
             startLabel="일정 시작"
@@ -74,7 +70,6 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
             onEndTimeChange={setEndTime}
           />
 
-          {/* 상세 메모 */}
           <div className="mt-5">
             <label className="mb-2 block text-subtitle-2 text-gray-900">
               상세 메모
@@ -92,7 +87,6 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
           </div>
         </div>
 
-        {/* 푸터 */}
         <div className="flex h-[100px] items-center gap-2 px-4 pt-8 pb-4">
           <Button
             variant="secondary"
@@ -108,7 +102,10 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
             size="lg"
             fullWidth
             onClick={() =>
-              onConfirm({ id: Date.now(), title, startDate, startTime, endDate, endTime })
+              onConfirm(
+                { id: Date.now(), title, startDate, startTime, endDate, endTime },
+                memo,
+              )
             }
           >
             저장

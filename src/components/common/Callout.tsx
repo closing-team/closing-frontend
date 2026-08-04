@@ -27,7 +27,6 @@ export default function Callout({
   );
 }
 
-// 콜아웃 내부 체크 항목 한 줄
 export function CalloutItem({ children }: { children: ReactNode }) {
   return (
     <p className="flex items-start gap-0.5 text-caption-2 text-gray-500">

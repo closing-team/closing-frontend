@@ -1,21 +1,33 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NavigationBar from "../../components/common/NavigationBar";
 import TopBar from "../../components/common/TopBar";
 import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
-import type { SupportPost } from "../../components/support/SupportCard";
-import SupportEmptyView from "../../components/support/SupportEmptyView";
+import EmptyView from "../../components/common/EmptyView";
 import SideMenu from "../../components/sidemenu/SideMenu";
-import { MenuHamburgerIcon } from "../../assets/icons";
+import Toast from "../../components/common/Toast";
+import {
+  MenuHamburgerIcon,
+  FileSearchIcon,
+  BookmarkEmptyIcon,
+} from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
-import { useSupportStore } from "../../stores/supportStore";
+import { useBookmarksQuery, useSupportListQuery } from "../../hooks/useSupportQueries";
+import { useSupportBookmarkToggle } from "../../hooks/useSupportBookmarkToggle";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
+import type { SupportListItem, SupportSortCode } from "../../types/supportApi";
 
 type SupportTab = "notice" | "bookmark";
 type SortOption = "popular" | "registered" | "deadline";
+
+const SORT_TO_CODE: Record<SortOption, SupportSortCode> = {
+  popular: "POPULAR",
+  registered: "LATEST",
+  deadline: "DEADLINE",
+};
 
 const TABS: { key: SupportTab; label: string }[] = [
   { key: "notice", label: "공고" },
@@ -44,20 +56,25 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: "deadline", label: "마감일순" },
 ];
 
-function sortPosts(posts: SupportPost[], sort: SortOption): SupportPost[] {
+function sortPosts(
+  posts: SupportListItem[],
+  sort: SortOption,
+): SupportListItem[] {
   if (sort === "popular") {
     return posts;
   }
 
   if (sort === "registered") {
-    return [...posts].sort((a, b) => b.startDate.localeCompare(a.startDate));
+    return [...posts].sort((a, b) =>
+      b.applyStartDate.localeCompare(a.applyStartDate),
+    );
   }
 
   return [...posts].sort((a, b) => {
-    if (a.endDate === null && b.endDate === null) return 0;
-    if (a.endDate === null) return 1;
-    if (b.endDate === null) return -1;
-    return a.endDate.localeCompare(b.endDate);
+    if (a.applyEndDate === null && b.applyEndDate === null) return 0;
+    if (a.applyEndDate === null) return 1;
+    if (b.applyEndDate === null) return -1;
+    return a.applyEndDate.localeCompare(b.applyEndDate);
   });
 }
 
@@ -65,8 +82,6 @@ export default function SupportListPage() {
   const location = useLocation();
   const isBookmarkEntry = location.pathname === ROUTES.SUPPORT_BOOKMARK;
 
-  const posts = useSupportStore((s) => s.posts);
-  const toggleBookmark = useSupportStore((s) => s.toggleBookmark);
   const [activeTab, setActiveTab] = useState<SupportTab>(
     isBookmarkEntry ? "bookmark" : "notice",
   );
@@ -75,13 +90,23 @@ export default function SupportListPage() {
   const authenticated = useUsedStore((s) => s.authenticated);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
-  const visiblePosts = useMemo(() => {
-    const filtered =
-      activeTab === "bookmark"
-        ? posts.filter((post) => post.isBookmarked)
-        : posts;
-    return sortPosts(filtered, sort);
-  }, [posts, activeTab, sort]);
+  const sortCode = SORT_TO_CODE[sort];
+  const { posts } = useSupportListQuery(sortCode);
+  const { bookmarks } = useBookmarksQuery(sortCode);
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = window.setTimeout(() => setToastMessage(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
+
+  const isBookmarkTab = activeTab === "bookmark";
+  const visiblePosts = useMemo(
+    () => (isBookmarkTab ? bookmarks : sortPosts(posts, sort)),
+    [isBookmarkTab, bookmarks, posts, sort],
+  );
+  const toggleBookmark = useSupportBookmarkToggle(visiblePosts, setToastMessage);
 
   return (
     <div className="min-h-screen bg-gray-30 pb-20">
@@ -128,21 +153,41 @@ export default function SupportListPage() {
         />
       </div>
 
-      {/* 공고 목록 */}
       {visiblePosts.length === 0 ? (
-        <SupportEmptyView
+        <EmptyView
+          icon={
+            <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full bg-gray-100">
+              {activeTab === "bookmark" ? (
+                <BookmarkEmptyIcon className="h-8 w-8 text-gray-200" />
+              ) : (
+                <FileSearchIcon className="h-8 w-8 text-gray-200" />
+              )}
+            </div>
+          }
           title={EMPTY_STATE[activeTab].title}
           description={EMPTY_STATE[activeTab].description}
+          actionLabel={activeTab === "bookmark" ? "공고 보러가기" : undefined}
+          onAction={
+            activeTab === "bookmark"
+              ? () => setActiveTab("notice")
+              : undefined
+          }
         />
       ) : (
         <div className="flex flex-col gap-3 px-4">
           {visiblePosts.map((post) => (
             <SupportCard
-              key={post.id}
+              key={post.supportId}
               post={post}
               onToggleBookmark={toggleBookmark}
             />
           ))}
+        </div>
+      )}
+
+      {toastMessage && (
+        <div className="fixed bottom-24 left-1/2 z-40 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 px-4">
+          <Toast message={toastMessage} />
         </div>
       )}
 
