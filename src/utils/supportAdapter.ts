@@ -17,9 +17,9 @@ export function formatApplicationPeriod(
 }
 
 const BOOKMARK_ERROR_MESSAGES: Record<string, string> = {
-  BOOKMARK409: "이미 등록된 북마크입니다.",
-  BOOKMARK404: "이미 삭제된 북마크입니다.",
-  SUPPORT404: "존재하지 않는 지원정보입니다.",
+  BOOKMARK_ALREADY_EXISTS: "이미 등록된 북마크입니다.",
+  BOOKMARK_NOT_FOUND: "이미 삭제된 북마크입니다.",
+  SUPPORT_NOT_FOUND: "존재하지 않는 지원정보입니다.",
 };
 
 const DEFAULT_BOOKMARK_ERROR_MESSAGE =

@@ -17,22 +17,13 @@ export interface SupportListItem {
   viewCount: number;
 }
 
+// GET /api/v1/supports/{supportId} — 지원정보 상세 조회 응답
 export interface SupportDetail extends SupportListItem {
-  // TODO: 백엔드 상세 섹션 구조 확정 전까지 기존 목업 필드 그대로 유지
-  overview: string;
-  target: string;
-  applicationHeading: string;
-  applicationMethods: string[];
-  contactHeading: string;
-  contactLines: string[];
-  applyUrlLabel: string;
-
-  // 명세 확정 필드
-  // TODO: 백엔드가 구조화된 섹션 필드를 안 주면 이 content를 파싱해서 렌더링하는 걸로 전환 예정
   content: string;
   externalUrl: string;
 }
 
+// GET /api/v1/supports — 지원정보 목록 조회 응답
 export interface SupportListDataDto {
   supports: SupportListItem[];
   page: PageInfoDto<string>;
@@ -44,16 +35,16 @@ export interface GetSupportsParams {
   size?: number;
 }
 
+// POST /api/v1/bookmarks — 북마크 등록 요청/응답
 export interface BookmarkRequestJson {
   supportId: number;
 }
 
-export interface BookmarkResponseData {
-  bookmarkId: number;
+export interface SupportBookmarkResponseData {
   supportId: number;
-  createdAt: string;
 }
 
+// GET /api/v1/bookmarks — 북마크 목록 조회 응답
 export interface BookmarkListDataDto {
   bookmarks: SupportListItem[];
   page: PageInfoDto<string>;

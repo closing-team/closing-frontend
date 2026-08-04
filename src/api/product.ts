@@ -1,7 +1,7 @@
 import { api } from "./axios";
 import type { ApiEnvelope } from "../types/api";
 import type {
-  BookmarkResponseData,
+  ProductBookmarkResponseData,
   CreateProductRequestJson,
   CreateProductResponseData,
   GetBookmarkedProductsParams,
@@ -116,19 +116,19 @@ export async function getMyProducts(
   return res.data.data;
 }
 
-export async function addBookmark(
+export async function addProductBookmark(
   productId: number,
-): Promise<BookmarkResponseData> {
-  const res = await api.post<ApiEnvelope<BookmarkResponseData>>(
+): Promise<ProductBookmarkResponseData> {
+  const res = await api.post<ApiEnvelope<ProductBookmarkResponseData>>(
     `/api/v1/products/${productId}/bookmark`,
   );
   return res.data.data;
 }
 
-export async function removeBookmark(
+export async function removeProductBookmark(
   productId: number,
-): Promise<BookmarkResponseData> {
-  const res = await api.delete<ApiEnvelope<BookmarkResponseData>>(
+): Promise<ProductBookmarkResponseData> {
+  const res = await api.delete<ApiEnvelope<ProductBookmarkResponseData>>(
     `/api/v1/products/${productId}/bookmark`,
   );
   return res.data.data;

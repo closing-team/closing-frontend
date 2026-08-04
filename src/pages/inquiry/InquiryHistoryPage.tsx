@@ -10,9 +10,11 @@ export default function InquiryHistoryPage() {
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const { data } = useInquiriesQuery();
-  const totalCount = data?.summary.totalCount ?? 0;
-  const answeredCount = data?.summary.answeredCount ?? 0;
-  const inquiries = data?.inquiries ?? [];
+  const inquiries = data ?? [];
+  const totalCount = inquiries.length;
+  const answeredCount = inquiries.filter(
+    (inquiry) => inquiry.status === "ANSWERED",
+  ).length;
 
   return (
     <div className="min-h-screen bg-white pb-28">

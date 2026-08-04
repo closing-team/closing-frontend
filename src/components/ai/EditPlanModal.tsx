@@ -23,7 +23,7 @@ export default function EditPlanModal({
   const [startTime, setStartTime] = useState<TimeValue>(plan.startTime);
   const [endDate, setEndDate] = useState<Date>(plan.endDate);
   const [endTime, setEndTime] = useState<TimeValue>(plan.endTime);
-  const [memo, setMemo] = useState("");
+  const [memo, setMemo] = useState(plan.memo ?? "");
   const memoRef = useRef<HTMLTextAreaElement>(null);
 
   const handleMemoInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,7 +39,6 @@ export default function EditPlanModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
       <div className="relative max-h-[85vh] w-full max-w-[347px] overflow-x-hidden overflow-y-auto rounded-xl bg-white">
-        {/* 헤더 */}
         <div className="flex h-[60px] items-center justify-between pl-4 pr-3">
           <p className="text-title-3 text-gray-900">일정 수정</p>
           <button
@@ -52,9 +51,7 @@ export default function EditPlanModal({
           </button>
         </div>
 
-        {/* 바디 */}
         <div className="px-4">
-          {/* 일정 이름 */}
           <TextField
             label="일정 이름"
             labelSize="subtitle-2"
@@ -63,7 +60,6 @@ export default function EditPlanModal({
             placeholder="일정 이름을 입력하세요"
           />
 
-          {/* 일정 시작 / 일정 종료 */}
           <ScheduleRangeField
             className="mt-5"
             startLabel="일정 시작"
@@ -78,7 +74,6 @@ export default function EditPlanModal({
             onEndTimeChange={setEndTime}
           />
 
-          {/* 상세 메모 */}
           <div className="mt-5">
             <label className="mb-2 block text-subtitle-2 text-gray-900">
               상세 메모
@@ -96,7 +91,6 @@ export default function EditPlanModal({
           </div>
         </div>
 
-        {/* 푸터 */}
         <div className="flex h-[100px] items-center gap-2 px-4 pt-8 pb-4">
           <Button
             variant="secondary"

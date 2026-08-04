@@ -1,42 +1,22 @@
-import rectangle from "../../assets/images/Rectangle.png";
-import rectangle1 from "../../assets/images/Rectangle-1.png";
+import packageBanner from "../../assets/images/package-banner.png";
+import type { InquiryRecord } from "./db";
 
-export type InquiryStatus = "pending" | "answered";
-
-export interface InquiryAnswer {
-  content: string;
-  answeredAt: Date;
-}
-
-export interface Inquiry {
-  id: number;
-  type: string;
-  status: InquiryStatus;
-  title: string;
-  content: string;
-  images?: string[];
-  createdAt: Date;
-  answer?: InquiryAnswer;
-}
-
-export let MOCK_INQUIRIES: Inquiry[] = [
+export const MOCK_INQUIRIES: InquiryRecord[] = [
   {
     id: 1,
     type: "세무 신고 서류 문의",
-    status: "pending",
-    title: "폐업 세무 신고 서류 검토 관련 문의",
+    status: "PENDING",
     content:
-      "AI가 추천해 준 서류 목록 중에서 부가세 확정 신고서 관련한 내용이 정확한지 확인하고 싶어 문의드립니다. 폐업 시 추가로 제출해야 하는 서류가 있다면 함께 안내받을 수 있을까요?",
+      "폐업 세무 신고 서류 검토 관련 문의\nAI가 추천해 준 서류 목록 중에서 부가세 확정 신고서 관련한 내용이 정확한지 확인하고 싶어 문의드립니다. 폐업 시 추가로 제출해야 하는 서류가 있다면 함께 안내받을 수 있을까요?",
     createdAt: new Date(2026, 4, 1),
   },
   {
     id: 2,
     type: "서비스 오류 신고",
-    status: "answered",
-    title: "집기 일괄 인수 등록 시 에러가 발생합니다.",
+    status: "ANSWERED",
     content:
-      "중고거래 탭에서 가구 세트 이미지를 여러 장 등록하고 저장하는 도중 이미지가 안 보입니다.",
-    images: [rectangle, rectangle1],
+      "집기 일괄 인수 등록 시 에러가 발생합니다.\n중고거래 탭에서 가구 세트 이미지를 여러 장 등록하고 저장하는 도중 이미지가 안 보입니다.",
+    images: [packageBanner, packageBanner],
     createdAt: new Date(2026, 3, 28),
     answer: {
       content:
@@ -45,25 +25,3 @@ export let MOCK_INQUIRIES: Inquiry[] = [
     },
   },
 ];
-
-const TITLE_MAX_LENGTH = 20;
-
-let nextId = Math.max(...MOCK_INQUIRIES.map((i) => i.id)) + 1;
-
-export function insertInquiry(input: {
-  type: string;
-  content: string;
-  images: string[];
-}): Inquiry {
-  const created: Inquiry = {
-    id: nextId++,
-    type: input.type,
-    status: "pending",
-    title: input.content.slice(0, TITLE_MAX_LENGTH),
-    content: input.content,
-    images: input.images,
-    createdAt: new Date(),
-  };
-  MOCK_INQUIRIES = [created, ...MOCK_INQUIRIES];
-  return created;
-}

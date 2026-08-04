@@ -94,7 +94,6 @@ export default function GuideListPage() {
           ))}
         </div>
 
-        {/* 경고 배너 */}
         <div className="mb-2 mt-4 flex items-center gap-3 rounded-2xl border border-warning-100 bg-warning-50 px-4 py-3">
           <AlertIcon className="h-6 w-6 shrink-0 text-warning-500" />
           <p className="text-subtitle-2 font-semibold text-warning-600">

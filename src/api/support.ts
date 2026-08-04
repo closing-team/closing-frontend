@@ -2,7 +2,7 @@ import { api } from "./axios";
 import type { ApiEnvelope } from "../types/api";
 import type {
   BookmarkListDataDto,
-  BookmarkResponseData,
+  SupportBookmarkResponseData,
   GetBookmarksParams,
   GetSupportsParams,
   SupportDetail,
@@ -29,8 +29,8 @@ export async function getSupportDetail(
 
 export async function addBookmark(
   supportId: number,
-): Promise<BookmarkResponseData> {
-  const res = await api.post<ApiEnvelope<BookmarkResponseData>>(
+): Promise<SupportBookmarkResponseData> {
+  const res = await api.post<ApiEnvelope<SupportBookmarkResponseData>>(
     "/api/v1/bookmarks",
     { supportId },
   );

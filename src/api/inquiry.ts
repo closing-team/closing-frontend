@@ -3,29 +3,25 @@ import type { ApiEnvelope } from "../types/api";
 import type {
   CreateInquiryRequestJson,
   CreateInquiryResponseData,
-  GetInquiriesResponse,
+  GetInquiriesResponseData,
 } from "../types/inquiryApi";
 
-export async function getInquiries(): Promise<GetInquiriesResponse> {
-  const res = await api.get<ApiEnvelope<GetInquiriesResponse>>(
+export async function getInquiries(): Promise<GetInquiriesResponseData> {
+  const res = await api.get<ApiEnvelope<GetInquiriesResponseData>>(
     "/api/v1/inquiries",
   );
   return res.data.data;
 }
 
 export async function createInquiry(
-  request: CreateInquiryRequestJson,
+  request: Omit<CreateInquiryRequestJson, "imageUrls">,
   images: File[],
 ): Promise<CreateInquiryResponseData> {
-  const formData = new FormData();
-  formData.append("type", request.type);
-  formData.append("content", request.content);
-  for (const image of images) {
-    formData.append("images", image);
-  }
+  // TODO: 별도 이미지 업로드 API가 생기면 그 응답 URL로 교체. 지금은 blob URL을 그대로 전달한다.
+  const imageUrls = images.map((image) => URL.createObjectURL(image));
   const res = await api.post<ApiEnvelope<CreateInquiryResponseData>>(
     "/api/v1/inquiries",
-    formData,
+    { ...request, imageUrls },
   );
   return res.data.data;
 }

@@ -1,28 +1,32 @@
 import { toTimeValue, combineDateAndTime } from "./dateFormat";
 import type { Plan } from "../components/common/PlanCard";
 import type { Todo } from "../components/home/TodoList";
-import type { HomeTaskCalendarItem, CreateTaskRequestJson } from "../types/scheduleApi";
+import type {
+  HomeTaskCalendarItem,
+  CreateTaskRequestJson,
+  TaskDetailDto,
+} from "../types/scheduleApi";
 
-function parseApiDate(dateStr: string): Date {
+export function parseApiDate(dateStr: string): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
-function parseApiDateTime(dateStr: string, timeStr: string): Date {
+export function parseApiDateTime(dateStr: string, timeStr: string): Date {
   const [h, minute] = timeStr.split(":").map(Number);
   const date = parseApiDate(dateStr);
   date.setHours(h, minute, 0, 0);
   return date;
 }
 
-function toApiDateString(date: Date): string {
+export function toApiDateString(date: Date): string {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 }
 
-function toApiTimeString(time: Plan["startTime"]): string {
+export function toApiTimeString(time: Plan["startTime"]): string {
   const combined = combineDateAndTime(new Date(), time);
   return `${String(combined.getHours()).padStart(2, "0")}:${String(combined.getMinutes()).padStart(2, "0")}`;
 }
@@ -35,6 +39,19 @@ export function toPlan(item: HomeTaskCalendarItem): Plan {
     startTime: toTimeValue(parseApiDateTime(item.startDate, item.startTime)),
     endDate: parseApiDate(item.endDate),
     endTime: toTimeValue(parseApiDateTime(item.endDate, item.endTime)),
+  };
+}
+
+// GET /api/v1/tasks/{taskId} 상세 조회 결과 — 홈 캘린더 목록(toPlan)엔 없는 상세 메모(description)를 포함한다.
+export function taskDetailToPlan(detail: TaskDetailDto): Plan {
+  return {
+    id: detail.taskId,
+    title: detail.title,
+    startDate: parseApiDate(detail.startDate),
+    startTime: toTimeValue(parseApiDateTime(detail.startDate, detail.startTime)),
+    endDate: parseApiDate(detail.endDate),
+    endTime: toTimeValue(parseApiDateTime(detail.endDate, detail.endTime)),
+    memo: detail.description,
   };
 }
 

@@ -66,7 +66,6 @@ export default function DateCalendar({
       </div>
 
       <div>
-        {/* 요일 */}
         <div className="mb-2 grid grid-cols-7 gap-x-3.5">
           {WEEKDAYS.map((day) => (
             <span
@@ -78,7 +77,6 @@ export default function DateCalendar({
           ))}
         </div>
 
-        {/* 날짜 */}
         <div className="grid grid-cols-7 gap-x-3.5 gap-y-1">
           {cells.map((day, i) => {
             if (day === null) return <span key={`empty-${i}`} />;

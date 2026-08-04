@@ -5,7 +5,7 @@ import {
   getMyProducts,
   getProductDetail,
   getProducts,
-} from "../api/used";
+} from "../api/product";
 import {
   myProductSummaryDtoToProduct,
   productDetailDtoToProduct,

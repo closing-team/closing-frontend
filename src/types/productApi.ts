@@ -24,6 +24,7 @@ export interface ProductSummaryDto {
   tradeMethods: TradeMethodCode[];
   tradeLocation: TradeLocationSummaryDto | null;
   status: ProductStatusCode;
+  bookmarked: boolean;
   isBookmarked: boolean;
   createdAt: string;
 }
@@ -33,6 +34,7 @@ export interface PageInfoDto<TCursor> {
   hasNext: boolean;
 }
 
+// GET /api/v1/products — 상품 목록 조회 응답
 export interface ProductListDataDto {
   products: ProductSummaryDto[];
   page: PageInfoDto<string>;
@@ -49,12 +51,14 @@ export interface MyProductCountsDto {
   soldOut: number;
 }
 
+// GET /api/v1/products/me — 내 상품 목록 조회 응답
 export interface MyProductListDataDto {
   products: MyProductSummaryDto[];
   counts: MyProductCountsDto;
   page: PageInfoDto<number>;
 }
 
+// GET /api/v1/products/bookmarks — 찜한 상품 목록 조회 응답
 export interface BookmarkedProductListDataDto {
   products: ProductSummaryDto[];
   page: PageInfoDto<number>;
@@ -66,6 +70,7 @@ export interface ProductSellerDto {
   location: string | null;
 }
 
+// GET /api/v1/products/{productId} — 상품 상세 조회 응답
 export interface ProductDetailDto {
   productId: number;
   title: string;
@@ -79,8 +84,10 @@ export interface ProductDetailDto {
   tradeMethods: TradeMethodCode[];
   tradeLocation: TradeLocationSummaryDto | null;
   status: ProductStatusCode;
-  isBookmarked: boolean;
+  owner: boolean;
   isOwner: boolean;
+  bookmarked: boolean;
+  isBookmarked: boolean;
   seller: ProductSellerDto;
   createdAt: string;
 }
@@ -116,6 +123,7 @@ export interface GetProductDetailParams {
   longitude?: number;
 }
 
+// POST /api/v1/products — 상품 등록 요청/응답
 export interface CreateProductRequestJson {
   title: string;
   businessCategory: string;
@@ -135,6 +143,7 @@ export interface CreateProductResponseData {
   createdAt: string;
 }
 
+// PUT /api/v1/products/{productId} — 상품 수정 요청/응답
 export interface UpdateProductRequestJson {
   title: string;
   businessCategory: string;
@@ -161,7 +170,8 @@ export interface UpdateProductResponseData {
   updatedAt: string;
 }
 
-export interface UpdateProductStatusRequest {
+// PATCH /api/v1/products/{productId}/status — 상품 상태 변경 요청/응답
+export interface UpdateProductStatusRequestJson {
   status: ProductStatusCode;
 }
 
@@ -171,7 +181,9 @@ export interface UpdateProductStatusResponseData {
   updatedAt: string;
 }
 
-export interface BookmarkResponseData {
+// POST/DELETE /api/v1/products/{productId}/bookmark — 상품 찜 등록/취소 응답
+export interface ProductBookmarkResponseData {
   productId: number;
+  bookmarked: boolean;
   isBookmarked: boolean;
 }

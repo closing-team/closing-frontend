@@ -26,11 +26,11 @@ export function findBookmarkBySupportId(
   return bookmarks.find((b) => b.supportId === supportId);
 }
 
-export function listBookmarkRecords(): BookmarkRecord[] {
+export function listBookmarks(): BookmarkRecord[] {
   return bookmarks;
 }
 
-export function addBookmarkRecord(supportId: number): BookmarkRecord {
+export function addBookmark(supportId: number): BookmarkRecord {
   const record: BookmarkRecord = {
     bookmarkId: nextBookmarkId++,
     supportId,
@@ -42,7 +42,7 @@ export function addBookmarkRecord(supportId: number): BookmarkRecord {
   return record;
 }
 
-export function removeBookmarkRecord(supportId: number): boolean {
+export function removeBookmark(supportId: number): boolean {
   const existing = findBookmarkBySupportId(supportId);
   if (!existing) return false;
   bookmarks = bookmarks.filter((b) => b.supportId !== supportId);

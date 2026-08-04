@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { QueryKey } from "@tanstack/react-query";
 import { addBookmark, removeBookmark } from "../api/support";
-import { supportKeys } from "./useSupports";
+import { supportKeys } from "./useSupportQueries";
 
 function useInvalidateSupportQueries() {
   const queryClient = useQueryClient();

@@ -16,7 +16,7 @@ import { ROUTES, usedDetailPath } from "../../constants/routes";
 import type { UsedFilter, UsedSort } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
 import { useLocationGate } from "../../hooks/useLocationGate";
-import { useProductListQuery } from "../../hooks/useProducts";
+import { useProductListQuery } from "../../hooks/useProductQueries";
 import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
 import { useCommitSearch } from "../../hooks/useCommitSearch";
 import { useNearbyLabel } from "../../hooks/useNearbyLabel";

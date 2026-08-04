@@ -7,7 +7,7 @@ import Toast from "../../components/common/Toast";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
 import { ChevronRightIcon } from "../../assets/icons";
-import { useSupportDetailQuery } from "../../hooks/useSupports";
+import { useSupportDetailQuery } from "../../hooks/useSupportQueries";
 import {
   useAddBookmarkMutation,
   useRemoveBookmarkMutation,
@@ -96,33 +96,9 @@ export default function SupportDetailPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 border-y border-gray-100 py-5">
-            <DetailSection title="사업 개요">
-              <div className="flex flex-col gap-2">
-                <p>{post.overview}</p>
-                <div className="flex items-center gap-1 text-caption-2">
-                  <span className="text-gray-700">지원대상</span>
-                  <span className="text-gray-900">{post.target}</span>
-                </div>
-              </div>
-            </DetailSection>
-
-            <DetailSection title={post.applicationHeading}>
-              <ul className="flex flex-col gap-1">
-                {post.applicationMethods.map((line, i) => (
-                  <li key={i}>- {line}</li>
-                ))}
-              </ul>
-            </DetailSection>
-          </div>
-
-          <div className="border-b border-gray-100 py-5">
-            <DetailSection title={post.contactHeading}>
-              <div className="flex flex-col gap-1">
-                {post.contactLines.map((line, i) => (
-                  <p key={i}>{line}</p>
-                ))}
-              </div>
+          <div className="border-y border-gray-100 py-5">
+            <DetailSection title="지원 내용">
+              <p className="whitespace-pre-line">{post.content}</p>
             </DetailSection>
           </div>
         </div>
@@ -137,7 +113,6 @@ export default function SupportDetailPage() {
           >
             온라인 신청 바로가기
           </Button>
-          <p className="text-caption-3 text-gray-400">{post.applyUrlLabel}</p>
         </div>
       </div>
     </div>

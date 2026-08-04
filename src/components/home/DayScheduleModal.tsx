@@ -31,7 +31,6 @@ export default function DayScheduleModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="relative flex max-h-[85vh] w-full max-w-[343px] flex-col overflow-x-hidden overflow-y-auto rounded-2xl bg-white">
-        {/* 헤더 */}
         <div className="flex items-center justify-between px-4 py-[14px]">
           <p className="text-title-2 text-gray-900">
             {date.getMonth() + 1}월 {date.getDate()}일 일정
@@ -46,7 +45,6 @@ export default function DayScheduleModal({
           </button>
         </div>
 
-        {/* 일정 리스트 */}
         <div className="mt-2 flex flex-col gap-2 px-4">
           {plans.map((plan) => (
             <button
@@ -71,7 +69,6 @@ export default function DayScheduleModal({
           ))}
         </div>
 
-        {/* 새 일정 추가 */}
         <div className="px-4 pt-4 pb-4">
           <Button
             variant="secondary"

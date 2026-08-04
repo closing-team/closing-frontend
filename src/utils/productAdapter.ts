@@ -9,12 +9,7 @@ import type {
 } from "../types/productApi";
 import type { DealType, Product, SaleStatus } from "../types/used";
 import { formatTimeAgo } from "./timeAgo";
-import {
-  toBusinessCategoryCode,
-  toProductCategoryCode,
-  fromBusinessCategoryCode,
-  fromProductCategoryCode,
-} from "./productCategoryMap";
+import { toBusinessCategoryCode, toProductCategoryCode } from "./productCategoryMap";
 
 const TRADE_METHOD_TO_DEAL_TYPE: Record<TradeMethodCode, DealType> = {
   DIRECT: "직거래",
@@ -144,5 +139,3 @@ export function toUpdateProductRequest(
 export function saleStatusToStatusCode(status: SaleStatus): ProductStatusCode {
   return SALE_STATUS_TO_STATUS_CODE[status];
 }
-
-export { fromBusinessCategoryCode, fromProductCategoryCode };
