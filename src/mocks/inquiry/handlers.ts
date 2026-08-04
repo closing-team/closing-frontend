@@ -14,6 +14,7 @@ function toListItem(inquiry: Inquiry): InquiryListItem {
     createdAt: inquiry.createdAt.toISOString(),
     answer: inquiry.answer?.content ?? null,
     answeredAt: inquiry.answer?.answeredAt.toISOString() ?? null,
+    imageUrls: inquiry.images,
   };
 }
 

@@ -8,6 +8,7 @@ export interface InquiryListItem {
   createdAt: string;
   answer: string | null;
   answeredAt: string | null;
+  imageUrls?: string[];
 }
 
 export interface InquirySummary {

@@ -1,3 +1,6 @@
+import rectangle from "../../assets/images/Rectangle.png";
+import rectangle1 from "../../assets/images/Rectangle-1.png";
+
 export type InquiryStatus = "pending" | "answered";
 
 export interface InquiryAnswer {
@@ -33,7 +36,7 @@ export let MOCK_INQUIRIES: Inquiry[] = [
     title: "집기 일괄 인수 등록 시 에러가 발생합니다.",
     content:
       "중고거래 탭에서 가구 세트 이미지를 여러 장 등록하고 저장하는 도중 이미지가 안 보입니다.",
-    images: ["furniture-set-1"],
+    images: [rectangle, rectangle1],
     createdAt: new Date(2026, 3, 28),
     answer: {
       content:
