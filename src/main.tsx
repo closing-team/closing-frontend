@@ -9,11 +9,14 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
-// 백엔드 배포 전까지 dev 환경에서만 MSW로 중고거래 상품 API를 모킹한다.
+// 백엔드 배포 전까지는 dev 환경뿐 아니라 VITE_ENABLE_MSW=true로 켠 배포본에서도
+// MSW로 전 도메인 API를 모킹한다. 백엔드 준비가 끝나면 이 플래그를 끄면 된다.
 // Service Worker 등록이 드물게 응답하지 않는 환경이 있어(예: 헤드리스 브라우저),
 // 그 경우에도 앱 전체가 멈추지 않도록 타임아웃 시 렌더링을 진행시킨다.
 async function enableMocking() {
-  if (!import.meta.env.DEV) return;
+  const shouldMock =
+    import.meta.env.DEV || import.meta.env.VITE_ENABLE_MSW === "true";
+  if (!shouldMock) return;
   const { worker } = await import("./mocks/msw/browser");
   const timeout = new Promise<void>((resolve) => setTimeout(resolve, 3000));
   await Promise.race([
