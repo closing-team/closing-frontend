@@ -6,6 +6,7 @@ import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatInput from "../../components/ai/ChatInput";
 import { CheckIcon } from "../../assets/icons";
 import cloyCircle from "../../assets/images/cloy-circle.png";
+import { useStartAiSessionMutation } from "../../hooks/useAi";
 
 const CHECKLIST = [
   {
@@ -38,12 +39,13 @@ const CHECKLIST = [
 export default function AIPage() {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
+  const startSession = useStartAiSessionMutation();
 
   return (
     <div className="min-h-screen bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
-      <div className="flex flex-col items-center px-4 py-8">
+      <div className="flex flex-col items-center px-4 pt-8 pb-32">
         <div className="flex w-full flex-col items-start gap-3">
           <img
             src={cloyCircle}
@@ -82,18 +84,36 @@ export default function AIPage() {
             ))}
           </div>
         </div>
+      </div>
 
-        {/* 채팅 입력창 */}
-        {/* TODO: (LLM001) 전송 시 대화 API 연동 */}
+      <div className="fixed bottom-0 left-1/2 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-gradient-to-t from-white via-white to-white/0 px-4 pb-4 pt-6">
         <ChatInput
           value={input}
           onChange={setInput}
+          disabled={startSession.isPending}
           onSend={() => {
-            if (input.trim()) {
-              navigate(ROUTES.AI_PLAN, { state: { initialMessage: input } });
-            }
+            const initialInput = input.trim();
+            if (!initialInput || startSession.isPending) return;
+
+            startSession.mutate(
+              { initialInput },
+              {
+                onSuccess: (data) => {
+                  navigate(ROUTES.AI_PLAN, {
+                    state: {
+                      sessionId: data.sessionId,
+                      initialMessage: initialInput,
+                      aiMessage: data.aiMessage,
+                      generatedTasks: data.generatedTasks,
+                      turnCount: data.turnCount,
+                      remainingTurns: data.remainingTurns,
+                    },
+                  });
+                },
+              },
+            );
           }}
-          className="mt-5 w-full"
+          className="w-full"
         />
       </div>
     </div>

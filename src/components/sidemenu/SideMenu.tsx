@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import ConfirmModal from "../common/ConfirmModal";
 import { XLgIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
+import { useWithdrawMutation } from "../../hooks/useAccount";
 
 interface SideMenuProps {
   open: boolean;
@@ -55,6 +56,7 @@ export default function SideMenu({
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
+  const withdraw = useWithdrawMutation();
 
   if (!open) return null;
 
@@ -191,9 +193,12 @@ export default function SideMenu({
           confirmLabel="탈퇴"
           onCancel={() => setShowWithdrawConfirm(false)}
           onConfirm={() => {
-            // TODO: 실제 탈퇴 API 연동 (기능명세서 A202: 탈퇴 확인 후 계정 삭제 및 LOG001)
-            setShowWithdrawConfirm(false);
-            go(ROUTES.LOGIN);
+            withdraw.mutate(undefined, {
+              onSuccess: () => {
+                setShowWithdrawConfirm(false);
+                go(ROUTES.LOGIN);
+              },
+            });
           }}
         />
       )}

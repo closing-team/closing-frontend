@@ -4,12 +4,13 @@ import { formatDate, formatTime } from "../../utils/dateFormat";
 import type { TimeValue } from "./TimeWheel";
 
 export interface Plan {
-  id: number;
+  id: string | number;
   title: string;
   startDate: Date;
   startTime: TimeValue;
   endDate: Date;
   endTime: TimeValue;
+  memo?: string;
 }
 
 function DateBadge({
@@ -57,10 +58,9 @@ export function PlanDateRange({
 
 interface PlanCardProps {
   plan: Plan;
-  onClick?: (id: number) => void;
+  onClick?: (id: Plan["id"]) => void;
 }
 
-// 일정 카드 — 저장된 일정 목록에서 사용 (탭하면 상세 이동)
 export default function PlanCard({ plan, onClick }: PlanCardProps) {
   return (
     <button

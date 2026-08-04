@@ -23,7 +23,7 @@ export default function TopBar({
 
   return (
     <header
-      className={`relative flex h-14 items-center gap-2 bg-white ${paddingClass} ${
+      className={`sticky top-0 z-40 flex h-14 items-center gap-2 bg-white ${paddingClass} ${
         bordered ? "border-b border-gray-100" : ""
       } ${className}`}
     >

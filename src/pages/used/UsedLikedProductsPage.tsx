@@ -6,7 +6,7 @@ import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger
 import UsedLikedEmptyView from "../../components/used/UsedLikedEmptyView";
 import { useUsedStore } from "../../stores/usedStore";
 import { ROUTES, usedDetailPath } from "../../constants/routes";
-import { useBookmarkedProductsQuery } from "../../hooks/useProducts";
+import { useBookmarkedProductsQuery } from "../../hooks/useProductQueries";
 import { useProductLikeToggle } from "../../hooks/useProductLikeToggle";
 
 export default function UsedLikedProductsPage() {

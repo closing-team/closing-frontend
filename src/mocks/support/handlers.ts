@@ -1,40 +1,38 @@
 import { http, HttpResponse } from "msw";
 import { SUPPORT_POSTS } from "./mockSupport";
 import {
-  addBookmarkRecord,
+  addBookmark,
   findBookmarkBySupportId,
   findSupport,
-  listBookmarkRecords,
-  removeBookmarkRecord,
+  listBookmarks,
+  removeBookmark,
 } from "./db";
-import { paginate } from "../msw/db";
 import type {
   BookmarkRequestJson,
   SupportListItem,
   SupportSortCode,
 } from "../../types/supportApi";
-
-const OK = { success: true, code: "COMMON200", message: "성공입니다." } as const;
+import { OK, paginate } from "../common";
 
 const SORT_CODES: SupportSortCode[] = ["POPULAR", "LATEST", "DEADLINE"];
 
 function notFound(message: string) {
   return HttpResponse.json(
-    { success: false, code: "SUPPORT404", message },
+    { success: false, code: "SUPPORT_NOT_FOUND", message },
     { status: 404 },
   );
 }
 
 function bookmarkNotFound(message: string) {
   return HttpResponse.json(
-    { success: false, code: "BOOKMARK404", message },
+    { success: false, code: "BOOKMARK_NOT_FOUND", message },
     { status: 404 },
   );
 }
 
 function bookmarkConflict(message: string) {
   return HttpResponse.json(
-    { success: false, code: "BOOKMARK409", message },
+    { success: false, code: "BOOKMARK_ALREADY_EXISTS", message },
     { status: 409 },
   );
 }
@@ -152,18 +150,18 @@ export const supportHandlers = [
       return bookmarkConflict("이미 등록된 북마크입니다.");
     }
 
-    const record = addBookmarkRecord(body.supportId);
-    return HttpResponse.json({ ...OK, data: record });
+    addBookmark(body.supportId);
+    return HttpResponse.json({ ...OK, data: { supportId: body.supportId } });
   }),
 
   http.delete("*/api/v1/bookmarks/:supportId", ({ params }) => {
     const supportId = Number(params.supportId);
-    const removed = removeBookmarkRecord(supportId);
+    const removed = removeBookmark(supportId);
     if (!removed) {
       return bookmarkNotFound("북마크가 존재하지 않습니다.");
     }
 
-    return HttpResponse.json({ ...OK, data: null });
+    return HttpResponse.json({ ...OK, data: {} });
   }),
 
   http.get("*/api/v1/bookmarks", ({ request }) => {
@@ -182,7 +180,7 @@ export const supportHandlers = [
 
     const cursor = url.searchParams.get("cursor") ?? undefined;
 
-    const items = listBookmarkRecords()
+    const items = listBookmarks()
       .map((record) => {
         const post = findSupport(record.supportId);
         if (!post) return null;

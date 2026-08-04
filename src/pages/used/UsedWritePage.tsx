@@ -14,7 +14,7 @@ import Toast from "../../components/common/Toast";
 import type { DealType, Product } from "../../types/used";
 import { useUsedStore } from "../../stores/usedStore";
 import type { GeoLocation } from "../../stores/usedStore";
-import { useProductDetailQuery } from "../../hooks/useProducts";
+import { useProductDetailQuery } from "../../hooks/useProductQueries";
 import {
   useCreateProductMutation,
   useUpdateProductMutation,

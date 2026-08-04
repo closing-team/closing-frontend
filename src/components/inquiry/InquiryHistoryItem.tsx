@@ -9,7 +9,7 @@ interface InquiryHistoryItemProps {
 }
 
 function StatusChip({ status }: { status: InquiryListItem["status"] }) {
-  const answered = status === "answered";
+  const answered = status === "ANSWERED";
   return (
     <span
       className={`inline-flex items-center rounded px-2 py-1 text-caption-1 ${
@@ -26,6 +26,10 @@ export default function InquiryHistoryItem({
   expanded,
   onToggle,
 }: InquiryHistoryItemProps) {
+  // 백엔드 응답에 별도 title 필드가 없어, content 첫 줄을 제목처럼 사용한다.
+  const [heading, ...rest] = inquiry.content.split("\n");
+  const detail = rest.join("\n");
+
   return (
     <div className="w-full px-4">
       <div className="flex w-full flex-col border-b border-gray-100 pb-7">
@@ -49,21 +53,21 @@ export default function InquiryHistoryItem({
             <p
               className={`text-title-3 text-gray-900 ${expanded ? "" : "truncate"}`}
             >
-              {inquiry.title}
+              {heading}
             </p>
-            {inquiry.content && (
+            {detail && (
               <p
                 className={`text-body-2 text-gray-900 ${
                   expanded ? "whitespace-pre-line" : "truncate"
                 }`}
               >
-                {inquiry.content}
+                {detail}
               </p>
             )}
           </div>
         </button>
 
-        {inquiry.status === "answered" &&
+        {inquiry.status === "ANSWERED" &&
           inquiry.imageUrls &&
           inquiry.imageUrls.length > 0 && (
             <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

@@ -1,34 +1,24 @@
-export type InquiryStatus = "pending" | "answered";
+export type InquiryStatus = "PENDING" | "ANSWERED";
 
 export interface InquiryListItem {
   inquiryId: number;
-  status: InquiryStatus;
-  title: string;
+  type: string;
   content: string;
-  createdAt: string;
+  imageUrls: string[];
+  status: InquiryStatus;
   answer: string | null;
   answeredAt: string | null;
-  imageUrls?: string[];
+  createdAt: string;
 }
 
-export interface InquirySummary {
-  totalCount: number;
-  answeredCount: number;
-}
+// GET /api/v1/inquiries — 문의 내역 목록 조회 응답
+export type GetInquiriesResponseData = InquiryListItem[];
 
-export interface GetInquiriesResponse {
-  summary: InquirySummary;
-  inquiries: InquiryListItem[];
-}
-
+// POST /api/v1/inquiries — 문의 등록 요청/응답
 export interface CreateInquiryRequestJson {
   type: string;
   content: string;
+  imageUrls: string[];
 }
 
-export interface CreateInquiryResponseData {
-  inquiryId: number;
-  title: string;
-  status: InquiryStatus;
-  createdAt: string;
-}
+export type CreateInquiryResponseData = InquiryListItem;

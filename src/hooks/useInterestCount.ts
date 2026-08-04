@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { InfiniteData } from "@tanstack/react-query";
 import { useUsedStore } from "../stores/usedStore";
-import { getBookmarkedProducts } from "../api/used";
-import { productKeys } from "./useProducts";
+import { getBookmarkedProducts } from "../api/product";
+import { productKeys } from "./useProductQueries";
 import type { BookmarkedProductListDataDto } from "../types/productApi";
 
 const COUNT_PAGE_SIZE = 100;

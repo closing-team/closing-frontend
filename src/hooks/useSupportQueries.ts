@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBookmarks, getSupportDetail, getSupports } from "../api/support";
-import { useSupportStore } from "../stores/supportStore";
 import type { SupportSortCode } from "../types/supportApi";
 
 const PAGE_SIZE = 20;
+const COUNT_PAGE_SIZE = 100;
 
 export const supportKeys = {
   lists: () => ["supports", "list"] as const,
@@ -15,8 +15,6 @@ export const supportKeys = {
 };
 
 export function useSupportListQuery(sort: SupportSortCode) {
-  const setPosts = useSupportStore((s) => s.setPosts);
-
   // TODO: sort 파라미터는 실제로 요청에 실어 보내지만, MSW 응답은 아직 정렬을
   // 반영하지 않고 전체 목업 데이터를 그대로 반환한다. 실제 정렬은 화면에서 처리한다.
   const query = useQuery({
@@ -24,11 +22,7 @@ export function useSupportListQuery(sort: SupportSortCode) {
     queryFn: () => getSupports({ sort, size: PAGE_SIZE }),
   });
 
-  useEffect(() => {
-    if (query.data) setPosts(query.data.supports);
-  }, [query.data, setPosts]);
-
-  return { isLoading: query.isLoading };
+  return { posts: query.data?.supports ?? [], isLoading: query.isLoading };
 }
 
 export function useSupportDetailQuery(supportId: number | undefined) {
@@ -61,4 +55,32 @@ export function useBookmarksQuery(sort: SupportSortCode) {
     hasNextPage: query.hasNextPage,
     isFetchingNextPage: query.isFetchingNextPage,
   };
+}
+
+export function useSupportBookmarkCount(): number {
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery({
+    queryKey: [...supportKeys.bookmarks("LATEST"), "total"],
+    queryFn: async () => {
+      const cached = queryClient.getQueryData<{
+        pages: { bookmarks: unknown[]; page: { hasNext: boolean } }[];
+      }>(supportKeys.bookmarks("LATEST"));
+      if (cached && !cached.pages.at(-1)?.page.hasNext) {
+        return cached.pages.reduce((sum, page) => sum + page.bookmarks.length, 0);
+      }
+
+      let total = 0;
+      let cursor: string | undefined;
+      for (;;) {
+        const page = await getBookmarks({ sort: "LATEST", size: COUNT_PAGE_SIZE, cursor });
+        total += page.bookmarks.length;
+        if (!page.page.hasNext) break;
+        cursor = page.page.nextCursor ?? undefined;
+      }
+      return total;
+    },
+  });
+
+  return data ?? 0;
 }

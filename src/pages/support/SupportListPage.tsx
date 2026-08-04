@@ -14,8 +14,7 @@ import {
   BookmarkEmptyIcon,
 } from "../../assets/icons";
 import { useUsedStore } from "../../stores/usedStore";
-import { useSupportStore } from "../../stores/supportStore";
-import { useBookmarksQuery, useSupportListQuery } from "../../hooks/useSupports";
+import { useBookmarksQuery, useSupportListQuery } from "../../hooks/useSupportQueries";
 import { useSupportBookmarkToggle } from "../../hooks/useSupportBookmarkToggle";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
@@ -92,8 +91,7 @@ export default function SupportListPage() {
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const sortCode = SORT_TO_CODE[sort];
-  useSupportListQuery(sortCode);
-  const posts = useSupportStore((s) => s.posts);
+  const { posts } = useSupportListQuery(sortCode);
   const { bookmarks } = useBookmarksQuery(sortCode);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -155,7 +153,6 @@ export default function SupportListPage() {
         />
       </div>
 
-      {/* 공고 목록 */}
       {visiblePosts.length === 0 ? (
         <EmptyView
           icon={

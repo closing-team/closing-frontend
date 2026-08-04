@@ -7,26 +7,42 @@ import {
 } from "../../assets/icons";
 import TopBar from "../../components/common/TopBar";
 import { ROUTES } from "../../constants/routes";
+import { useAgreeTermsMutation, useTermsQuery } from "../../hooks/useTerms";
+import type { TermDto } from "../../types/termsApi";
 
-const AGREEMENTS = [
-  "[필수] 서비스 이용약관 동의",
-  "[필수] 개인정보 처리방침 동의",
-  "[필수] 만 14세 이상입니다",
-] as const;
+interface TermsFormProps {
+  terms: TermDto[];
+}
 
-export default function TermsPage() {
+function TermsForm({ terms }: TermsFormProps) {
   const navigate = useNavigate();
-  const [agreements, setAgreements] = useState<boolean[]>([false, false, false]);
-  const isAllAgreed = agreements.every(Boolean);
+  const agreeTerms = useAgreeTermsMutation();
+  const [agreements, setAgreements] = useState<boolean[]>(() => terms.map(() => false));
+
+  const requiredIndexes = terms
+    .map((term, index) => (term.required ? index : -1))
+    .filter((index) => index !== -1);
+  const isAllAgreed = requiredIndexes.every((index) => agreements[index]);
 
   const setAllAgreements = (checked: boolean) => {
-    setAgreements(AGREEMENTS.map(() => checked));
+    setAgreements(terms.map(() => checked));
   };
 
   const toggleAgreement = (index: number) => {
     setAgreements((current) => current.map((checked, itemIndex) => (
       itemIndex === index ? !checked : checked
     )));
+  };
+
+  const handleSubmit = () => {
+    const termIds = terms
+      .filter((_, index) => agreements[index])
+      .map((term) => term.termId);
+
+    agreeTerms.mutate(
+      { termIds },
+      { onSuccess: () => navigate(ROUTES.HOME, { replace: true }) },
+    );
   };
 
   return (
@@ -62,13 +78,13 @@ export default function TermsPage() {
         </button>
 
         <div className="mt-4 divide-y divide-gray-100">
-          {AGREEMENTS.map((agreement, index) => (
-            <div key={agreement} className="flex h-[56px] items-center">
+          {terms.map((term, index) => (
+            <div key={term.termId} className="flex h-[56px] items-center">
               <button
                 type="button"
                 role="checkbox"
                 aria-checked={agreements[index]}
-                aria-label={agreement}
+                aria-label={term.content}
                 onClick={() => toggleAgreement(index)}
                 className="flex h-full flex-1 items-center gap-3 text-left"
               >
@@ -77,9 +93,11 @@ export default function TermsPage() {
                 ) : (
                   <CheckboxEmptyIcon className="h-5 w-5 shrink-0" />
                 )}
-                <span className="text-[13px] text-gray-700">{agreement}</span>
+                <span className="text-[13px] text-gray-700">
+                  {term.required ? "[필수] " : "[선택] "}
+                  {term.content}
+                </span>
               </button>
-              {index < 2 && <span className="text-caption-2 font-semibold text-gray-400">전문 보기</span>}
             </div>
           ))}
         </div>
@@ -99,8 +117,8 @@ export default function TermsPage() {
       <div className="mt-[104px] px-5">
         <button
           type="button"
-          disabled={!isAllAgreed}
-          onClick={() => navigate(ROUTES.HOME, { replace: true })}
+          disabled={!isAllAgreed || agreeTerms.isPending}
+          onClick={handleSubmit}
           className="h-[58px] w-full rounded-xl bg-gray-900 text-body-1 font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
         >
           동의하고 가입하기
@@ -108,4 +126,19 @@ export default function TermsPage() {
       </div>
     </main>
   );
+}
+
+export default function TermsPage() {
+  const navigate = useNavigate();
+  const { data: terms, isLoading } = useTermsQuery();
+
+  if (isLoading || !terms) {
+    return (
+      <main className="min-h-dvh bg-white pb-5">
+        <TopBar title="서비스 약관 동의" onBack={() => navigate(ROUTES.LOGIN)} />
+      </main>
+    );
+  }
+
+  return <TermsForm terms={terms} />;
 }

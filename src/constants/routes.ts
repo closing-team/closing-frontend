@@ -33,7 +33,7 @@ export const ROUTES = {
 
   // chat
   CHAT: "/chats",
-  CHAT_ROOM: "/chats/:productId",
+  CHAT_ROOM: "/chats/:chatRoomId",
 
   // account
   PROFILE_EDIT: "/profile",
@@ -64,4 +64,4 @@ export const usedEditPath = (id: number | string) =>
   ROUTES.USED_EDIT.replace(":productId", encodeURIComponent(id));
 
 export const chatRoomPath = (id: number | string) =>
-  ROUTES.CHAT_ROOM.replace(":productId", encodeURIComponent(id));
+  ROUTES.CHAT_ROOM.replace(":chatRoomId", encodeURIComponent(id));

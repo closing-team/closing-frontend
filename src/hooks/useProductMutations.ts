@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { QueryKey } from "@tanstack/react-query";
 import {
-  addBookmark,
+  addProductBookmark,
   createProduct,
   deleteProduct,
-  removeBookmark,
+  removeProductBookmark,
   updateProduct,
   updateProductStatus,
-} from "../api/used";
+} from "../api/product";
 import {
   saleStatusToStatusCode,
   toCreateProductRequest,
   toUpdateProductRequest,
 } from "../utils/productAdapter";
-import { productKeys } from "./useProducts";
+import { productKeys } from "./useProductQueries";
 import type { DealType, SaleStatus } from "../types/used";
 
 export interface ProductFormInput {
@@ -39,7 +39,7 @@ export function useToggleBookmarkMutation() {
 
   return useMutation({
     mutationFn: ({ productId, liked }: { productId: number; liked: boolean }) =>
-      liked ? removeBookmark(productId) : addBookmark(productId),
+      liked ? removeProductBookmark(productId) : addProductBookmark(productId),
     onSuccess: (_data, { productId }) =>
       invalidate([
         productKeys.lists(),

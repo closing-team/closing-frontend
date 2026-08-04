@@ -36,15 +36,6 @@ export type UsedSort =
   | "priceLow"
   | "priceHigh";
 
-export interface ChatMessage {
-  id: number;
-  mine: boolean;
-  text: string;
-  time: string;
-  sentAt: string;
-  read: boolean;
-}
-
 export interface CategoryGroup {
   title: string;
   items: string[];
