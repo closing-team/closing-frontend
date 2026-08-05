@@ -1,5 +1,9 @@
 // TODO: 진행 중 상태값이 명세에 명시되지 않아 IN_PROGRESS로 임시 지정. 명세 확정 후 값 확인 필요
-export type AiSessionStatus = "NEW" | "IN_PROGRESS" | "CONFIRMED";
+export type AiSessionStatus =
+  | "NEW"
+  | "IN_PROGRESS"
+  | "CONFIRMED"
+  | "ALREADY_CONFIRMED";
 
 export interface AiGeneratedTaskDto {
   tempId: string;
