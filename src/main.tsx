@@ -1,13 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import { frontendSessionRestore } from "./auth/frontendSessionRestore";
 import AuthBootstrap from "./components/auth/AuthBootstrap";
+import { queryClient } from "./queryClient";
 import "./index.css";
-
-const queryClient = new QueryClient();
 
 // 백엔드 배포 전까지는 dev 환경뿐 아니라 VITE_ENABLE_MSW=true로 켠 배포본에서도
 // MSW로 전 도메인 API를 모킹한다. 백엔드 준비가 끝나면 이 플래그를 끄면 된다.

@@ -4,6 +4,9 @@ import DocumentMeta from "./components/common/DocumentMeta";
 import { ROUTES } from "./constants/routes";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const KakaoCallbackPage = lazy(
+  () => import("./pages/auth/KakaoCallbackPage"),
+);
 const TermsPage = lazy(() => import("./pages/auth/TermsPage"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 const AIPage = lazy(() => import("./pages/ai/AIPage"));
@@ -65,6 +68,10 @@ export default function App() {
             element={<Navigate to={ROUTES.HOME} replace />}
           />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+          <Route
+            path={ROUTES.KAKAO_CALLBACK}
+            element={<KakaoCallbackPage />}
+          />
           <Route path={ROUTES.TERMS} element={<TermsPage />} />
 
           <Route path={ROUTES.HOME} element={<HomePage />} />
