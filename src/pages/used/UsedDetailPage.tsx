@@ -77,8 +77,8 @@ export default function UsedDetailPage() {
   const isMine = product.isMine ?? true;
   const showDealLocation =
     product.dealTypes.includes("직거래") && product.dealLocation;
-  const existingRoom = chatRoomsData?.chatRooms.find(
-    (room) => room.product.productId === product.id,
+  const existingRoom = chatRoomsData?.find(
+    (room) => room.productId === String(product.id),
   );
   const hasChat = !!existingRoom;
 

@@ -46,4 +46,4 @@ export interface ChatMessage {
 
 export type PendingChatMessage =
   | { type: "text"; content: string }
-  | { type: "image"; content: string; file: File; caption?: string };
+  | { type: "image"; files: File[] };

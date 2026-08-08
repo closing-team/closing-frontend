@@ -3,10 +3,10 @@ import { useInterestCount } from "./useInterestCount";
 import { useChatRoomsQuery } from "./useChat";
 
 export function useSideMenuCounts() {
+  const { data: chatRooms = [] } = useChatRoomsQuery();
   const bookmarkCount = useSupportBookmarkCount();
   const interestCount = useInterestCount();
-  const { data: chatRoomsData } = useChatRoomsQuery();
-  const chatCount = chatRoomsData?.chatRooms.length ?? 0;
+  const chatCount = chatRooms.length;
 
   return { bookmarkCount, interestCount, chatCount };
 }
