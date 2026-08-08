@@ -38,7 +38,7 @@ export default function UsedSearchPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white pb-20">
+    <div className="flex min-h-screen flex-col bg-white pb-24">
       <SearchBar
         value={keyword}
         onChange={setKeyword}
