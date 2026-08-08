@@ -17,6 +17,12 @@ import SplashPage from "../../pages/auth/SplashPage";
 
 type BootstrapPhase = "checking" | "retryable-error" | "ready";
 
+const PUBLIC_AUTH_PATHS = new Set<string>([
+  ROUTES.LOGIN,
+  ROUTES.KAKAO_CALLBACK,
+  ROUTES.TERMS,
+]);
+
 type AuthBootstrapProps = {
   restoreSession: RestoreSession;
   children: ReactNode;
@@ -65,9 +71,15 @@ export default function AuthBootstrap({
 
         if (!active || latestAttempt.current !== attemptId) return;
 
-        if (result === "unauthenticated") {
+        if (
+          result === "unauthenticated" &&
+          !PUBLIC_AUTH_PATHS.has(initialPath.current)
+        ) {
           navigateRef.current(ROUTES.LOGIN, { replace: true });
-        } else if (initialPath.current === ROUTES.LOGIN) {
+        } else if (
+          result === "authenticated" &&
+          initialPath.current === ROUTES.LOGIN
+        ) {
           navigateRef.current(ROUTES.HOME, { replace: true });
         }
 

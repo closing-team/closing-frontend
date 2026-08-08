@@ -2,6 +2,7 @@ export const ROUTES = {
   // auth
   SPLASH: "/splash",
   LOGIN: "/login",
+  KAKAO_CALLBACK: "/auth/kakao/callback",
   TERMS: "/terms",
 
   // home

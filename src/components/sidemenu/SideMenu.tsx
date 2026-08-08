@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import packageCircle from "../../assets/images/package-circle.png";
 import Button from "../common/Button";
 import ConfirmModal from "../common/ConfirmModal";
 import { XLgIcon } from "../../assets/icons";
+import { logoutCurrentSession } from "../../auth/logoutCurrentSession";
 import { ROUTES } from "../../constants/routes";
 import { useWithdrawMutation } from "../../hooks/useAccount";
 
@@ -54,8 +56,22 @@ export default function SideMenu({
   chatCount = 0,
 }: SideMenuProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const logoutInFlightRef = useRef(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
+  const logoutMutation = useMutation({
+    mutationFn: logoutCurrentSession,
+    onSuccess: () => {
+      queryClient.clear();
+      setShowLogoutConfirm(false);
+      onClose();
+      navigate(ROUTES.LOGIN, { replace: true });
+    },
+    onSettled: () => {
+      logoutInFlightRef.current = false;
+    },
+  });
   const withdraw = useWithdrawMutation();
 
   if (!open) return null;
@@ -157,7 +173,10 @@ export default function SideMenu({
             <MenuRow
               label="로그아웃"
               muted
-              onClick={() => setShowLogoutConfirm(true)}
+              onClick={() => {
+                logoutMutation.reset();
+                setShowLogoutConfirm(true);
+              }}
             />
           </div>
 
@@ -178,12 +197,26 @@ export default function SideMenu({
           title="로그아웃 할까요?"
           confirmLabel="로그아웃"
           confirmVariant="primary"
-          onCancel={() => setShowLogoutConfirm(false)}
-          onConfirm={() => {
+          onCancel={() => {
+            logoutMutation.reset();
             setShowLogoutConfirm(false);
-            go(ROUTES.LOGIN);
           }}
-        />
+          onConfirm={() => {
+            if (logoutInFlightRef.current) return;
+
+            logoutInFlightRef.current = true;
+            logoutMutation.mutate();
+          }}
+        >
+          {logoutMutation.isError && (
+            <p
+              role="alert"
+              className="px-4 text-center text-body-2 text-warning-500"
+            >
+              로그아웃하지 못했습니다. 다시 시도해주세요.
+            </p>
+          )}
+        </ConfirmModal>
       )}
 
       {showWithdrawConfirm && (
