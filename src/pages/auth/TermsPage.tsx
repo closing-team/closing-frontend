@@ -1,7 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { agreeTerms, getTerms, signup } from "../../api/auth";
 import {
   clearPendingSignup,
   readPendingSignup,
@@ -16,8 +14,7 @@ import TextField from "../../components/common/TextField";
 import TopBar from "../../components/common/TopBar";
 import { ROUTES } from "../../constants/routes";
 import { queryClient } from "../../queryClient";
-import type { SignupRequest } from "../../types/authApi";
-import { getSignupErrorMessage } from "../../utils/authError";
+import { useSignupMutation, useTermsQuery } from "../../hooks/useAuth";
 
 const TERM_LABELS: Record<string, string> = {
   SERVICE: "서비스 이용약관",
@@ -26,11 +23,6 @@ const TERM_LABELS: Record<string, string> = {
 };
 
 const PHONE_PATTERN = /^01[016789]-?\d{3,4}-?\d{4}$/;
-
-type SignupSubmission = {
-  profile: SignupRequest;
-  termIds: number[];
-};
 
 function getTermLabel(type: string): string {
   return TERM_LABELS[type] ?? "서비스 이용약관";
@@ -61,37 +53,17 @@ export default function TermsPage() {
     };
   }, []);
 
-  const termsQuery = useQuery({
-    queryKey: ["auth", "terms"],
-    queryFn: getTerms,
-    enabled: pendingSignup !== null,
-  });
-
-  const signupMutation = useMutation({
-    mutationFn: async ({ profile, termIds }: SignupSubmission) => {
-      await agreeTerms({ termIds });
-      return signup(profile);
-    },
-    onMutate: () => {
-      signupAttempt.current += 1;
-      setSignupError(null);
-      return signupAttempt.current;
-    },
-    onSuccess: (session, _request, attempt) => {
-      if (!mounted.current || attempt !== signupAttempt.current) return;
-
+  const termsQuery = useTermsQuery(pendingSignup !== null);
+  const signupMutation = useSignupMutation({
+    mountedRef: mounted,
+    signupAttemptRef: signupAttempt,
+    submitStartedRef: submitStarted,
+    setSignupError,
+    onSuccess: (session) => {
       saveAuthSession(session);
       clearPendingSignup();
       queryClient.clear();
       navigate(ROUTES.HOME, { replace: true });
-    },
-    onError: (error, _request, attempt) => {
-      if (!mounted.current || attempt !== signupAttempt.current) return;
-      setSignupError(getSignupErrorMessage(error));
-    },
-    onSettled: (_data, _error, _request, attempt) => {
-      if (!mounted.current || attempt !== signupAttempt.current) return;
-      submitStarted.current = false;
     },
   });
 
