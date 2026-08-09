@@ -101,10 +101,10 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
 
         <VerifyField
           label="사업자 등록 번호"
-          value={profile.businessNumber}
+          value={profile.businessNumber ?? ""}
           onChange={() => {}}
           onVerify={handleReverify}
-          status={profile.businessVerified ? "verified" : "idle"}
+          status={(profile.businessVerified ?? false) ? "verified" : "idle"}
           successMessage="사업자 인증이 완료되었습니다."
           disabled
         />
