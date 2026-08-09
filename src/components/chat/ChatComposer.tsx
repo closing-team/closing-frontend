@@ -9,21 +9,30 @@ import type { PendingChatMessage } from "../../types/chat";
 
 const MAX_TEXTAREA_HEIGHT = 60;
 
-interface ChatComposerProps {
-  onSend: (message: PendingChatMessage) => void | Promise<void>;
+interface SelectedImage {
+  file: File;
+  previewUrl: string;
 }
 
-export default function ChatComposer({ onSend }: ChatComposerProps) {
+interface ChatComposerProps {
+  onSend: (message: PendingChatMessage) => void | Promise<void>;
+  allowImages?: boolean;
+}
+
+export default function ChatComposer({
+  onSend,
+  allowImages = true,
+}: ChatComposerProps) {
   const [value, setValue] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [failedMessage, setFailedMessage] = useState<PendingChatMessage | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const ownedPreviewUrlRef = useRef<string | null>(null);
-  const canSend = value.trim().length > 0 || selectedFile !== null;
+  const ownedPreviewUrlsRef = useRef(new Set<string>());
+  const canSend =
+    value.trim().length > 0 || (allowImages && selectedImages.length > 0);
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -32,32 +41,27 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
     el.style.height = `${Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT)}px`;
   }, [value]);
 
-  const revokeOwnedPreview = () => {
-    const ownedPreviewUrl = ownedPreviewUrlRef.current;
-
-    if (ownedPreviewUrl) {
-      URL.revokeObjectURL(ownedPreviewUrl);
-      ownedPreviewUrlRef.current = null;
+  const revokeOwnedPreview = (previewUrl: string) => {
+    if (ownedPreviewUrlsRef.current.has(previewUrl)) {
+      URL.revokeObjectURL(previewUrl);
+      ownedPreviewUrlsRef.current.delete(previewUrl);
     }
-
-    setPreviewUrl(null);
   };
 
   useEffect(
     () => () => {
-      const ownedPreviewUrl = ownedPreviewUrlRef.current;
-      if (ownedPreviewUrl) {
-        URL.revokeObjectURL(ownedPreviewUrl);
-      }
+      ownedPreviewUrlsRef.current.forEach((previewUrl) =>
+        URL.revokeObjectURL(previewUrl),
+      );
+      ownedPreviewUrlsRef.current.clear();
     },
     [],
   );
 
   const clearAfterSuccessfulSend = () => {
-    ownedPreviewUrlRef.current = null;
+    selectedImages.forEach(({ previewUrl }) => revokeOwnedPreview(previewUrl));
     setValue("");
-    setSelectedFile(null);
-    setPreviewUrl(null);
+    setSelectedImages([]);
     setFailedMessage(null);
   };
 
@@ -65,12 +69,10 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
     const text = value.trim();
     const pendingMessage =
       message ??
-      (selectedFile && previewUrl
+      (selectedImages.length > 0
         ? {
             type: "image" as const,
-            content: previewUrl,
-            file: selectedFile,
-            ...(text ? { caption: text } : {}),
+            files: selectedImages.map(({ file }) => file),
           }
         : text
           ? { type: "text" as const, content: text }
@@ -96,18 +98,22 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
       return;
     }
 
-    const [file] = Array.from(event.target.files ?? []);
+    const files = Array.from(event.target.files ?? []).filter((file) =>
+      file.type.startsWith("image/"),
+    );
     event.target.value = "";
 
-    if (!file || !file.type.startsWith("image/")) {
+    if (files.length === 0) {
       return;
     }
 
-    revokeOwnedPreview();
-    const nextPreviewUrl = URL.createObjectURL(file);
-    ownedPreviewUrlRef.current = nextPreviewUrl;
-    setSelectedFile(file);
-    setPreviewUrl(nextPreviewUrl);
+    const additions = files.map((file) => {
+      const previewUrl = URL.createObjectURL(file);
+      ownedPreviewUrlsRef.current.add(previewUrl);
+      return { file, previewUrl };
+    });
+    setValue("");
+    setSelectedImages((current) => [...current, ...additions]);
     setFailedMessage(null);
   };
 
@@ -116,32 +122,33 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
       className="flex flex-col gap-2 border-t border-gray-100 bg-white px-3 py-4"
       aria-label="메시지 작성"
     >
-      {previewUrl && (
-        <div className="flex items-start gap-2">
-          <div className="relative h-14 w-14">
-            <img
-              src={previewUrl}
-              alt="선택한 이미지 미리보기"
-              className="h-14 w-14 rounded object-cover"
-            />
-            <button
-              type="button"
-              aria-label="이미지 선택 취소"
-              onClick={() => {
-                if (isSending) {
-                  return;
-                }
-
-                revokeOwnedPreview();
-                setSelectedFile(null);
-                setFailedMessage(null);
-              }}
-              disabled={isSending}
-              className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-gray-700 text-white disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <XMdIcon className="h-3.5 w-3.5" />
-            </button>
-          </div>
+      {selectedImages.length > 0 && (
+        <div className="flex items-start gap-3 overflow-x-auto px-0.5 pt-2">
+          {selectedImages.map(({ file, previewUrl }) => (
+            <div key={previewUrl} className="relative h-14 w-14 shrink-0">
+              <img
+                src={previewUrl}
+                alt={`${file.name} 미리보기`}
+                className="h-14 w-14 rounded object-cover"
+              />
+              <button
+                type="button"
+                aria-label={`${file.name} 선택 취소`}
+                onClick={() => {
+                  if (isSending) return;
+                  revokeOwnedPreview(previewUrl);
+                  setSelectedImages((current) =>
+                    current.filter((image) => image.previewUrl !== previewUrl),
+                  );
+                  setFailedMessage(null);
+                }}
+                disabled={isSending}
+                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-gray-700 text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <XMdIcon className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
@@ -163,10 +170,10 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
         <button
           type="button"
           aria-label="이미지 선택"
-          disabled={isSending}
+          disabled={isSending || !allowImages}
           className="flex h-10 w-10 shrink-0 items-center justify-center text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
           onClick={() => {
-            if (!isSending) {
+            if (!isSending && allowImages) {
               fileInputRef.current?.click();
             }
           }}
@@ -177,9 +184,10 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
           ref={fileInputRef}
           type="file"
           accept="image/*"
+          multiple
           aria-label="이미지 첨부"
           className="sr-only"
-          disabled={isSending}
+          disabled={isSending || !allowImages}
           onChange={handleFileChange}
         />
         <div
@@ -211,9 +219,13 @@ export default function ChatComposer({ onSend }: ChatComposerProps) {
                 void send();
               }
             }}
-            placeholder="메시지를 입력하세요..."
+            placeholder={
+              selectedImages.length > 0
+                ? "이미지만 전송할 수 있습니다."
+                : "메시지를 입력하세요..."
+            }
             rows={1}
-            disabled={isSending}
+            disabled={isSending || selectedImages.length > 0}
             style={{ maxHeight: MAX_TEXTAREA_HEIGHT }}
             className="w-full flex-1 resize-none overflow-y-auto text-[14px] font-normal leading-[1.4] tracking-[-0.28px] text-gray-900 outline-none placeholder:text-gray-400 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400"
           />

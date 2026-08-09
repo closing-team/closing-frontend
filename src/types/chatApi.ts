@@ -1,61 +1,79 @@
-import type { PageInfoDto } from "./productApi";
+export interface ChatMemberDto {
+  memberId: number;
+  nickname: string;
+  profileImageUrl: string | null;
+}
+
+export interface ChatProductDto {
+  productId: number;
+  title: string;
+  thumbnailUrl: string | null;
+  price: number;
+  status: "SELLING" | "RESERVED" | "SOLD_OUT" | string;
+  tradeLocation?: {
+    district: string;
+    latitude: number;
+    longitude: number;
+    distanceKm: number | null;
+  } | null;
+}
+
+export type ChatProductSummaryDto = ChatProductDto;
 
 export type ChatMessageType = "TEXT" | "IMAGE";
+
+export interface ChatRoomDto {
+  chatRoomId: number;
+  otherMember: ChatMemberDto;
+  product: ChatProductDto;
+  lastMessage: string | null;
+  lastMessageAt: string | null;
+  unreadMessageCount: number;
+}
+
+export interface CreatedChatRoomDto {
+  chatRoomId: number;
+  otherMember: ChatMemberDto;
+  product: ChatProductDto;
+  createdAt: string;
+}
+
+export interface CursorPageDto<TCursor> {
+  nextCursor: TCursor | null;
+  hasNext: boolean;
+}
+
+export interface ChatRoomListDto {
+  chatRooms: ChatRoomDto[];
+  page: CursorPageDto<string>;
+}
 
 export interface ChatMessageDto {
   messageId: number;
   senderId: number;
-  messageType: ChatMessageType;
-  content: string;
+  messageType: "TEXT" | "IMAGE" | string;
+  content: string | null;
   mine: boolean;
-  createdAt: string;
-  read: boolean;
-}
-
-export interface ChatProductSummaryDto {
-  productId: number;
-  title: string;
-  thumbnailUrl: string;
-  price: number;
-  status: string;
-}
-
-export interface ChatMemberDto {
-  memberId: number;
-  nickname: string;
-  profileImageUrl: string;
-}
-
-// POST /api/v1/chat-rooms/{productId} — 채팅방 생성 응답
-export interface CreateChatRoomResponseData {
-  chatRoomId: number;
-  product: ChatProductSummaryDto;
-  otherMember: ChatMemberDto;
+  read?: boolean;
+  isRead?: boolean;
   createdAt: string;
 }
 
-// GET /api/v1/chat-rooms/{chatRoomId}/messages — 메시지 히스토리 조회 응답
-export interface ChatMessagePageDto {
+export interface ChatMessageListDto {
   messages: ChatMessageDto[];
-  page: PageInfoDto<number>;
+  page: CursorPageDto<number>;
 }
 
-// POST /api/v1/chat-rooms/{chatRoomId}/messages — 메시지 전송 응답
-export interface SendChatMessageResponseData {
+export interface SendChatMessageDto {
   messages: ChatMessageDto[];
 }
 
-// GET /api/v1/chat-rooms — 채팅방 목록 조회 응답
-export interface ChatRoomListItemDto {
-  chatRoomId: number;
-  otherMember: ChatMemberDto;
-  product: ChatProductSummaryDto;
-  lastMessage: string;
-  lastMessageAt: string;
-  unReadMessagesCount: number;
+export interface GetChatRoomsParams {
+  cursor?: string;
+  size?: number;
 }
 
-export interface ChatRoomListDataDto {
-  chatRooms: ChatRoomListItemDto[];
-  page: PageInfoDto<string>;
+export interface GetChatMessagesParams {
+  cursor?: number;
+  size?: number;
 }
