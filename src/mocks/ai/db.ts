@@ -40,6 +40,7 @@ export interface AiSessionRecord {
   remainingTurns: number;
   messages: AiSessionMessage[];
   generatedTasks: AiGeneratedTaskDto[];
+  confirmedTasks: AiConfirmedTaskDto[];
 }
 
 let sessions: AiSessionRecord[] = [];
@@ -53,7 +54,9 @@ export function findSession(sessionId: string): AiSessionRecord | undefined {
 function findConfirmedSessionForUser(
   userId: number,
 ): AiSessionRecord | undefined {
-  return sessions.find((s) => s.userId === userId && s.status === "CONFIRMED");
+  return sessions.find(
+    (s) => s.userId === userId && s.status === "ALREADY_CONFIRMED",
+  );
 }
 
 export function startSession(
@@ -74,6 +77,7 @@ export function startSession(
       { role: "assistant", content: SCRIPTED_QUESTIONS[0] },
     ],
     generatedTasks: seedGeneratedTasks(),
+    confirmedTasks: [],
   };
   sessions = [record, ...sessions];
   return record;
@@ -91,7 +95,7 @@ export function addUserMessage(
 
   session.turnCount = nextTurnCount;
   session.remainingTurns = Math.max(0, MAX_TURNS - nextTurnCount);
-  session.status = "IN_PROGRESS";
+  session.status = "GENERATED";
   session.messages = [
     ...session.messages,
     { role: "user", content: message },
@@ -120,7 +124,8 @@ export function confirmSession(session: AiSessionRecord): {
       source: "AI_GENERATED",
     }),
   );
-  session.status = "CONFIRMED";
+  session.status = "ALREADY_CONFIRMED";
+  session.confirmedTasks = confirmedTasks;
   return { confirmedTasks };
 }
 

@@ -1,7 +1,6 @@
-// TODO: 진행 중 상태값이 명세에 명시되지 않아 IN_PROGRESS로 임시 지정. 명세 확정 후 값 확인 필요
 export type AiSessionStatus =
   | "NEW"
-  | "IN_PROGRESS"
+  | "GENERATED"
   | "CONFIRMED"
   | "ALREADY_CONFIRMED";
 
@@ -78,10 +77,10 @@ export interface AiSessionMessage {
   content: string;
 }
 
-// 세션 상태에 따라 실제 응답 구현체가 달라짐 (Swagger AiSessionDetailResponseDto: oneOf)
+// 세션 상태에 따라 실제 응답 구현체가 달라짐 (백엔드 확인: NEW→messages, GENERATED→generatedTasks, ALREADY_CONFIRMED→confirmedTasks)
 export interface AiSessionNewResponseData {
   sessionId: string;
-  status: AiSessionStatus;
+  status: "NEW";
   turnCount: number;
   remainingTurns: number;
   messages: AiSessionMessage[];
@@ -89,7 +88,7 @@ export interface AiSessionNewResponseData {
 
 export interface AiSessionGeneratedResponseData {
   sessionId: string;
-  status: AiSessionStatus;
+  status: "GENERATED";
   generatedTasks: AiGeneratedTaskDto[];
 }
 

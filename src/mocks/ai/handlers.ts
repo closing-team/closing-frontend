@@ -82,7 +82,7 @@ export const aiHandlers = [
       const session = findSession(String(params.sessionId));
       if (!session) return sessionNotFound();
       if (session.userId !== CURRENT_USER_ID) return sessionForbidden();
-      if (session.status === "CONFIRMED") return sessionAlreadyConfirmed();
+      if (session.status === "ALREADY_CONFIRMED") return sessionAlreadyConfirmed();
 
       const body = (await request.json()) as SendAiSessionMessageRequestJson;
       if (!body.message || body.message.trim().length === 0) {
@@ -108,7 +108,7 @@ export const aiHandlers = [
     const session = findSession(String(params.sessionId));
     if (!session) return sessionNotFound();
     if (session.userId !== CURRENT_USER_ID) return sessionForbidden();
-    if (session.status === "CONFIRMED") return sessionAlreadyConfirmed();
+    if (session.status === "ALREADY_CONFIRMED") return sessionAlreadyConfirmed();
 
     const { confirmedTasks } = confirmSession(session);
 
@@ -126,7 +126,7 @@ export const aiHandlers = [
     const session = findSession(String(params.sessionId));
     if (!session) return sessionNotFound();
     if (session.userId !== CURRENT_USER_ID) return sessionForbidden();
-    if (session.status === "CONFIRMED") return sessionAlreadyConfirmed();
+    if (session.status === "ALREADY_CONFIRMED") return sessionAlreadyConfirmed();
 
     const removed = deleteGeneratedTask(session, String(params.tempId));
     if (!removed) return sessionNotFound();
@@ -140,7 +140,7 @@ export const aiHandlers = [
       const session = findSession(String(params.sessionId));
       if (!session) return sessionNotFound();
       if (session.userId !== CURRENT_USER_ID) return sessionForbidden();
-      if (session.status === "CONFIRMED") return sessionAlreadyConfirmed();
+      if (session.status === "ALREADY_CONFIRMED") return sessionAlreadyConfirmed();
 
       const body = (await request.json()) as UpdateAiSessionTaskRequestJson;
       if (!body.title || body.title.trim().length === 0) {
@@ -162,6 +162,28 @@ export const aiHandlers = [
     const session = findSession(String(params.sessionId));
     if (!session) return sessionNotFound();
     if (session.userId !== CURRENT_USER_ID) return sessionForbidden();
+
+    if (session.status === "ALREADY_CONFIRMED") {
+      return HttpResponse.json({
+        ...OK,
+        data: {
+          sessionId: session.sessionId,
+          status: session.status,
+          confirmedTasks: session.confirmedTasks,
+        },
+      });
+    }
+
+    if (session.status === "GENERATED") {
+      return HttpResponse.json({
+        ...OK,
+        data: {
+          sessionId: session.sessionId,
+          status: session.status,
+          generatedTasks: session.generatedTasks,
+        },
+      });
+    }
 
     return HttpResponse.json({
       ...OK,
