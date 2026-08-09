@@ -10,7 +10,10 @@ export const accountHandlers = [
 
   http.patch("*/api/v1/users/me", async ({ request }) => {
     const body = (await request.json()) as UpdateProfileRequestJson;
-    const updated = updateProfile({ name: body.name, phone: body.phone });
+    const updated = updateProfile({
+      nickname: body.nickname,
+      profileImageUrl: body.profileImageUrl,
+    });
     return HttpResponse.json({ ...OK, data: updated });
   }),
 
