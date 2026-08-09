@@ -1,8 +1,4 @@
-export type AiSessionStatus =
-  | "NEW"
-  | "GENERATED"
-  | "CONFIRMED"
-  | "ALREADY_CONFIRMED";
+export type AiSessionStatus = "NEW" | "GENERATED" | "ALREADY_CONFIRMED";
 
 export interface AiGeneratedTaskDto {
   tempId: string;
