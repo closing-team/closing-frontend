@@ -1,11 +1,20 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   confirmAiSession,
   deleteAiSessionTask,
+  getAiSession,
   sendAiSessionMessage,
   startAiSession,
   updateAiSessionTask,
 } from "../api/ai";
+
+export function useAiSessionQuery(sessionId: string | undefined) {
+  return useQuery({
+    queryKey: ["aiSession", sessionId],
+    queryFn: () => getAiSession(sessionId!),
+    enabled: !!sessionId,
+  });
+}
 
 export function useStartAiSessionMutation() {
   return useMutation({

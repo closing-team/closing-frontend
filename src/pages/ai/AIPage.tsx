@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../constants/routes";
+import { ROUTES, aiPlanPath } from "../../constants/routes";
 import TopBar from "../../components/common/TopBar";
 import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatInput from "../../components/ai/ChatInput";
@@ -99,7 +99,7 @@ export default function AIPage() {
               { initialInput },
               {
                 onSuccess: (data) => {
-                  navigate(ROUTES.AI_PLAN, {
+                  navigate(aiPlanPath(data.sessionId), {
                     state: {
                       sessionId: data.sessionId,
                       initialMessage: initialInput,
