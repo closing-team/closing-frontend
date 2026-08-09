@@ -26,7 +26,6 @@ export const PAGE_TITLES: Partial<Record<keyof typeof ROUTES, string>> = {
   INQUIRY: "1:1 문의하기",
   INQUIRY_HISTORY: "나의 문의내역",
   POLICY: "약관 및 정책",
-  DEV: "컴포넌트 프리뷰",
 };
 
 export const PAGE_DESCRIPTIONS: Partial<Record<keyof typeof ROUTES, string>> = {
