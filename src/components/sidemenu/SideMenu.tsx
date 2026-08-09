@@ -7,13 +7,11 @@ import ConfirmModal from "../common/ConfirmModal";
 import { XLgIcon } from "../../assets/icons";
 import { logoutCurrentSession } from "../../auth/logoutCurrentSession";
 import { ROUTES } from "../../constants/routes";
-import { useWithdrawMutation } from "../../hooks/useAccount";
+import { useMyProfileQuery, useWithdrawMutation } from "../../hooks/useAccount";
 
 interface SideMenuProps {
   open: boolean;
   onClose: () => void;
-  businessName?: string;
-  verified?: boolean;
   bookmarkCount?: number;
   interestCount?: number;
   chatCount?: number;
@@ -49,8 +47,6 @@ function MenuRow({ label, count, muted = false, onClick }: MenuRowProps) {
 export default function SideMenu({
   open,
   onClose,
-  businessName = "원흥동 상사",
-  verified = false,
   bookmarkCount = 0,
   interestCount = 0,
   chatCount = 0,
@@ -60,6 +56,9 @@ export default function SideMenu({
   const logoutInFlightRef = useRef(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
+  const { data: profile } = useMyProfileQuery();
+  const businessName = profile?.nickname ?? "";
+  const verified = profile?.businessVerified ?? false;
   const logoutMutation = useMutation({
     mutationFn: logoutCurrentSession,
     onSuccess: () => {

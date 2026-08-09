@@ -94,7 +94,6 @@ export default function UsedListPage() {
       <SideMenu
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
-        verified={authenticated}
         bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
