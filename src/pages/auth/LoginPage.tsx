@@ -1,11 +1,9 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import kakao from "../../assets/images/kakao.png";
 import cloyBlur from "../../assets/images/cloy-blur.png";
 import logo from "../../assets/images/logo.png";
 import wordmark from "../../assets/images/wordmark.svg";
 import { startKakaoAuthorization } from "../../auth/kakaoOAuth";
-import { ROUTES } from "../../constants/routes";
 
 type LoginPageProps = {
   onStartKakaoAuthorization?: () => void;
@@ -60,13 +58,6 @@ export default function LoginPage({
           <p className="text-center text-body-3 text-gray-400">
             로그인 시 서비스 이용약관 및 개인정보 처리방침에 동의하게 됩니다.
           </p>
-
-          {import.meta.env.DEV && (
-            <div className="mt-6 flex justify-center gap-4 text-caption-2 text-gray-300">
-              <Link to={ROUTES.DEV}>컴포넌트 모음</Link>
-              <Link to={ROUTES.DEV_EMPTY_VIEWS}>EmptyView 모음</Link>
-            </div>
-          )}
         </div>
       </section>
     </main>
