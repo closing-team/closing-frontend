@@ -21,6 +21,7 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const updateProfile = useUpdateProfileMutation();
 
   const [nickname, setNickname] = useState(profile.nickname);
+  const [businessNumber, setBusinessNumber] = useState(profile.businessNumber ?? "");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
   const isDirty = nickname !== profile.nickname;
@@ -101,12 +102,12 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
 
         <VerifyField
           label="사업자 등록 번호"
-          value={profile.businessNumber ?? ""}
-          onChange={() => {}}
+          value={businessNumber}
+          onChange={setBusinessNumber}
           onVerify={handleReverify}
           status={(profile.businessVerified ?? false) ? "verified" : "idle"}
           successMessage="사업자 인증이 완료되었습니다."
-          disabled
+          disabled={profile.businessVerified ?? false}
         />
       </div>
 
