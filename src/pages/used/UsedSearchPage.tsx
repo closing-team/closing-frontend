@@ -7,15 +7,21 @@ import Chip from "../../components/common/Chip";
 import { ROUTES } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
 import { useCommitSearch } from "../../hooks/useCommitSearch";
-import { RECOMMENDED_KEYWORDS } from "../../constants/usedCategories";
+import { RECOMMENDED_KEYWORD_POOL } from "../../constants/usedCategories";
+import { pickRandomItems } from "../../utils/pickRandomItems";
 import {
   toBusinessCategoryCode,
   toProductCategoryCode,
 } from "../../utils/productCategoryMap";
 
+const RECOMMENDED_KEYWORD_COUNT = 3;
+
 export default function UsedSearchPage() {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
+  const [recommendedKeywords] = useState(() =>
+    pickRandomItems(RECOMMENDED_KEYWORD_POOL, RECOMMENDED_KEYWORD_COUNT),
+  );
 
   const recentSearches = useUsedStore((s) => s.recentSearches);
   const removeRecentSearch = useUsedStore((s) => s.removeRecentSearch);
@@ -75,7 +81,7 @@ export default function UsedSearchPage() {
             추천 검색어
           </h2>
           <div className="flex flex-wrap gap-1 px-4 py-2">
-            {RECOMMENDED_KEYWORDS.map((kw) => (
+            {recommendedKeywords.map((kw) => (
               <Chip
                 key={kw}
                 variant="keyword"
