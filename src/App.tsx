@@ -4,6 +4,9 @@ import DocumentMeta from "./components/common/DocumentMeta";
 import { ROUTES } from "./constants/routes";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const KakaoCallbackPage = lazy(
+  () => import("./pages/auth/KakaoCallbackPage"),
+);
 const TermsPage = lazy(() => import("./pages/auth/TermsPage"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 const AIPage = lazy(() => import("./pages/ai/AIPage"));
@@ -46,14 +49,6 @@ const InquiryHistoryPage = lazy(
 const PolicyPage = lazy(() => import("./pages/policy/PolicyPage"));
 const NotFoundPage = lazy(() => import("./pages/error/NotFoundPage"));
 
-const isDev = import.meta.env.DEV;
-const ComponentsPage = isDev
-  ? lazy(() => import("./pages/dev/ComponentsPage"))
-  : null;
-const EmptyViewsPage = isDev
-  ? lazy(() => import("./pages/dev/EmptyViewsPage"))
-  : null;
-
 export default function App() {
   return (
     <div className="relative mx-auto min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] bg-white shadow-sm">
@@ -65,6 +60,10 @@ export default function App() {
             element={<Navigate to={ROUTES.HOME} replace />}
           />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+          <Route
+            path={ROUTES.KAKAO_CALLBACK}
+            element={<KakaoCallbackPage />}
+          />
           <Route path={ROUTES.TERMS} element={<TermsPage />} />
 
           <Route path={ROUTES.HOME} element={<HomePage />} />
@@ -121,13 +120,6 @@ export default function App() {
           />
 
           <Route path={ROUTES.POLICY} element={<PolicyPage />} />
-
-          {ComponentsPage && (
-            <Route path={ROUTES.DEV} element={<ComponentsPage />} />
-          )}
-          {EmptyViewsPage && (
-            <Route path={ROUTES.DEV_EMPTY_VIEWS} element={<EmptyViewsPage />} />
-          )}
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

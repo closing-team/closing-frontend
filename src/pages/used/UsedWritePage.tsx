@@ -120,6 +120,7 @@ function UsedWriteForm({
   const isSubmitting = createProduct.isPending || updateProduct.isPending;
 
   const getValidationError = (): string | null => {
+    if (photos.length === 0) return "물품 사진을 최소 1장 이상 등록해주세요.";
     if (title.trim().length === 0) return "물품명을 입력해 주세요.";
     if (!industry) return "업종 카테고리를 선택해 주세요.";
     if (!itemCategory) return "품목 카테고리를 선택해 주세요.";

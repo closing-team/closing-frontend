@@ -13,7 +13,6 @@ import {
   FileSearchIcon,
   BookmarkEmptyIcon,
 } from "../../assets/icons";
-import { useUsedStore } from "../../stores/usedStore";
 import { useBookmarksQuery, useSupportListQuery } from "../../hooks/useSupportQueries";
 import { useSupportBookmarkToggle } from "../../hooks/useSupportBookmarkToggle";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
@@ -87,7 +86,6 @@ export default function SupportListPage() {
   );
   const [sort, setSort] = useState<SortOption>("popular");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-  const authenticated = useUsedStore((s) => s.authenticated);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const sortCode = SORT_TO_CODE[sort];
@@ -109,7 +107,7 @@ export default function SupportListPage() {
   const toggleBookmark = useSupportBookmarkToggle(visiblePosts, setToastMessage);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-20">
+    <div className="min-h-screen bg-gray-30 pb-24">
       <TopBar
         logo
         bordered={false}
@@ -128,7 +126,6 @@ export default function SupportListPage() {
       <SideMenu
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
-        verified={authenticated}
         bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}

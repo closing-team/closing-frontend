@@ -79,7 +79,7 @@ export default function UsedSearchResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white pb-24">
       {isCategoryMode ? (
         <>
           <TopBar
@@ -113,7 +113,6 @@ export default function UsedSearchResultPage() {
           <SideMenu
             open={isSideMenuOpen}
             onClose={() => setIsSideMenuOpen(false)}
-            verified={authenticated}
             bookmarkCount={bookmarkCount}
             interestCount={interestCount}
             chatCount={chatCount}

@@ -1,48 +1,121 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import {
+  clearPendingSignup,
+  readPendingSignup,
+  saveAuthSession,
+} from "../../auth/authSession";
 import {
   CheckboxEmptyIcon,
   CheckboxFilledIcon,
   InformationIcon,
 } from "../../assets/icons";
+import TextField from "../../components/common/TextField";
 import TopBar from "../../components/common/TopBar";
 import { ROUTES } from "../../constants/routes";
-import { useAgreeTermsMutation, useTermsQuery } from "../../hooks/useTerms";
-import type { TermDto } from "../../types/termsApi";
+import { queryClient } from "../../queryClient";
+import { useSignupMutation, useTermsQuery } from "../../hooks/useAuth";
 
-interface TermsFormProps {
-  terms: TermDto[];
+const TERM_LABELS: Record<string, string> = {
+  SERVICE: "서비스 이용약관",
+  PRIVACY: "개인정보 처리방침",
+  AGE: "만 14세 이상입니다",
+};
+
+const PHONE_PATTERN = /^01[016789]-?\d{3,4}-?\d{4}$/;
+
+function getTermLabel(type: string): string {
+  return TERM_LABELS[type] ?? "서비스 이용약관";
 }
 
-function TermsForm({ terms }: TermsFormProps) {
+export default function TermsPage() {
   const navigate = useNavigate();
-  const agreeTerms = useAgreeTermsMutation();
-  const [agreements, setAgreements] = useState<boolean[]>(() => terms.map(() => false));
+  const [pendingSignup] = useState(readPendingSignup);
+  const [agreedTermIds, setAgreedTermIds] = useState<Set<number>>(
+    () => new Set(),
+  );
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [signupError, setSignupError] = useState<string | null>(null);
+  const submitStarted = useRef(false);
+  const mounted = useRef(true);
+  const signupAttempt = useRef(0);
 
-  const requiredIndexes = terms
-    .map((term, index) => (term.required ? index : -1))
-    .filter((index) => index !== -1);
-  const isAllAgreed = requiredIndexes.every((index) => agreements[index]);
+  useEffect(() => {
+    mounted.current = true;
+
+    return () => {
+      mounted.current = false;
+      signupAttempt.current += 1;
+    };
+  }, []);
+
+  const termsQuery = useTermsQuery(pendingSignup !== null);
+  const signupMutation = useSignupMutation({
+    mountedRef: mounted,
+    signupAttemptRef: signupAttempt,
+    submitStartedRef: submitStarted,
+    setSignupError,
+    onSuccess: (session) => {
+      saveAuthSession(session);
+      clearPendingSignup();
+      queryClient.clear();
+      navigate(ROUTES.HOME, { replace: true });
+    },
+  });
+
+  if (pendingSignup === null) {
+    return <Navigate to={ROUTES.LOGIN} replace />;
+  }
+
+  const terms = termsQuery.data ?? [];
+  const isAllAgreed =
+    terms.length > 0 && terms.every((term) => agreedTermIds.has(term.termId));
+  const hasRequiredAgreements = terms
+    .filter((term) => term.required)
+    .every((term) => agreedTermIds.has(term.termId));
+  const hasValidProfile =
+    name.trim().length > 0 &&
+    nickname.trim().length > 0 &&
+    PHONE_PATTERN.test(phone.trim()) &&
+    email.trim().includes("@");
+  const canSignup =
+    termsQuery.isSuccess && hasRequiredAgreements && hasValidProfile;
 
   const setAllAgreements = (checked: boolean) => {
-    setAgreements(terms.map(() => checked));
-  };
-
-  const toggleAgreement = (index: number) => {
-    setAgreements((current) => current.map((checked, itemIndex) => (
-      itemIndex === index ? !checked : checked
-    )));
-  };
-
-  const handleSubmit = () => {
-    const termIds = terms
-      .filter((_, index) => agreements[index])
-      .map((term) => term.termId);
-
-    agreeTerms.mutate(
-      { termIds },
-      { onSuccess: () => navigate(ROUTES.HOME, { replace: true }) },
+    setAgreedTermIds(
+      checked ? new Set(terms.map((term) => term.termId)) : new Set(),
     );
+  };
+
+  const toggleTerm = (termId: number) => {
+    setAgreedTermIds((current) => {
+      const next = new Set(current);
+      if (next.has(termId)) next.delete(termId);
+      else next.add(termId);
+      return next;
+    });
+  };
+
+  const submitSignup = () => {
+    if (!canSignup || signupMutation.isPending || submitStarted.current) return;
+
+    submitStarted.current = true;
+    signupMutation.mutate({
+      profile: {
+        name: name.trim(),
+        nickname: nickname.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        profileImageUrl: profileImageUrl.trim(),
+      },
+      termIds: terms
+        .filter((term) => agreedTermIds.has(term.termId))
+        .map((term) => term.termId),
+    });
   };
 
   return (
@@ -52,55 +125,126 @@ function TermsForm({ terms }: TermsFormProps) {
       <section className="px-5 pt-6">
         <h2 className="text-title-2 text-gray-900">
           안전한 서비스 이용을 위해<br />
-          약관에 동의해 주세요.
+          가입 정보와 약관을 확인해 주세요.
         </h2>
         <p className="mt-3 text-body-3 leading-[1.6] text-gray-600">
-          클로징 서비스 제공을 위해 최소한의 필수 동의 및<br />
-          개인정보 수집 및 자격 확인이 필요합니다.
+          클로징 서비스 이용에 필요한 기본 정보를 입력하고<br />
+          필수 약관에 동의해 주세요.
         </p>
 
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={isAllAgreed}
-          aria-label="약관 및 안내에 전체 동의합니다."
-          onClick={() => setAllAgreements(!isAllAgreed)}
-          className="mt-7 flex h-[68px] w-full items-center gap-3 rounded-xl border border-gray-700 px-4 text-left"
-        >
-          {isAllAgreed ? (
-            <CheckboxFilledIcon className="h-6 w-6 shrink-0" />
-          ) : (
-            <CheckboxEmptyIcon className="h-6 w-6 shrink-0" />
-          )}
-          <span className="text-body-2 font-semibold text-gray-900">
-            약관 및 안내에 전체 동의합니다.
-          </span>
-        </button>
-
-        <div className="mt-4 divide-y divide-gray-100">
-          {terms.map((term, index) => (
-            <div key={term.termId} className="flex h-[56px] items-center">
-              <button
-                type="button"
-                role="checkbox"
-                aria-checked={agreements[index]}
-                aria-label={term.content}
-                onClick={() => toggleAgreement(index)}
-                className="flex h-full flex-1 items-center gap-3 text-left"
-              >
-                {agreements[index] ? (
-                  <CheckboxFilledIcon className="h-5 w-5 shrink-0" />
-                ) : (
-                  <CheckboxEmptyIcon className="h-5 w-5 shrink-0" />
-                )}
-                <span className="text-[13px] text-gray-700">
-                  {term.required ? "[필수] " : "[선택] "}
-                  {term.content}
-                </span>
-              </button>
-            </div>
-          ))}
+        <div className="mt-8 flex flex-col gap-4">
+          <TextField
+            label="이름"
+            aria-label="이름"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            onClear={() => setName("")}
+          />
+          <TextField
+            label="닉네임"
+            aria-label="닉네임"
+            value={nickname}
+            onChange={(event) => setNickname(event.target.value)}
+            onClear={() => setNickname("")}
+          />
+          <TextField
+            label="전화번호"
+            aria-label="전화번호"
+            inputMode="tel"
+            placeholder="01012345678"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            onClear={() => setPhone("")}
+          />
+          <TextField
+            label="이메일"
+            aria-label="이메일"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            onClear={() => setEmail("")}
+          />
+          <TextField
+            label="프로필 이미지 URL (선택)"
+            aria-label="프로필 이미지 URL (선택)"
+            value={profileImageUrl}
+            onChange={(event) => setProfileImageUrl(event.target.value)}
+            onClear={() => setProfileImageUrl("")}
+          />
         </div>
+
+        {termsQuery.isPending && (
+          <p className="mt-12 text-center text-body-3 text-gray-600">
+            약관을 불러오는 중...
+          </p>
+        )}
+
+        {termsQuery.isError && (
+          <div className="mt-12 text-center">
+            <p role="alert" className="text-body-3 text-red-500">
+              약관을 불러오지 못했습니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => void termsQuery.refetch()}
+              className="mt-4 rounded-lg border border-gray-300 px-4 py-2 text-body-3 font-semibold text-gray-700"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+
+        {termsQuery.isSuccess && (
+          <>
+            <button
+              type="button"
+              role="checkbox"
+              aria-checked={isAllAgreed}
+              aria-label="약관 및 안내에 전체 동의합니다."
+              onClick={() => setAllAgreements(!isAllAgreed)}
+              className="mt-7 flex h-[68px] w-full items-center gap-3 rounded-xl border border-gray-700 px-4 text-left"
+            >
+              {isAllAgreed ? (
+                <CheckboxFilledIcon className="h-6 w-6 shrink-0" />
+              ) : (
+                <CheckboxEmptyIcon className="h-6 w-6 shrink-0" />
+              )}
+              <span className="text-body-2 font-semibold text-gray-900">
+                약관 및 안내에 전체 동의합니다.
+              </span>
+            </button>
+
+            <div className="mt-4 divide-y divide-gray-100">
+              {terms.map((term) => {
+                const label = `[${term.required ? "필수" : "선택"}] ${getTermLabel(term.type)}`;
+                const isAgreed = agreedTermIds.has(term.termId);
+
+                return (
+                  <div key={term.termId} className="flex h-[56px] items-center">
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={isAgreed}
+                      aria-label={label}
+                      onClick={() => toggleTerm(term.termId)}
+                      className="flex h-full flex-1 items-center gap-3 text-left"
+                    >
+                      {isAgreed ? (
+                        <CheckboxFilledIcon className="h-5 w-5 shrink-0" />
+                      ) : (
+                        <CheckboxEmptyIcon className="h-5 w-5 shrink-0" />
+                      )}
+                      <span className="text-[13px] text-gray-700">{label}</span>
+                    </button>
+                    <span className="text-caption-2 font-semibold text-gray-400">
+                      전문 보기
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
 
         <div className="mt-12 rounded-lg border border-gray-200 bg-gray-5 p-3">
           <div className="flex items-center gap-1.5">
@@ -114,11 +258,16 @@ function TermsForm({ terms }: TermsFormProps) {
         </div>
       </section>
 
-      <div className="mt-[104px] px-5">
+      <div className="mt-12 px-5">
+        {signupError && (
+          <p role="alert" className="mb-3 text-center text-body-3 text-red-500">
+            {signupError}
+          </p>
+        )}
         <button
           type="button"
-          disabled={!isAllAgreed || agreeTerms.isPending}
-          onClick={handleSubmit}
+          disabled={!canSignup || signupMutation.isPending}
+          onClick={submitSignup}
           className="h-[58px] w-full rounded-xl bg-gray-900 text-body-1 font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
         >
           동의하고 가입하기
@@ -126,19 +275,4 @@ function TermsForm({ terms }: TermsFormProps) {
       </div>
     </main>
   );
-}
-
-export default function TermsPage() {
-  const navigate = useNavigate();
-  const { data: terms, isLoading } = useTermsQuery();
-
-  if (isLoading || !terms) {
-    return (
-      <main className="min-h-dvh bg-white pb-5">
-        <TopBar title="서비스 약관 동의" onBack={() => navigate(ROUTES.LOGIN)} />
-      </main>
-    );
-  }
-
-  return <TermsForm terms={terms} />;
 }

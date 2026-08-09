@@ -20,21 +20,18 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateProfile = useUpdateProfileMutation();
 
-  const [name, setName] = useState(profile.name);
-  const [phone, setPhone] = useState(profile.phone);
-  const [businessNumber] = useState("000-00-00000");
-  // TODO: 실제 사업자 인증 상태는 API 조회 결과로 대체
-  const [verified] = useState(true);
+  const [nickname, setNickname] = useState(profile.nickname);
+  const [businessNumber, setBusinessNumber] = useState(profile.businessNumber ?? "");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
-  const isDirty = name !== profile.name || phone !== profile.phone;
+  const isDirty = nickname !== profile.nickname;
 
   const handlePickImage = () => {
     fileInputRef.current?.click();
   };
 
   const handleImageChange = () => {
-    // TODO: 실제 프로필 이미지 업로드 API 연동
+    // TODO: 스토리지 인증키 발급 후 연동
   };
 
   const handleReverify = () => {
@@ -46,7 +43,10 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
       navigate(-1);
       return;
     }
-    updateProfile.mutate({ name, phone }, { onSuccess: () => navigate(-1) });
+    updateProfile.mutate(
+      { nickname, profileImageUrl: profile.profileImageUrl },
+      { onSuccess: () => navigate(-1) },
+    );
   };
 
   const handleBack = () => {
@@ -89,30 +89,25 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
       </div>
 
       <div className="flex flex-col gap-5 px-4">
-        <TextField label="닉네임" value={profile.nickname} disabled />
-
         <TextField
-          label="이름"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          onClear={() => setName("")}
+          label="닉네임"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          onClear={() => setNickname("")}
         />
 
-        <TextField
-          label="전화번호"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          onClear={() => setPhone("")}
-        />
+        <TextField label="이름" value={profile.name} disabled />
+
+        <TextField label="전화번호" value={profile.phone} disabled />
 
         <VerifyField
           label="사업자 등록 번호"
           value={businessNumber}
-          onChange={() => {}}
+          onChange={setBusinessNumber}
           onVerify={handleReverify}
-          status={verified ? "verified" : "idle"}
+          status={(profile.businessVerified ?? false) ? "verified" : "idle"}
           successMessage="사업자 인증이 완료되었습니다."
-          disabled
+          disabled={profile.businessVerified ?? false}
         />
       </div>
 

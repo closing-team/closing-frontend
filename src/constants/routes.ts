@@ -2,6 +2,7 @@ export const ROUTES = {
   // auth
   SPLASH: "/splash",
   LOGIN: "/login",
+  KAKAO_CALLBACK: "/auth/kakao/callback",
   TERMS: "/terms",
 
   // home
@@ -45,10 +46,6 @@ export const ROUTES = {
 
   // policy
   POLICY: "/policy",
-
-  // dev
-  DEV: "/dev",
-  DEV_EMPTY_VIEWS: "/dev/empty-views",
 } as const;
 
 export const guideDetailPath = (id: number | string) =>

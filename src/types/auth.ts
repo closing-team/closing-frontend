@@ -2,4 +2,7 @@ export type LoginResult =
   | { status: "existing" }
   | { status: "new" };
 
-export type KakaoLoginHandler = () => Promise<LoginResult>;
+export type KakaoCodeLoginHandler = (
+  code: string,
+  signal: AbortSignal,
+) => Promise<LoginResult>;

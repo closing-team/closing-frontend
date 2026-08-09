@@ -7,7 +7,6 @@ import TodoList from "../../components/home/TodoList";
 import Banner from "../../components/home/Banner";
 import HomeContentSkeleton from "../../components/home/HomeContentSkeleton";
 import SideMenu from "../../components/sidemenu/SideMenu";
-import { useUsedStore } from "../../stores/usedStore";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
 import AddPlanModal from "../../components/home/AddPlanModal";
@@ -220,7 +219,6 @@ export default function HomePage() {
   const [selectedPlans, setSelectedPlans] = useState<Plan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const navigate = useNavigate();
-  const authenticated = useUsedStore((s) => s.authenticated);
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const yearMonth = `${year}-${String(month + 1).padStart(2, "0")}`;
@@ -290,7 +288,6 @@ export default function HomePage() {
       <SideMenu
         open={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
-        verified={authenticated}
         bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
