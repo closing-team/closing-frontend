@@ -9,7 +9,7 @@ export const ROUTES = {
   HOME: "/",
 // ai
   AI: "/ai",
-  AI_PLAN: "/ai/plan",
+  AI_PLAN: "/ai/plan/:sessionId",
 
   // guide
   GUIDE: "/guides",
@@ -62,3 +62,6 @@ export const usedEditPath = (id: number | string) =>
 
 export const chatRoomPath = (id: number | string) =>
   ROUTES.CHAT_ROOM.replace(":chatRoomId", encodeURIComponent(id));
+
+export const aiPlanPath = (sessionId: string) =>
+  ROUTES.AI_PLAN.replace(":sessionId", encodeURIComponent(sessionId));

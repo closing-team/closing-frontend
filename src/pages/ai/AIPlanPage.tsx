@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import ChatBubble from "../../components/common/ChatBubble";
 import ChatInput from "../../components/ai/ChatInput";
@@ -8,10 +8,15 @@ import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/ai/DeletePlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
 import Toast from "../../components/common/Toast";
-import { AlertIcon } from "../../assets/icons";
+import { AlertIcon, CheckIcon } from "../../assets/icons";
 import type { Plan } from "../../components/common/PlanCard";
-import { toPlan, toUpdateAiTaskRequest } from "../../utils/aiAdapter";
 import {
+  toPlan,
+  toPlanFromConfirmedTask,
+  toUpdateAiTaskRequest,
+} from "../../utils/aiAdapter";
+import {
+  useAiSessionQuery,
   useConfirmAiSessionMutation,
   useDeleteAiSessionTaskMutation,
   useSendAiSessionMessageMutation,
@@ -51,7 +56,6 @@ function formatTime(date: Date) {
 }
 
 interface AiPlanLocationState {
-  sessionId?: string;
   initialMessage?: string;
   aiMessage?: string;
   generatedTasks?: AiGeneratedTaskDto[];
@@ -59,39 +63,85 @@ interface AiPlanLocationState {
   remainingTurns?: number;
 }
 
-export default function AIPlanPage() {
+interface InitialChatState {
+  messages: Message[];
+  turnCount: number;
+  remainingTurns: number;
+  isFinal: boolean;
+}
+
+function buildInitialStateFromSeed(state: AiPlanLocationState): InitialChatState {
+  const now = formatTime(new Date());
+  const messages: Message[] = [];
+  if (state.initialMessage) {
+    messages.push({ id: messages.length + 1, me: true, text: state.initialMessage, time: now });
+  }
+  if (state.aiMessage) {
+    messages.push({
+      id: messages.length + 1,
+      me: false,
+      text: state.aiMessage,
+      plans: (state.generatedTasks ?? []).map(toPlan),
+      time: now,
+    });
+  }
+  return {
+    messages,
+    turnCount: state.turnCount ?? 0,
+    remainingTurns: state.remainingTurns ?? 0,
+    isFinal: false,
+  };
+}
+
+// GET 세션 조회 응답 중 NEW/Generated 모양만 처리 (Confirmed 모양은 상위에서 별도 화면으로 분기)
+function buildInitialStateFromSession(
+  data: { messages: { role: string; content: string }[]; turnCount: number; remainingTurns: number } | { generatedTasks: AiGeneratedTaskDto[] },
+): InitialChatState {
+  if ("messages" in data) {
+    return {
+      messages: data.messages.map((m, i) => ({
+        id: i + 1,
+        me: m.role === "user",
+        text: m.content,
+        time: "",
+      })),
+      turnCount: data.turnCount,
+      remainingTurns: data.remainingTurns,
+      isFinal: data.remainingTurns <= 0,
+    };
+  }
+  return {
+    messages: [
+      {
+        id: 1,
+        me: false,
+        text: "지금까지 생성된 일정이에요",
+        plans: data.generatedTasks.map(toPlan),
+        time: "",
+      },
+    ],
+    turnCount: 0,
+    remainingTurns: 0,
+    isFinal: false,
+  };
+}
+
+interface AIPlanChatProps {
+  sessionId: string;
+  initial: InitialChatState;
+}
+
+function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const state = (location.state as AiPlanLocationState | null) ?? {};
-  const sessionId = state.sessionId ?? null;
 
   const [input, setInput] = useState("");
   const [deletingPlan, setDeletingPlan] = useState<Plan | null>(null);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
-  const [turnCount, setTurnCount] = useState(state.turnCount ?? 0);
-  const [remainingTurns, setRemainingTurns] = useState(
-    state.remainingTurns ?? 0,
-  );
-  const [isFinal, setIsFinal] = useState(false);
+  const [turnCount, setTurnCount] = useState(initial.turnCount);
+  const [remainingTurns, setRemainingTurns] = useState(initial.remainingTurns);
+  const [isFinal, setIsFinal] = useState(initial.isFinal);
   const [isConfirmed, setIsConfirmed] = useState(false);
-
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const now = formatTime(new Date());
-    const msgs: Message[] = [];
-    if (state.initialMessage) {
-      msgs.push({ id: msgs.length + 1, me: true, text: state.initialMessage, time: now });
-    }
-    if (state.aiMessage) {
-      msgs.push({
-        id: msgs.length + 1,
-        me: false,
-        text: state.aiMessage,
-        plans: (state.generatedTasks ?? []).map(toPlan),
-        time: now,
-      });
-    }
-    return msgs;
-  });
+  const [messages, setMessages] = useState<Message[]>(initial.messages);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const sendMessage = useSendAiSessionMessageMutation();
@@ -104,7 +154,7 @@ export default function AIPlanPage() {
   }, [messages]);
 
   const handleConfirmDelete = () => {
-    if (!deletingPlan || !sessionId) return;
+    if (!deletingPlan) return;
     const target = deletingPlan;
 
     deleteTask.mutate(
@@ -125,8 +175,6 @@ export default function AIPlanPage() {
   };
 
   const handleConfirmEdit = (updated: Plan, memo?: string) => {
-    if (!sessionId) return;
-
     updateTask.mutate(
       {
         sessionId,
@@ -156,7 +204,7 @@ export default function AIPlanPage() {
 
   const handleSend = () => {
     const text = input.trim();
-    if (!text || isFinal || !sessionId || sendMessage.isPending) return;
+    if (!text || isFinal || sendMessage.isPending) return;
 
     setMessages((prev) => [
       ...prev,
@@ -187,7 +235,7 @@ export default function AIPlanPage() {
   };
 
   const handleConfirmSession = () => {
-    if (!sessionId || isConfirmed) return;
+    if (isConfirmed) return;
 
     confirmSession.mutate(sessionId, {
       onSuccess: () => {
@@ -196,20 +244,6 @@ export default function AIPlanPage() {
       },
     });
   };
-
-  if (!sessionId) {
-    return (
-      <div className="flex min-h-screen flex-col bg-white">
-        <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
-          <p className="text-body-2 text-gray-500">
-            세션 정보를 찾을 수 없어요. 처음부터 다시 시작해 주세요.
-          </p>
-          <Button onClick={() => navigate(ROUTES.AI)}>다시 시작하기</Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -312,5 +346,102 @@ export default function AIPlanPage() {
         />
       )}
     </div>
+  );
+}
+
+function AIPlanFallback({ message }: { message: string }) {
+  const navigate = useNavigate();
+  return (
+    <div className="flex min-h-screen flex-col bg-white">
+      <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
+        <p className="text-body-2 text-gray-500">{message}</p>
+        <Button onClick={() => navigate(ROUTES.AI)}>다시 시작하기</Button>
+      </div>
+    </div>
+  );
+}
+
+export default function AIPlanPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { sessionId } = useParams<{ sessionId: string }>();
+  const state = (location.state as AiPlanLocationState | null) ?? {};
+  const hasSeedData = Boolean(state.aiMessage);
+
+  const sessionQuery = useAiSessionQuery(
+    !hasSeedData && sessionId ? sessionId : undefined,
+  );
+
+  if (!sessionId) {
+    return (
+      <AIPlanFallback message="세션 정보를 찾을 수 없어요. 처음부터 다시 시작해 주세요." />
+    );
+  }
+
+  if (hasSeedData) {
+    return (
+      <AIPlanChat
+        key={sessionId}
+        sessionId={sessionId}
+        initial={buildInitialStateFromSeed(state)}
+      />
+    );
+  }
+
+  if (sessionQuery.isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-white">
+        <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-body-2 text-gray-500">불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (sessionQuery.isError || !sessionQuery.data) {
+    return (
+      <AIPlanFallback message="세션 정보를 불러오지 못했어요. 처음부터 다시 시작해 주세요." />
+    );
+  }
+
+  const data = sessionQuery.data;
+
+  if ("confirmedTasks" in data) {
+    const confirmedPlans = data.confirmedTasks.map(toPlanFromConfirmedTask);
+    return (
+      <div className="flex min-h-screen flex-col bg-white">
+        <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
+        <div className="flex flex-1 flex-col gap-4 px-4 pt-5 pb-8">
+          <Toast
+            icon={<CheckIcon className="h-5 w-5 shrink-0 text-white" />}
+            message="이미 확정된 일정이에요"
+          />
+          <div className="flex flex-col gap-2">
+            {confirmedPlans.map((plan) => (
+              <GeneratedPlanCard key={plan.id} plan={plan} readOnly />
+            ))}
+          </div>
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            className="mt-2"
+            onClick={() => navigate(ROUTES.HOME, { replace: true })}
+          >
+            홈으로 가기
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <AIPlanChat
+      key={sessionId}
+      sessionId={sessionId}
+      initial={buildInitialStateFromSession(data)}
+    />
   );
 }

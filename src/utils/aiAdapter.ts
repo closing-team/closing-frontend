@@ -7,6 +7,7 @@ import {
 } from "./scheduleAdapter";
 import type { Plan } from "../components/common/PlanCard";
 import type {
+  AiConfirmedTaskDto,
   AiGeneratedTaskDto,
   UpdateAiSessionTaskRequestJson,
 } from "../types/aiApi";
@@ -20,6 +21,18 @@ export function toPlan(task: AiGeneratedTaskDto): Plan {
     endDate: parseApiDate(task.endDate),
     endTime: toTimeValue(parseApiDateTime(task.endDate, task.endTime)),
     memo: task.memo,
+  };
+}
+
+export function toPlanFromConfirmedTask(task: AiConfirmedTaskDto): Plan {
+  return {
+    id: task.taskId,
+    title: task.title,
+    startDate: parseApiDate(task.startDate),
+    startTime: toTimeValue(parseApiDateTime(task.startDate, task.startTime)),
+    endDate: parseApiDate(task.endDate),
+    endTime: toTimeValue(parseApiDateTime(task.endDate, task.endTime)),
+    memo: task.description,
   };
 }
 
