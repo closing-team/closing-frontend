@@ -1,4 +1,4 @@
-import type { TermDto } from "../../types/termsApi";
+import type { TermDto } from "../../types/authApi";
 
 const terms: TermDto[] = [
   {
