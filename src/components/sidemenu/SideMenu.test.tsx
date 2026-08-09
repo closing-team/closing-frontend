@@ -16,6 +16,19 @@ vi.mock("../../auth/logoutCurrentSession", () => ({
   logoutCurrentSession: vi.fn(),
 }));
 
+vi.mock("../../hooks/useAccount", async () => {
+  const actual =
+    await vi.importActual<typeof import("../../hooks/useAccount")>(
+      "../../hooks/useAccount",
+    );
+  return {
+    ...actual,
+    useMyProfileQuery: () => ({
+      data: { nickname: "원흥동 상사", businessVerified: true },
+    }),
+  };
+});
+
 function MenuScreen() {
   const [open, setOpen] = useState(true);
   return <SideMenu open={open} onClose={() => setOpen(false)} />;
