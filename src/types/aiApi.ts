@@ -78,10 +78,22 @@ export interface AiSessionMessage {
   content: string;
 }
 
-export interface GetAiSessionResponseData {
+// 세션 상태에 따라 실제 응답 구현체가 달라짐 (Swagger AiSessionDetailResponseDto: oneOf)
+export interface AiSessionNewResponseData {
   sessionId: string;
   status: AiSessionStatus;
   turnCount: number;
   remainingTurns: number;
   messages: AiSessionMessage[];
 }
+
+export interface AiSessionGeneratedResponseData {
+  sessionId: string;
+  status: AiSessionStatus;
+  generatedTasks: AiGeneratedTaskDto[];
+}
+
+export type GetAiSessionResponseData =
+  | AiSessionNewResponseData
+  | AiSessionGeneratedResponseData
+  | ConfirmAiSessionResponseData;
