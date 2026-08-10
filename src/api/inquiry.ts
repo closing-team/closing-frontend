@@ -14,14 +14,17 @@ export async function getInquiries(): Promise<GetInquiriesResponseData> {
 }
 
 export async function createInquiry(
-  request: Omit<CreateInquiryRequestJson, "imageUrls">,
+  request: CreateInquiryRequestJson,
   images: File[],
 ): Promise<CreateInquiryResponseData> {
-  // TODO: 별도 이미지 업로드 API가 생기면 그 응답 URL로 교체. 지금은 blob URL을 그대로 전달한다.
-  const imageUrls = images.map((image) => URL.createObjectURL(image));
+  const formData = new FormData();
+  for (const image of images) {
+    formData.append("images", image);
+  }
   const res = await api.post<ApiEnvelope<CreateInquiryResponseData>>(
     "/api/v1/inquiries",
-    { ...request, imageUrls },
+    formData,
+    { params: { type: request.type, content: request.content } },
   );
   return res.data.data;
 }
