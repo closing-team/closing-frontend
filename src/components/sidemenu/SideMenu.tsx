@@ -111,7 +111,7 @@ export default function SideMenu({
             </div>
             <div className="h-[60px] w-[60px] shrink-0 overflow-hidden rounded-full bg-gray-100">
               <img
-                src={packageCircle}
+                src={profile?.profileImageUrl || packageCircle}
                 alt=""
                 className="h-full w-full object-cover"
               />
