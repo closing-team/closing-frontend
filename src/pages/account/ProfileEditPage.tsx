@@ -5,6 +5,7 @@ import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
 import VerifyField from "../../components/account/VerifyField";
 import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
+import ProfileEditSkeleton from "../../components/account/ProfileEditSkeleton";
 import packageCircle from "../../assets/images/package-circle.png";
 import { PlusSmIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
@@ -155,6 +156,7 @@ export default function ProfileEditPage() {
     return (
       <div className="min-h-screen bg-gray-30">
         <TopBar title="프로필 수정" onBack={() => navigate(-1)} />
+        <ProfileEditSkeleton />
       </div>
     );
   }

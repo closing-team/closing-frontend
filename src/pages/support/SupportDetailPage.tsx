@@ -6,6 +6,7 @@ import Button from "../../components/common/Button";
 import Toast from "../../components/common/Toast";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
+import SupportDetailSkeleton from "../../components/support/SupportDetailSkeleton";
 import { ChevronRightIcon } from "../../assets/icons";
 import { useSupportDetailQuery } from "../../hooks/useSupportQueries";
 import {
@@ -38,6 +39,7 @@ export default function SupportDetailPage() {
     return (
       <div className="min-h-screen bg-gray-30">
         <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
+        <SupportDetailSkeleton />
       </div>
     );
   }

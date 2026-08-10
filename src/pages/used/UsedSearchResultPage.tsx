@@ -5,6 +5,7 @@ import SearchBar from "../../components/used/SearchBar";
 import FilterTabs from "../../components/used/FilterTabs";
 import SortDropdown from "../../components/used/SortDropdown";
 import ProductGrid from "../../components/used/ProductGrid";
+import ProductGridSkeleton from "../../components/used/ProductGridSkeleton";
 import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
 import SearchEmptyView from "../../components/used/SearchEmptyView";
 import LocationPermissionSheet from "../../components/used/LocationPermissionSheet";
@@ -55,6 +56,7 @@ export default function UsedSearchResultPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useProductListQuery({
     keyword: query || undefined,
     businessCategory,
@@ -142,7 +144,7 @@ export default function UsedSearchResultPage() {
               : "flex items-center justify-between"
           }
         >
-          {!isCategoryMode && (
+          {!isCategoryMode && !isLoading && (
             <p className="text-body-2 text-gray-700">검색결과 {results.length}개</p>
           )}
           <SortDropdown
@@ -152,7 +154,9 @@ export default function UsedSearchResultPage() {
           />
         </div>
 
-        {results.length === 0 ? (
+        {isLoading ? (
+          <ProductGridSkeleton />
+        ) : results.length === 0 ? (
           <SearchEmptyView query={displayQuery} />
         ) : (
           <>

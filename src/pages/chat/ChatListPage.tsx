@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import ChatEmptyView from "../../components/chat/ChatEmptyView";
 import ChatCard from "../../components/chat/ChatCard";
+import ChatListSkeleton from "../../components/chat/ChatListSkeleton";
 import { ROUTES, chatRoomPath } from "../../constants/routes";
 import { useChatRoomsQuery } from "../../hooks/useChat";
 import type { ChatRoomSummary } from "../../types/chat";
@@ -27,9 +28,7 @@ export default function ChatListPage() {
 
       <section className="mt-4 flex flex-1 flex-col" aria-label="채팅 목록">
         {roomsQuery.isLoading ? (
-          <p className="px-4 py-12 text-center text-body-2 text-gray-400">
-            채팅 목록을 불러오는 중입니다.
-          </p>
+          <ChatListSkeleton />
         ) : roomsQuery.isError && sortedRooms.length === 0 ? (
           <div
             role="alert"

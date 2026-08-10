@@ -5,6 +5,7 @@ import TopBar from "../../components/common/TopBar";
 import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
+import SupportListSkeleton from "../../components/support/SupportListSkeleton";
 import EmptyView from "../../components/common/EmptyView";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import Toast from "../../components/common/Toast";
@@ -89,8 +90,8 @@ export default function SupportListPage() {
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const sortCode = SORT_TO_CODE[sort];
-  const { posts } = useSupportListQuery(sortCode);
-  const { bookmarks } = useBookmarksQuery(sortCode);
+  const { posts, isLoading: isPostsLoading } = useSupportListQuery(sortCode);
+  const { bookmarks, isLoading: isBookmarksLoading } = useBookmarksQuery(sortCode);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   useEffect(() => {
@@ -100,6 +101,7 @@ export default function SupportListPage() {
   }, [toastMessage]);
 
   const isBookmarkTab = activeTab === "bookmark";
+  const isLoading = isBookmarkTab ? isBookmarksLoading : isPostsLoading;
   const visiblePosts = useMemo(
     () => (isBookmarkTab ? bookmarks : sortPosts(posts, sort)),
     [isBookmarkTab, bookmarks, posts, sort],
@@ -150,7 +152,9 @@ export default function SupportListPage() {
         />
       </div>
 
-      {visiblePosts.length === 0 ? (
+      {isLoading ? (
+        <SupportListSkeleton />
+      ) : visiblePosts.length === 0 ? (
         <EmptyView
           icon={
             <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full bg-gray-100">

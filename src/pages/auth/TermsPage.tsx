@@ -12,6 +12,7 @@ import {
 } from "../../assets/icons";
 import TextField from "../../components/common/TextField";
 import TopBar from "../../components/common/TopBar";
+import TermsListSkeleton from "../../components/auth/TermsListSkeleton";
 import { ROUTES } from "../../constants/routes";
 import { queryClient } from "../../queryClient";
 import { useSignupMutation, useTermsQuery } from "../../hooks/useAuth";
@@ -173,11 +174,7 @@ export default function TermsPage() {
           />
         </div>
 
-        {termsQuery.isPending && (
-          <p className="mt-12 text-center text-body-3 text-gray-600">
-            약관을 불러오는 중...
-          </p>
-        )}
+        {termsQuery.isPending && <TermsListSkeleton />}
 
         {termsQuery.isError && (
           <div className="mt-12 text-center">

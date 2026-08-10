@@ -4,6 +4,7 @@ import TopBar from "../../components/common/TopBar";
 import ChatBubble from "../../components/common/ChatBubble";
 import ChatInput from "../../components/ai/ChatInput";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
+import AIPlanSkeleton from "../../components/ai/AIPlanSkeleton";
 import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/ai/DeletePlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
@@ -393,9 +394,7 @@ export default function AIPlanPage() {
     return (
       <div className="flex min-h-screen flex-col bg-white">
         <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
-        <div className="flex flex-1 items-center justify-center">
-          <p className="text-body-2 text-gray-500">불러오는 중...</p>
-        </div>
+        <AIPlanSkeleton />
       </div>
     );
   }
