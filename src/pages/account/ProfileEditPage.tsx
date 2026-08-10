@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
@@ -23,15 +23,31 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const [nickname, setNickname] = useState(profile.nickname);
   const [businessNumber, setBusinessNumber] = useState(profile.businessNumber ?? "");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  const isDirty = nickname !== profile.nickname;
+  const isDirty = nickname !== profile.nickname || selectedImage !== null;
+
+  const previewUrl = useMemo(
+    () => (selectedImage ? URL.createObjectURL(selectedImage) : null),
+    [selectedImage],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const handlePickImage = () => {
     fileInputRef.current?.click();
   };
 
-  const handleImageChange = () => {
-    // TODO: 스토리지 인증키 발급 후 연동
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+    }
+    e.target.value = "";
   };
 
   const handleReverify = () => {
@@ -44,7 +60,7 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
       return;
     }
     updateProfile.mutate(
-      { nickname, profileImageUrl: profile.profileImageUrl },
+      { nickname, image: selectedImage ?? undefined },
       { onSuccess: () => navigate(-1) },
     );
   };
@@ -65,7 +81,7 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
         <div className="relative h-[90px] w-[90px]">
           <div className="h-full w-full overflow-hidden rounded-full bg-gray-200">
             <img
-              src={profile.profileImageUrl || packageCircle}
+              src={previewUrl || profile.profileImageUrl || packageCircle}
               alt=""
               className="h-full w-full object-cover"
             />

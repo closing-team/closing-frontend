@@ -1,6 +1,5 @@
 import { http, HttpResponse } from "msw";
 import { getProfile, updateProfile } from "./db";
-import type { UpdateProfileRequestJson } from "../../types/accountApi";
 import { OK } from "../common";
 
 export const accountHandlers = [
@@ -9,10 +8,16 @@ export const accountHandlers = [
   }),
 
   http.patch("*/api/v1/users/me", async ({ request }) => {
-    const body = (await request.json()) as UpdateProfileRequestJson;
+    const url = new URL(request.url);
+    const nickname = url.searchParams.get("nickname") ?? "";
+    // 이미지 파트가 없는 빈 FormData는 브라우저에서 재파싱 시 에러가 나므로 방어적으로 처리
+    const image = await request
+      .formData()
+      .then((formData) => formData.get("image"))
+      .catch(() => null);
     const updated = updateProfile({
-      nickname: body.nickname,
-      profileImageUrl: body.profileImageUrl,
+      nickname,
+      ...(image instanceof File && { profileImageUrl: URL.createObjectURL(image) }),
     });
     return HttpResponse.json({ ...OK, data: updated });
   }),
