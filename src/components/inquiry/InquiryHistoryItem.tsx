@@ -51,13 +51,13 @@ export default function InquiryHistoryItem({
 
           <div className="flex flex-col gap-1 px-0.5">
             <p
-              className={`text-title-3 text-gray-900 ${expanded ? "" : "truncate"}`}
+              className={`break-words text-title-3 text-gray-900 ${expanded ? "" : "truncate"}`}
             >
               {heading}
             </p>
             {detail && (
               <p
-                className={`text-body-2 text-gray-900 ${
+                className={`break-words text-body-2 text-gray-900 ${
                   expanded ? "whitespace-pre-line" : "truncate"
                 }`}
               >
@@ -67,7 +67,8 @@ export default function InquiryHistoryItem({
           </div>
         </button>
 
-        {inquiry.status === "ANSWERED" &&
+        {expanded &&
+          inquiry.status === "ANSWERED" &&
           inquiry.imageUrls &&
           inquiry.imageUrls.length > 0 && (
             <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
