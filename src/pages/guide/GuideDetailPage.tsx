@@ -175,7 +175,7 @@ function Step2Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP2_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -286,7 +286,7 @@ function Step3Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-36">
+    <div className="min-h-screen bg-gray-30 pb-44">
       <TopBar
         title={STEP3_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -435,7 +435,7 @@ function Step6Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-36">
+    <div className="min-h-screen bg-gray-30 pb-44">
       <TopBar
         title={STEP6_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -609,7 +609,7 @@ function Step7Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-36">
+    <div className="min-h-screen bg-gray-30 pb-44">
       <TopBar
         title={STEP7_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -757,7 +757,7 @@ function Step8Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-screen bg-gray-30 pb-36">
       <TopBar
         title={STEP8_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -894,7 +894,7 @@ function Step4Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-screen bg-gray-30 pb-44">
       <TopBar
         title={STEP4_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -1051,7 +1051,7 @@ function Step5Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-screen bg-gray-30 pb-44">
       <TopBar
         title={STEP5_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -1202,7 +1202,7 @@ function Step9Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-screen bg-gray-30 pb-44">
       <TopBar
         title={STEP9_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -1334,7 +1334,7 @@ export default function GuideDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-28">
+    <div className="min-h-screen bg-gray-30">
       <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE)} />
 
       <div className="bg-white px-4 py-5">
@@ -1350,7 +1350,7 @@ export default function GuideDetailPage() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-2 bg-white px-4 py-5">
+      <div className="flex flex-col gap-2 bg-white px-4 pt-5 pb-28">
         <TextField
           label={content.inputLabel}
           placeholder={content.inputPlaceholder}
