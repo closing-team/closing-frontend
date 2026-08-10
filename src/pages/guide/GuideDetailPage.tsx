@@ -1334,7 +1334,7 @@ export default function GuideDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-28">
+    <div className="min-h-screen bg-gray-30">
       <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE)} />
 
       <div className="bg-white px-4 py-5">
@@ -1350,7 +1350,7 @@ export default function GuideDetailPage() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-2 bg-white px-4 py-5">
+      <div className="flex flex-col gap-2 bg-white px-4 pt-5 pb-28">
         <TextField
           label={content.inputLabel}
           placeholder={content.inputPlaceholder}
