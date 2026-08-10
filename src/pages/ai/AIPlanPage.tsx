@@ -249,7 +249,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
     <div className="flex min-h-screen flex-col bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
-      <div className="flex flex-1 flex-col gap-[10px] overflow-y-auto px-4 pt-5 pb-40">
+      <div className="flex flex-1 flex-col gap-[10px] overflow-y-auto px-4 pt-5 pb-52">
         {messages.map((msg) => {
           if (isPlanResult(msg)) {
             return (
