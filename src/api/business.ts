@@ -8,7 +8,7 @@ import type {
 export async function verifyBusiness(
   request: VerifyBusinessRequestJson,
 ): Promise<VerifyBusinessResponseData> {
-  const res = await api.put<ApiEnvelope<VerifyBusinessResponseData>>(
+  const res = await api.post<ApiEnvelope<VerifyBusinessResponseData>>(
     "/api/v1/businesses",
     request,
   );

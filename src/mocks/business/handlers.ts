@@ -8,7 +8,7 @@ function formatBusinessNumber(digits: string): string {
 }
 
 export const businessHandlers = [
-  http.put("*/api/v1/businesses", async ({ request }) => {
+  http.post("*/api/v1/businesses", async ({ request }) => {
     const body = (await request.json()) as VerifyBusinessRequestJson;
     if (!body.businessNumber || !body.ownerName || !body.openDate) {
       return HttpResponse.json(
