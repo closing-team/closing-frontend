@@ -14,9 +14,14 @@ export async function getMyProfile(): Promise<UserProfileDto> {
 export async function updateMyProfile(
   request: UpdateProfileRequestJson,
 ): Promise<UpdateProfileResponseData> {
+  const formData = new FormData();
+  if (request.image) {
+    formData.append("image", request.image);
+  }
   const res = await api.patch<ApiEnvelope<UpdateProfileResponseData>>(
     "/api/v1/users/me",
-    request,
+    formData,
+    { params: { nickname: request.nickname } },
   );
   return res.data.data;
 }

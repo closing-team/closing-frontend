@@ -18,8 +18,12 @@ export function getProfile(): UserProfileDto {
 
 export function updateProfile(patch: {
   nickname: string;
-  profileImageUrl: string;
+  profileImageUrl?: string;
 }): UserProfileDto {
-  profile = { ...profile, ...patch };
+  profile = {
+    ...profile,
+    nickname: patch.nickname,
+    ...(patch.profileImageUrl !== undefined && { profileImageUrl: patch.profileImageUrl }),
+  };
   return profile;
 }
