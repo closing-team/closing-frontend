@@ -6,6 +6,7 @@ import ChatRoomEmptyView from "../../components/chat/ChatRoomEmptyView";
 import ChatBubble from "../../components/common/ChatBubble";
 import TopBar from "../../components/common/TopBar";
 import InvalidChatRoomPage from "./InvalidChatRoomPage";
+import ChatRoomSkeleton from "../../components/chat/ChatRoomSkeleton";
 import { usedDetailPath } from "../../constants/routes";
 import {
   useChatMessagesQuery,
@@ -202,9 +203,7 @@ export default function ChatRoomPage() {
     return (
       <main className="flex min-h-dvh flex-col bg-white">
         <TopBar title="채팅" onBack={() => navigate(-1)} />
-        <p className="px-4 py-12 text-center text-body-2 text-gray-400">
-          채팅방을 불러오는 중입니다.
-        </p>
+        <ChatRoomSkeleton />
       </main>
     );
   }

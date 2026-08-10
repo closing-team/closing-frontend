@@ -9,6 +9,7 @@ import Radio from "../../components/used/Radio";
 import PriceField from "../../components/used/PriceField";
 import PhotoUploader from "../../components/used/PhotoUploader";
 import type { PhotoItem } from "../../components/used/PhotoUploader";
+import UsedWriteSkeleton from "../../components/used/UsedWriteSkeleton";
 import NaverMapPicker from "../../components/used/NaverMapPicker";
 import Toast from "../../components/common/Toast";
 import type { DealType, Product } from "../../types/used";
@@ -312,6 +313,7 @@ export default function UsedWritePage() {
     return (
       <div className="min-h-screen bg-white">
         <TopBar title="물품 수정" onBack={() => navigate(-1)} />
+        <UsedWriteSkeleton />
       </div>
     );
   }

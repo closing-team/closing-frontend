@@ -5,7 +5,10 @@ import TopBar from "../../components/common/TopBar";
 import Fab from "../../components/common/Fab";
 import TodoList from "../../components/home/TodoList";
 import Banner from "../../components/home/Banner";
-import HomeContentSkeleton from "../../components/home/HomeContentSkeleton";
+import {
+  BannerSkeleton,
+  TodoListSkeleton,
+} from "../../components/home/HomeContentSkeleton";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
@@ -293,33 +296,31 @@ export default function HomePage() {
         chatCount={chatCount}
       />
 
-      {isHomeLoading ? (
-        <HomeContentSkeleton />
-      ) : (
-        <>
-          <Banner {...progress} />
+      {isHomeLoading ? <BannerSkeleton /> : <Banner {...progress} />}
 
-          <Calendar
-            year={year}
-            month={month}
-            onPrev={handlePrevMonth}
-            onNext={handleNextMonth}
-            schedules={schedules}
-            onAddPlan={() => setIsAddingPlan(true)}
-            onDayClick={(date, plans) => {
-              setSelectedDate(date);
-              setSelectedPlans(plans);
-            }}
-          />
+      <Calendar
+        year={year}
+        month={month}
+        onPrev={handlePrevMonth}
+        onNext={handleNextMonth}
+        schedules={schedules}
+        onAddPlan={() => setIsAddingPlan(true)}
+        onDayClick={(date, plans) => {
+          setSelectedDate(date);
+          setSelectedPlans(plans);
+        }}
+      />
 
-          <div className="mt-4 flex flex-col gap-2">
-            <div className="flex h-12 items-center pl-[18px] pr-4">
-              <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
-            </div>
-            <TodoList todos={todos} onToggle={handleToggle} />
-          </div>
-        </>
-      )}
+      <div className="mt-4 flex flex-col gap-2">
+        <div className="flex h-12 items-center pl-[18px] pr-4">
+          <h2 className="text-title-3 text-gray-900">오늘의 일정</h2>
+        </div>
+        {isHomeLoading ? (
+          <TodoListSkeleton />
+        ) : (
+          <TodoList todos={todos} onToggle={handleToggle} />
+        )}
+      </div>
 
       <Fab
         variant="ai"

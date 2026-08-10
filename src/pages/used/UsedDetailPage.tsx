@@ -7,6 +7,7 @@ import ProductActionSheets from "../../components/used/ProductActionSheets";
 import { MenuKebabIcon, SearchIcon } from "../../assets/icons";
 import NaverMap from "../../components/used/NaverMap";
 import ProductThumbnail from "../../components/used/ProductThumbnail";
+import ProductDetailSkeleton from "../../components/used/ProductDetailSkeleton";
 import { formatPriceLabel } from "../../utils/formatPrice";
 import { ROUTES, chatRoomPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
@@ -55,6 +56,7 @@ export default function UsedDetailPage() {
     return (
       <div className="min-h-screen bg-white">
         <TopBar title="상품 상세" onBack={() => navigate(ROUTES.USED)} />
+        <ProductDetailSkeleton />
       </div>
     );
   }
