@@ -45,7 +45,7 @@ export default function AIPage() {
     <div className="min-h-screen bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
-      <div className="flex flex-col items-center px-4 pt-8 pb-32">
+      <div className="flex flex-col items-center px-4 pt-8 pb-48">
         <div className="flex w-full flex-col items-start gap-3">
           <img
             src={cloyCircle}
