@@ -68,7 +68,6 @@ export default function InquiryHistoryItem({
         </button>
 
         {expanded &&
-          inquiry.status === "ANSWERED" &&
           inquiry.imageUrls &&
           inquiry.imageUrls.length > 0 && (
             <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
