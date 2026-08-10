@@ -1,10 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { insertInquiry, listInquiries } from "./db";
 import type { InquiryRecord } from "./db";
-import type {
-  CreateInquiryRequestJson,
-  InquiryListItem,
-} from "../../types/inquiryApi";
+import type { InquiryListItem } from "../../types/inquiryApi";
 import { OK } from "../common";
 
 function toListItem(inquiry: InquiryRecord): InquiryListItem {
@@ -28,9 +25,11 @@ export const inquiryHandlers = [
   }),
 
   http.post("*/api/v1/inquiries", async ({ request }) => {
-    const body = (await request.json()) as CreateInquiryRequestJson;
+    const url = new URL(request.url);
+    const type = url.searchParams.get("type") ?? "";
+    const content = url.searchParams.get("content") ?? "";
 
-    if (!body.content || body.content.trim().length === 0) {
+    if (!content || content.trim().length === 0) {
       return HttpResponse.json(
         {
           success: false,
@@ -41,10 +40,17 @@ export const inquiryHandlers = [
       );
     }
 
+    // 이미지 파트가 없는 빈 FormData는 브라우저에서 재파싱 시 에러가 나므로 방어적으로 처리
+    const imageFiles = await request
+      .formData()
+      .then((formData) => formData.getAll("images") as File[])
+      .catch(() => []);
+    const imageUrls = imageFiles.map((file) => URL.createObjectURL(file));
+
     const created = insertInquiry({
-      type: body.type ?? "",
-      content: body.content.trim(),
-      images: body.imageUrls ?? [],
+      type,
+      content: content.trim(),
+      images: imageUrls,
     });
 
     return HttpResponse.json({

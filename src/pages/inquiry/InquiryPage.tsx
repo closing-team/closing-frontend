@@ -27,8 +27,6 @@ export default function InquiryPage() {
   const [attachments, setAttachments] = useState<File[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const canSubmit = inquiryType !== "" && content.trim().length > 0;
-
   useEffect(() => {
     if (!toastMessage) return;
     const timer = window.setTimeout(() => setToastMessage(null), 2000);
@@ -36,7 +34,14 @@ export default function InquiryPage() {
   }, [toastMessage]);
 
   const handleSubmit = async () => {
-    if (!canSubmit) return;
+    if (inquiryType === "") {
+      setToastMessage("문의 유형을 선택해 주세요.");
+      return;
+    }
+    if (content.trim().length === 0) {
+      setToastMessage("문의 내용을 입력해 주세요.");
+      return;
+    }
     try {
       await createInquiry.mutateAsync({
         input: { type: inquiryType, content: content.trim() },
@@ -84,7 +89,7 @@ export default function InquiryPage() {
         {toastMessage && <Toast message={toastMessage} />}
         <Button
           fullWidth
-          disabled={!canSubmit || createInquiry.isPending}
+          disabled={createInquiry.isPending}
           onClick={handleSubmit}
         >
           문의 등록

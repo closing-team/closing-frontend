@@ -21,7 +21,7 @@ export function useCreateInquiryMutation() {
       input,
       images,
     }: {
-      input: Omit<CreateInquiryRequestJson, "imageUrls">;
+      input: CreateInquiryRequestJson;
       images: File[];
     }) => createInquiry(input, images),
     onSuccess: () =>
