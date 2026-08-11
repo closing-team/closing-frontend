@@ -14,7 +14,7 @@ export function useProductActionsSheet() {
   const openMenu = (productId: number) => setMenuProductId(productId);
   const closeMenu = () => setMenuProductId(null);
 
-  const changeStatus = (status: Extract<SaleStatus, "reserved" | "completed">) => {
+  const changeStatus = (status: SaleStatus) => {
     if (menuProductId === null) return;
     updateStatus.mutate({ productId: menuProductId, status });
     closeMenu();

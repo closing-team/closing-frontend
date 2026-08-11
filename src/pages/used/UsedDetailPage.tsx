@@ -210,9 +210,9 @@ export default function UsedDetailPage() {
 
       <ProductActionSheets
         menuOpen={actions.menuProductId === product.id}
+        currentStatus={product.status ?? "selling"}
         deleteOpen={actions.deleteProductId === product.id}
-        onChangeToReserved={() => actions.changeStatus("reserved")}
-        onChangeToCompleted={() => actions.changeStatus("completed")}
+        onChangeStatus={actions.changeStatus}
         onEdit={() => {
           actions.closeMenu();
           navigate(usedEditPath(product.id));
