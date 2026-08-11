@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
@@ -170,7 +170,7 @@ const STEP2_SECTIONS: Step2Section[] = [
   },
 ];
 
-function Step2Page() {
+function Step2Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
@@ -178,7 +178,7 @@ function Step2Page() {
     <div className="min-h-dvh bg-gray-30 pb-36">
       <TopBar
         title={STEP2_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -225,14 +225,14 @@ function Step2Page() {
           <Button
             variant="outline"
             fullWidth
-            onClick={() => navigate(guideDetailPath(1))}
+            onClick={() => navigate(guideDetailPath(1), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
             이전으로
           </Button>
           <Button
             variant="primary"
             fullWidth
-            onClick={() => navigate(guideDetailPath(3))}
+            onClick={() => navigate(guideDetailPath(3), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
             다음으로
           </Button>
@@ -280,15 +280,15 @@ const STEP3_DEADLINE_ROWS = [
   },
 ];
 
-function Step3Page() {
+function Step3Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-gray-30">
       <TopBar
         title={STEP3_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -304,7 +304,7 @@ function Step3Page() {
         </SectionCard>
       </div>
 
-      <div className="flex flex-col gap-4 bg-white p-4">
+      <div className="flex flex-col gap-4 bg-white px-4 pt-4 pb-44">
         <div className="px-0.5">
           <p className="text-title-3 text-gray-900">
             내 매장 해고 통보 마지노선 계산
@@ -333,14 +333,14 @@ function Step3Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate(guideDetailPath(2))}
+              onClick={() => navigate(guideDetailPath(2), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate(guideDetailPath(4))}
+              onClick={() => navigate(guideDetailPath(4), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               다음으로
             </Button>
@@ -420,7 +420,7 @@ const STEP6_BEFORE_FILING: BulletGroup[] = [
   },
 ];
 
-function Step6Page() {
+function Step6Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
   const [checkedDocs, setCheckedDocs] = useState(() =>
@@ -437,7 +437,7 @@ function Step6Page() {
     <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP6_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -510,14 +510,14 @@ function Step6Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate(guideDetailPath(5))}
+              onClick={() => navigate(guideDetailPath(5), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate(guideDetailPath(7))}
+              onClick={() => navigate(guideDetailPath(7), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               다음으로
             </Button>
@@ -603,7 +603,7 @@ const STEP7_HEALTH_INSURANCE: BulletGroup[] = [
   },
 ];
 
-function Step7Page() {
+function Step7Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
@@ -611,7 +611,7 @@ function Step7Page() {
     <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP7_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -663,14 +663,14 @@ function Step7Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate(guideDetailPath(6))}
+              onClick={() => navigate(guideDetailPath(6), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate(guideDetailPath(8))}
+              onClick={() => navigate(guideDetailPath(8), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               다음으로
             </Button>
@@ -751,15 +751,15 @@ const STEP8_INCOME_TAX_ROWS = [
 const STEP8_INCOME_TAX_NOTE =
   "올해 1월 1일부터 폐업일까지의 최종 사업 소득 실적을 내년 5월에 정산 완료하며 대장정이 마무리됩니다.";
 
-function Step8Page() {
+function Step8Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-36">
+    <div className="min-h-dvh bg-gray-30">
       <TopBar
         title={STEP8_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -802,7 +802,7 @@ function Step8Page() {
         </SectionCard>
       </div>
 
-      <div className="flex flex-col gap-4 bg-white p-4">
+      <div className="flex flex-col gap-4 bg-white px-4 pt-4 pb-36">
         <p className="text-title-3 text-gray-900">
           내년 5월, 종합소득세 최종 확정신고
         </p>
@@ -825,14 +825,14 @@ function Step8Page() {
           <Button
             variant="outline"
             fullWidth
-            onClick={() => navigate(guideDetailPath(7))}
+            onClick={() => navigate(guideDetailPath(7), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
             이전으로
           </Button>
           <Button
             variant="primary"
             fullWidth
-            onClick={() => navigate(guideDetailPath(9))}
+            onClick={() => navigate(guideDetailPath(9), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
             다음으로
           </Button>
@@ -888,7 +888,7 @@ const STEP4_COMPARISON: { heading: string; items: string[] }[] = [
   },
 ];
 
-function Step4Page() {
+function Step4Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
@@ -896,7 +896,7 @@ function Step4Page() {
     <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP4_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -966,14 +966,14 @@ function Step4Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate(guideDetailPath(3))}
+              onClick={() => navigate(guideDetailPath(3), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate(guideDetailPath(5))}
+              onClick={() => navigate(guideDetailPath(5), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               다음으로
             </Button>
@@ -1045,7 +1045,7 @@ const STEP5_UTILITIES = [
   },
 ];
 
-function Step5Page() {
+function Step5Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
@@ -1053,7 +1053,7 @@ function Step5Page() {
     <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP5_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -1121,14 +1121,14 @@ function Step5Page() {
             <Button
               variant="outline"
               fullWidth
-              onClick={() => navigate(guideDetailPath(4))}
+              onClick={() => navigate(guideDetailPath(4), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               이전으로
             </Button>
             <Button
               variant="primary"
               fullWidth
-              onClick={() => navigate(guideDetailPath(6))}
+              onClick={() => navigate(guideDetailPath(6), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
               다음으로
             </Button>
@@ -1196,7 +1196,7 @@ const STEP9_DOCUMENTS: BulletGroup[] = [
   },
 ];
 
-function Step9Page() {
+function Step9Page({ isFromAI }: { isFromAI: boolean }) {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
@@ -1204,7 +1204,7 @@ function Step9Page() {
     <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP9_HEADER.title}
-        onBack={() => navigate(ROUTES.GUIDE)}
+        onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
       />
 
       <div className="bg-white px-4 py-5">
@@ -1269,9 +1269,15 @@ function Step9Page() {
           />
         </div>
         <div className="flex flex-col items-center gap-3 px-4 pb-5 pt-2.5">
-          <Button variant="primary" fullWidth onClick={() => navigate(ROUTES.AI)}>
-            폐업 맞춤 일정 생성하러 가기
-          </Button>
+          {isFromAI ? (
+            <Button variant="primary" fullWidth onClick={() => navigate(ROUTES.AI)}>
+              폐업 맞춤 일정 생성하러 가기
+            </Button>
+          ) : (
+            <Button variant="primary" fullWidth onClick={() => navigate(ROUTES.HOME)}>
+              폐업 캘린더 보기
+            </Button>
+          )}
           <p className="text-center text-caption-2 text-gray-400">
             {STEP9_HEADER.footerNote}
           </p>
@@ -1283,39 +1289,41 @@ function Step9Page() {
 
 export default function GuideDetailPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { stepId = "" } = useParams();
   const [dueDate, setDueDate] = useState("");
+  const isFromAI = (location.state as { from?: string } | null)?.from === "ai";
 
   if (stepId === "2") {
-    return <Step2Page />;
+    return <Step2Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "3") {
-    return <Step3Page />;
+    return <Step3Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "4") {
-    return <Step4Page />;
+    return <Step4Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "5") {
-    return <Step5Page />;
+    return <Step5Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "6") {
-    return <Step6Page />;
+    return <Step6Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "7") {
-    return <Step7Page />;
+    return <Step7Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "8") {
-    return <Step8Page />;
+    return <Step8Page isFromAI={isFromAI} />;
   }
 
   if (stepId === "9") {
-    return <Step9Page />;
+    return <Step9Page isFromAI={isFromAI} />;
   }
 
   const content = STEP_CONTENT[stepId];
@@ -1324,7 +1332,7 @@ export default function GuideDetailPage() {
   if (!content) {
     return (
       <div className="min-h-dvh bg-gray-30">
-        <TopBar title="가이드" onBack={() => navigate(ROUTES.GUIDE)} />
+        <TopBar title="가이드" onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)} />
         <p className="px-4 py-10 text-center text-body-2 text-gray-500">
           준비 중인 단계입니다.
         </p>
@@ -1334,7 +1342,7 @@ export default function GuideDetailPage() {
 
   return (
     <div className="min-h-dvh bg-gray-30">
-      <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE)} />
+      <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)} />
 
       <div className="bg-white px-4 py-5">
         <p className="text-title-3 text-gray-900">{content.subtitle}</p>
@@ -1367,7 +1375,7 @@ export default function GuideDetailPage() {
           variant="primary"
           fullWidth
           disabled={dueDateError !== null}
-          onClick={() => navigate(guideDetailPath(content.nextStepId))}
+          onClick={() => navigate(guideDetailPath(content.nextStepId), isFromAI ? { state: { from: "ai" } } : undefined)}
         >
           다음으로
         </Button>
