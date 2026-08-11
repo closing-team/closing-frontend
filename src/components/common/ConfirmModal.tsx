@@ -9,6 +9,7 @@ interface ConfirmModalProps {
   confirmLabel: string;
   confirmVariant?: "warning" | "primary" | "secondary";
   cancelClassName?: string;
+  confirmDisabled?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }
@@ -21,6 +22,7 @@ export default function ConfirmModal({
   confirmLabel,
   confirmVariant = "warning",
   cancelClassName,
+  confirmDisabled = false,
   onCancel,
   onConfirm,
 }: ConfirmModalProps) {
@@ -56,7 +58,12 @@ export default function ConfirmModal({
           >
             {cancelLabel}
           </Button>
-          <Button variant={confirmVariant} fullWidth onClick={onConfirm}>
+          <Button
+            variant={confirmVariant}
+            fullWidth
+            disabled={confirmDisabled}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </Button>
         </div>
