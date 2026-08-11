@@ -1,7 +1,7 @@
 import type { CategoryGroup } from "../types/used";
 
-// 검색어는 그대로 keyword 파라미터로 전달되므로, 백엔드 카테고리 라벨
-// ("업소용 테이블", "사무용 책상/의자" 등)과 동일하게 띄어쓰기를 지킨다.
+// 검색어는 keyword 파라미터로 그대로 전달되므로, 백엔드 카테고리 라벨
+// ("업소용 테이블", "사무용 책상/의자" 등)과 띄어쓰기를 동일하게 유지
 export const RECOMMENDED_KEYWORD_POOL = [
   // 주방기기/설비
   "쇼케이스",

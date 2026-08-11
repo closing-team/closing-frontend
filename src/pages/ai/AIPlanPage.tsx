@@ -94,7 +94,7 @@ function buildInitialStateFromSeed(state: AiPlanLocationState): InitialChatState
   };
 }
 
-// GET 세션 조회 응답 중 NEW/Generated 모양만 처리 (Confirmed 모양은 상위에서 별도 화면으로 분기)
+// GET 세션 조회 응답 중 NEW와 Generated 모양만 처리, Confirmed 모양은 상위에서 별도 화면으로 분기
 function buildInitialStateFromSession(
   data: { messages: { role: string; content: string }[]; turnCount: number; remainingTurns: number } | { generatedTasks: AiGeneratedTaskDto[] },
 ): InitialChatState {

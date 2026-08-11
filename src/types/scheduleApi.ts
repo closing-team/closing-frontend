@@ -36,7 +36,7 @@ export interface TaskDetailDto {
   updatedAt: string;
 }
 
-// POST /api/v1/tasks — 일정 추가 요청/응답
+// POST /api/v1/tasks — 일정 추가 요청과 응답
 export interface CreateTaskRequestJson {
   title: string;
   startDate: string;
@@ -58,7 +58,7 @@ export interface CreateTaskResponseData {
   createdAt: string;
 }
 
-// PATCH /api/v1/tasks/{taskId} — 일정 수정 요청/응답
+// PATCH /api/v1/tasks/{taskId} — 일정 수정 요청과 응답
 export interface UpdateTaskRequestJson {
   title: string;
   startDate: string;
@@ -80,7 +80,7 @@ export interface UpdateTaskResponseData {
   updatedAt: string;
 }
 
-// PATCH /api/v1/tasks/{taskId}/complete — 완료 처리 요청/응답
+// PATCH /api/v1/tasks/{taskId}/complete — 완료 처리 요청과 응답
 export interface CompleteTaskRequestJson {
   isCompleted: boolean;
 }

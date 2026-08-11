@@ -83,8 +83,6 @@
   --color-delay-50: #fff5ea;
 }
 
-/* 768px 미만(실제 모바일 기기)에서는 폭 제한을 풀어 화면에 꽉 차게 하고,
-   그 이상(PC/태블릿)에서는 375px 모바일 뷰 목업 폭을 유지한다. */
 @media (max-width: 767px) {
   :root {
     --container-app: none;

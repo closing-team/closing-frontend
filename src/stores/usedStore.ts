@@ -75,8 +75,7 @@ export const useUsedStore = create<UsedState>()(
     }),
     {
       name: "used-store",
-      // v1: 목업으로 심어뒀던 최근 검색어 시드값("카페 패키지", "업소용 제빙기")을
-      // 이미 저장해둔 브라우저에서 자동으로 비워내기 위한 버전 마이그레이션.
+      // v1: 목업 시드값("카페 패키지", "업소용 제빙기")이 남아있는 브라우저를 위한 초기화 마이그레이션
       version: 1,
       migrate: (persistedState, version) => {
         const state = persistedState as PersistedUsedState;

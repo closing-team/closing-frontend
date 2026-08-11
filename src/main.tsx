@@ -9,8 +9,6 @@ import ErrorBoundary from "./components/common/ErrorBoundary";
 import { queryClient } from "./queryClient";
 import "./index.css";
 
-// 예전에 MSW를 켜고 접속했던 브라우저에는 서비스 워커가 그대로 남아 요청을 계속
-// 가로챈다. MSW 자체는 걷어냈으므로 남아 있는 워커만 정리한다.
 async function unregisterStaleMockWorker() {
   if (!("serviceWorker" in navigator)) return;
   const registrations = await navigator.serviceWorker.getRegistrations();
