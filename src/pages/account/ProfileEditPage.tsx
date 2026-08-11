@@ -4,7 +4,7 @@ import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
 import VerifyField from "../../components/account/VerifyField";
-import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
+import UnsavedChangesModal from "../../components/common/UnsavedChangesModal";
 import ProfileEditSkeleton from "../../components/account/ProfileEditSkeleton";
 import packageCircle from "../../assets/images/package-circle.png";
 import { PlusSmIcon } from "../../assets/icons";
@@ -75,7 +75,7 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-28">
+    <div className="min-h-dvh bg-gray-30 pb-28">
       <TopBar title="프로필 수정" onBack={handleBack} />
 
       <div className="flex flex-col items-center py-8">
@@ -166,7 +166,7 @@ export default function ProfileEditPage() {
 
   if (isLoading || !profile) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="프로필 수정" onBack={() => navigate(-1)} />
         <ProfileEditSkeleton />
       </div>
