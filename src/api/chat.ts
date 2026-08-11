@@ -43,9 +43,15 @@ export async function sendTextMessage(
   chatRoomId: number,
   content: string,
 ): Promise<SendChatMessageDto> {
+  const formData = new FormData();
+  formData.append(
+    "content",
+    new Blob([JSON.stringify({ content })], { type: "application/json" }),
+  );
+
   const response = await api.post<ApiEnvelope<SendChatMessageDto>>(
     `/api/v1/chat-rooms/${chatRoomId}/messages`,
-    { content },
+    formData,
   );
   return response.data.data;
 }
