@@ -377,13 +377,19 @@ export default function HomePage() {
           isPending={updateMutation.isPending}
           onCancel={() => setIsEditing(false)}
           onConfirm={(updated, memo) => {
-            updateMutation.mutate({
-              taskId: Number(updated.id),
-              request: toTaskRequest(updated, memo ?? ""),
-            });
-            setIsEditing(false);
-            setSelectedPlan(null);
-            setSelectedDate(null);
+            updateMutation.mutate(
+              {
+                taskId: Number(updated.id),
+                request: toTaskRequest(updated, memo ?? ""),
+              },
+              {
+                onSuccess: () => {
+                  setIsEditing(false);
+                  setSelectedPlan(null);
+                  setSelectedDate(null);
+                },
+              },
+            );
           }}
         />
       )}
