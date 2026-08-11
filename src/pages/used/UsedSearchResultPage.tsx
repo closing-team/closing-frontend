@@ -33,7 +33,6 @@ export default function UsedSearchResultPage() {
   const isCategoryMode = Boolean(businessCategory || productCategory);
   const displayQuery = query || categoryLabel || "";
 
-  const authenticated = useUsedStore((s) => s.authenticated);
   const location = useUsedStore((s) => s.location);
   const commitSearch = useCommitSearch();
   const nearbyLabel = useNearbyLabel(location);
@@ -77,7 +76,7 @@ export default function UsedSearchResultPage() {
   };
 
   const handleWrite = () => {
-    navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
+    navigate(ROUTES.USED_WRITE);
   };
 
   return (
