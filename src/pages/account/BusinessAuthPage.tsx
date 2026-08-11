@@ -7,7 +7,6 @@ import Button from "../../components/common/Button";
 import Callout, { CalloutItem } from "../../components/common/Callout";
 import Toast from "../../components/common/Toast";
 import { ROUTES } from "../../constants/routes";
-import { useUsedStore } from "../../stores/usedStore";
 import { useVerifyBusinessMutation } from "../../hooks/useBusiness";
 
 const DEFAULT_ERROR_MESSAGE =
@@ -19,7 +18,6 @@ export default function BusinessAuthPage() {
   const redirectTo =
     (location.state as { redirectTo?: string } | null)?.redirectTo ??
     ROUTES.USED_WRITE;
-  const setAuthenticated = useUsedStore((s) => s.setAuthenticated);
   const verifyBusiness = useVerifyBusinessMutation();
 
   const [bizNumber, setBizNumber] = useState("");
@@ -46,7 +44,6 @@ export default function BusinessAuthPage() {
         ownerName: owner.trim(),
         openDate: openedAt,
       });
-      setAuthenticated(true);
       navigate(redirectTo, { replace: true });
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)

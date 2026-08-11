@@ -11,9 +11,6 @@ interface UsedState {
   addRecentSearch: (keyword: string) => void;
   removeRecentSearch: (keyword: string) => void;
 
-  authenticated: boolean;
-  setAuthenticated: (value: boolean) => void;
-
   locationGranted: boolean;
   setLocationGranted: (value: boolean) => void;
   location: GeoLocation | null;
@@ -53,9 +50,6 @@ export const useUsedStore = create<UsedState>()(
         set((state) => ({
           recentSearches: state.recentSearches.filter((k) => k !== keyword),
         })),
-
-      authenticated: true,
-      setAuthenticated: (value) => set({ authenticated: value }),
 
       locationGranted: false,
       setLocationGranted: (value) => set({ locationGranted: value }),

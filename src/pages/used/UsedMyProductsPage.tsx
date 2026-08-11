@@ -9,7 +9,6 @@ import ProductActionSheets from "../../components/used/ProductActionSheets";
 import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
 import { PlusMdIcon } from "../../assets/icons";
 import { ROUTES, usedDetailPath, usedEditPath } from "../../constants/routes";
-import { useUsedStore } from "../../stores/usedStore";
 import { useMyProductsQuery } from "../../hooks/useProductQueries";
 import { useProductActionsSheet } from "../../hooks/useProductActionsSheet";
 import { saleStatusToStatusCode } from "../../utils/productAdapter";
@@ -19,7 +18,6 @@ type StatusFilter = "all" | SaleStatus;
 
 export default function UsedMyProductsPage() {
   const navigate = useNavigate();
-  const authenticated = useUsedStore((s) => s.authenticated);
   const actions = useProductActionsSheet();
   const [filter, setFilter] = useState<StatusFilter>("all");
 
@@ -42,7 +40,7 @@ export default function UsedMyProductsPage() {
           : counts.soldOut;
 
   const handleWrite = () => {
-    navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
+    navigate(ROUTES.USED_WRITE);
   };
 
   return (

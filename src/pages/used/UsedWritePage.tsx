@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import UnsavedChangesModal from "../../components/common/UnsavedChangesModal";
 import TextField from "../../components/common/TextField";
@@ -21,8 +21,9 @@ import {
   useCreateProductMutation,
   useUpdateProductMutation,
 } from "../../hooks/useProductMutations";
+import { useMyProfileQuery } from "../../hooks/useAccount";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../constants/usedCategories";
-import { usedDetailPath } from "../../constants/routes";
+import { ROUTES, usedDetailPath } from "../../constants/routes";
 
 const DEFAULT_ADDRESS = "경기도 고양시 일산동구 장항동 32-1";
 const DEFAULT_LAT = 37.6689;
@@ -340,20 +341,35 @@ function UsedWriteForm({
 
 export default function UsedWritePage() {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { productId: productIdParam } = useParams();
   const productId = productIdParam ? Number(productIdParam) : undefined;
   const isEditMode = productId !== undefined;
 
-  const location = useUsedStore((s) => s.location);
+  const geoLocation = useUsedStore((s) => s.location);
+  const { data: profile, isLoading: isLoadingProfile } = useMyProfileQuery();
   const { data: existingProduct, isLoading: isLoadingExisting } =
-    useProductDetailQuery(productId, location);
+    useProductDetailQuery(productId, geoLocation);
 
-  if (isEditMode && isLoadingExisting) {
+  if (isLoadingProfile || (isEditMode && isLoadingExisting)) {
     return (
       <div className="min-h-dvh bg-white">
-        <TopBar title="물품 수정" onBack={() => navigate(-1)} />
+        <TopBar
+          title={isEditMode ? "물품 수정" : "물품 등록"}
+          onBack={() => navigate(-1)}
+        />
         <UsedWriteSkeleton />
       </div>
+    );
+  }
+
+  if (!(profile?.businessVerified ?? false)) {
+    return (
+      <Navigate
+        to={ROUTES.BUSINESS_AUTH}
+        replace
+        state={{ redirectTo: routerLocation.pathname }}
+      />
     );
   }
 
@@ -374,7 +390,7 @@ export default function UsedWritePage() {
       isEditMode={isEditMode}
       productId={productId}
       existingProduct={isEditMode ? existingProduct : undefined}
-      currentLocation={location}
+      currentLocation={geoLocation}
     />
   );
 }
