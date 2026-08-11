@@ -270,8 +270,7 @@ const STEP3_CHECKLIST: BulletGroup[] = [
   },
 ];
 
-// TODO: STEP1에서 입력한 희망 종료일(dueDate) 상태와 연동해서 계산하도록 변경.
-// 지금은 정적 텍스트로 하드코딩되어 있음.
+// TODO: STEP1 희망 종료일(dueDate) 상태와 연동해 계산하도록 변경. 현재는 정적 텍스트로 하드코딩
 const STEP3_DEADLINE_ROWS = [
   { label: "희망 영업 종료일 (1단계 연동)", value: "2026년 07월 15일" },
   {

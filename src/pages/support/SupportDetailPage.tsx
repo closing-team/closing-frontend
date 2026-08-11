@@ -61,7 +61,7 @@ export default function SupportDetailPage() {
   const isExpired = post.applyEndDate !== null && post.applyEndDate < todayStr;
 
   const handleApply = () => {
-    // TODO: 외부 링크 접속 실패 시 토스트 노출 + URL 클립보드 복사 처리 필요
+    // TODO: 외부 링크 접속 실패 시 토스트 노출, URL 클립보드 복사 처리 필요
     window.open(post.externalUrl, "_blank", "noopener,noreferrer");
   };
 

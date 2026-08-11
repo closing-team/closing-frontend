@@ -19,9 +19,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// 세션이 만료되면 백엔드가 COMMON401을 내려준다. api 인스턴스(인증된 요청)에서만
-// 이걸 세션 만료로 취급해 자동 로그아웃시킨다. publicApi의 401은 카카오 로그인
-// 실패 등 다른 의미라 여기서 건드리면 안 된다.
 let isRedirectingToLogin = false;
 
 api.interceptors.response.use(

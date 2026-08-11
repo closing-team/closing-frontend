@@ -39,7 +39,7 @@ function readStoredValue<T>(
       return parsedValue;
     }
   } catch {
-    // Invalid JSON is handled by removing the stale storage entry below.
+    // 파싱 실패 시 별도 처리 없이 아래 removeItem으로 정리
   }
 
   storage.removeItem(key);

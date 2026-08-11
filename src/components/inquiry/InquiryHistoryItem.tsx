@@ -26,7 +26,7 @@ export default function InquiryHistoryItem({
   expanded,
   onToggle,
 }: InquiryHistoryItemProps) {
-  // 백엔드 응답에 별도 title 필드가 없어, content 첫 줄을 제목처럼 사용한다.
+  // 백엔드 응답에 별도 title 필드가 없어 content 첫 줄을 제목처럼 사용
   const [heading, ...rest] = inquiry.content.split("\n");
   const detail = rest.join("\n");
 

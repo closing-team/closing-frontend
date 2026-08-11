@@ -22,7 +22,7 @@ export interface SignupSubmission {
 }
 
 interface UseSignupMutationOptions {
-  // 언마운트 이후/이전 시도의 콜백이 최신 상태를 덮어쓰지 않도록 막는 가드.
+  // 언마운트 이후나 이전 시도의 콜백이 최신 상태를 덮어쓰지 않게 막는 가드
   mountedRef: RefObject<boolean>;
   signupAttemptRef: RefObject<number>;
   submitStartedRef: RefObject<boolean>;

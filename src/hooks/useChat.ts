@@ -25,10 +25,9 @@ const CHAT_LIST_SIZE = 20;
 const CHAT_MESSAGE_SIZE = 100;
 const MAX_POLL_FAILURES = 5;
 
-// query-core는 fetch가 시작될 때마다 state.fetchFailureCount를 0으로 되돌리기
-// 때문에(fetchState), retry를 끈 폴링에서는 이 값이 1을 넘지 못해 임계치 판정에
-// 쓸 수 없다. 연속 실패 횟수를 직접 세고, 마운트/포커스 재조회로도 초기화되지
-// 않도록 모듈 스코프에 보관한다.
+// query-core가 fetch 시작마다 state.fetchFailureCount를 0으로 초기화(fetchState)해,
+// retry를 끈 폴링에서는 임계치 판정에 사용 불가. 연속 실패 횟수는 직접 카운트해
+// 마운트, 포커스 재조회에도 초기화되지 않도록 모듈 스코프에 보관
 const pollFailures = new Map<string, number>();
 
 async function countPollResult<T>(

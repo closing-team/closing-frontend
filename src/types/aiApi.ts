@@ -1,4 +1,3 @@
-// TODO: 진행 중 상태값이 명세에 명시되지 않아 IN_PROGRESS로 임시 지정. 명세 확정 후 값 확인 필요
 export type AiSessionStatus =
   | "NEW"
   | "IN_PROGRESS"
@@ -15,7 +14,7 @@ export interface AiGeneratedTaskDto {
   memo: string;
 }
 
-// POST /api/v1/ai/sessions — AI 세션 시작 요청/응답
+// POST /api/v1/ai/sessions — AI 세션 시작 요청과 응답
 export interface StartAiSessionRequestJson {
   initialInput: string;
 }
@@ -29,7 +28,7 @@ export interface StartAiSessionResponseData {
   generatedTasks: AiGeneratedTaskDto[];
 }
 
-// POST /api/v1/ai/sessions/{sessionId}/messages — AI 세션 메시지 전송 요청/응답
+// POST /api/v1/ai/sessions/{sessionId}/messages — AI 세션 메시지 전송 요청과 응답
 export interface SendAiSessionMessageRequestJson {
   message: string;
 }
@@ -60,7 +59,7 @@ export interface ConfirmAiSessionResponseData {
   confirmedTasks: AiConfirmedTaskDto[];
 }
 
-// PATCH /api/v1/ai/sessions/{sessionId}/tasks/{tempId} — AI 생성 임시 일정 수정 요청/응답
+// PATCH /api/v1/ai/sessions/{sessionId}/tasks/{tempId} — AI 생성 임시 일정 수정 요청과 응답
 export interface UpdateAiSessionTaskRequestJson {
   title: string;
   startDate: string;
@@ -78,7 +77,7 @@ export interface AiSessionMessage {
   content: string;
 }
 
-// 세션 상태에 따라 실제 응답 구현체가 달라짐 (Swagger AiSessionDetailResponseDto: oneOf)
+// 세션 상태에 따라 실제 응답 구현체가 달라짐
 export interface AiSessionNewResponseData {
   sessionId: string;
   status: AiSessionStatus;

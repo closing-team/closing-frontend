@@ -136,8 +136,7 @@ export default function SupportListPage() {
       <Tabs
         tabs={TABS}
         value={activeTab}
-        // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark)도 함께 바꿀지 여부는
-        // 아직 정해지지 않음 — 사용자와 상의 후 결정
+        // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark) 동기화 여부 미정, 논의 후 결정
         onChange={(key) => setActiveTab(key as SupportTab)}
       />
 

@@ -48,7 +48,6 @@ function toDateKey(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-// ─── 캘린더 ──────────────────────────────────────────────────
 function Calendar({
   year,
   month,
@@ -209,7 +208,6 @@ function Calendar({
   );
 }
 
-// ─── 홈 페이지 ────────────────────────────────────────────────
 export default function HomePage() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
