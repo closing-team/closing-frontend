@@ -175,7 +175,7 @@ function Step2Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-36">
+    <div className="min-h-dvh bg-white pb-36">
       <TopBar
         title={STEP2_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -188,7 +188,7 @@ function Step2Page({ isFromAI }: { isFromAI: boolean }) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 py-6">
+      <div className="flex flex-col gap-4 bg-gray-30 px-4 py-6">
         {STEP2_SECTIONS.map((section) => (
           <SectionCard key={section.title} title={section.title}>
             <div className="flex flex-col gap-4">
@@ -285,7 +285,7 @@ function Step3Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30">
+    <div className="min-h-dvh bg-white pb-44">
       <TopBar
         title={STEP3_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -304,7 +304,7 @@ function Step3Page({ isFromAI }: { isFromAI: boolean }) {
         </SectionCard>
       </div>
 
-      <div className="flex flex-col gap-4 bg-white px-4 pt-4 pb-44">
+      <div className="flex flex-col gap-4 bg-white p-4">
         <div className="px-0.5">
           <p className="text-title-3 text-gray-900">
             내 매장 해고 통보 마지노선 계산
@@ -434,7 +434,7 @@ function Step6Page({ isFromAI }: { isFromAI: boolean }) {
   };
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-white pb-44">
       <TopBar
         title={STEP6_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -608,7 +608,7 @@ function Step7Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-white pb-44">
       <TopBar
         title={STEP7_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -756,7 +756,7 @@ function Step8Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30">
+    <div className="min-h-dvh bg-white pb-36">
       <TopBar
         title={STEP8_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -802,7 +802,7 @@ function Step8Page({ isFromAI }: { isFromAI: boolean }) {
         </SectionCard>
       </div>
 
-      <div className="flex flex-col gap-4 bg-white px-4 pt-4 pb-36">
+      <div className="flex flex-col gap-4 bg-white p-4">
         <p className="text-title-3 text-gray-900">
           내년 5월, 종합소득세 최종 확정신고
         </p>
@@ -893,7 +893,7 @@ function Step4Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-white pb-44">
       <TopBar
         title={STEP4_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -1050,7 +1050,7 @@ function Step5Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-white pb-44">
       <TopBar
         title={STEP5_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -1201,7 +1201,7 @@ function Step9Page({ isFromAI }: { isFromAI: boolean }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-white pb-44">
       <TopBar
         title={STEP9_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)}
@@ -1331,7 +1331,7 @@ export default function GuideDetailPage() {
 
   if (!content) {
     return (
-      <div className="min-h-dvh bg-gray-30">
+      <div className="min-h-dvh bg-white">
         <TopBar title="가이드" onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)} />
         <p className="px-4 py-10 text-center text-body-2 text-gray-500">
           준비 중인 단계입니다.
@@ -1341,7 +1341,7 @@ export default function GuideDetailPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-gray-30">
+    <div className="min-h-dvh bg-white pb-28">
       <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)} />
 
       <div className="bg-white px-4 py-5">
@@ -1357,7 +1357,7 @@ export default function GuideDetailPage() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-2 bg-white px-4 pt-5 pb-28">
+      <div className="flex flex-col gap-2 bg-white px-4 py-5">
         <TextField
           label={content.inputLabel}
           placeholder={content.inputPlaceholder}
