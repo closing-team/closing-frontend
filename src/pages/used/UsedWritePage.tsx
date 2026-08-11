@@ -20,8 +20,10 @@ import { useProductDetailQuery } from "../../hooks/useProductQueries";
 import {
   useCreateProductMutation,
   useUpdateProductMutation,
+  useUpdateSellerLocationMutation,
 } from "../../hooks/useProductMutations";
 import { useMyProfileQuery } from "../../hooks/useAccount";
+import { reverseGeocodeNeighborhood } from "../../utils/naverGeocoder";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../constants/usedCategories";
 import { ROUTES, usedDetailPath } from "../../constants/routes";
 
@@ -75,6 +77,7 @@ function UsedWriteForm({
   const navigate = useNavigate();
   const createProduct = useCreateProductMutation();
   const updateProduct = useUpdateProductMutation();
+  const updateSellerLocation = useUpdateSellerLocationMutation();
 
   const [photos, setPhotos] = useState<PhotoItem[]>(() =>
     (existingProduct?.images ?? []).map((url) => ({
@@ -164,6 +167,33 @@ function UsedWriteForm({
     return null;
   };
 
+  // 물품을 등록/수정할 때 판매자 활동 지역도 함께 갱신한다. 직거래면 고른
+  // 장소를, 택배만이면 대신 실제 GPS 현재 위치를 쓴다. 위치 권한이 없어
+  // lat/lng이 하드코딩된 기본값으로 떨어진 경우는 잘못된 지역을 저장하게
+  // 되므로 건너뛴다. 상품 등록 자체와는 무관한 부가 동기화라 실패해도
+  // 조용히 넘어간다.
+  const sellerLocationCoords = (): { lat: number; lng: number } | null => {
+    if (directAvailable) return { lat, lng };
+    if (currentLocation) return currentLocation;
+    return null;
+  };
+
+  const syncSellerLocation = async () => {
+    const coords = sellerLocationCoords();
+    if (!coords) return;
+    try {
+      const neighborhood = await reverseGeocodeNeighborhood(
+        coords.lat,
+        coords.lng,
+      );
+      if (neighborhood) {
+        updateSellerLocation.mutate({ location: neighborhood });
+      }
+    } catch {
+      // 무시
+    }
+  };
+
   const handleSubmit = async () => {
     const validationError = getValidationError();
     if (validationError) {
@@ -203,12 +233,14 @@ function UsedWriteForm({
         retainedImages,
         newImages,
       });
+      void syncSellerLocation();
       navigate(usedDetailPath(productId), { replace: true });
       return;
     }
 
     const images = photos.filter((p) => p.kind === "new").map((p) => p.file);
     const created = await createProduct.mutateAsync({ input, images });
+    void syncSellerLocation();
     navigate(usedDetailPath(created.productId), { replace: true });
   };
 

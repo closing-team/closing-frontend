@@ -15,6 +15,8 @@ import type {
   UpdateProductRequestJson,
   UpdateProductResponseData,
   UpdateProductStatusResponseData,
+  UpdateSellerLocationRequestJson,
+  UpdateSellerLocationResponseData,
 } from "../types/productApi";
 
 function buildProductQuery(params: GetProductsParams): URLSearchParams {
@@ -140,6 +142,16 @@ export async function getBookmarkedProducts(
   const res = await api.get<ApiEnvelope<BookmarkedProductListDataDto>>(
     "/api/v1/products/bookmarks",
     { params },
+  );
+  return res.data.data;
+}
+
+export async function updateSellerLocation(
+  request: UpdateSellerLocationRequestJson,
+): Promise<UpdateSellerLocationResponseData> {
+  const res = await api.patch<ApiEnvelope<UpdateSellerLocationResponseData>>(
+    "/api/v1/products/me/location",
+    request,
   );
   return res.data.data;
 }
