@@ -77,7 +77,7 @@ export interface AiSessionMessage {
   content: string;
 }
 
-// 세션 상태에 따라 실제 응답 구현체가 달라짐 (Swagger AiSessionDetailResponseDto: oneOf)
+// 세션 상태에 따라 실제 응답 구현체가 달라짐
 export interface AiSessionNewResponseData {
   sessionId: string;
   status: AiSessionStatus;

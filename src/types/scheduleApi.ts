@@ -1,4 +1,4 @@
-// GET /api/v1/tasks/home — 홈 화면 전체 조회 (캘린더, 할일, 진행률 등) 응답
+// GET /api/v1/tasks/home — 홈 화면 전체 조회 응답
 export interface HomeTasksSummary {
   totalCount: number;
   completedCount: number;
