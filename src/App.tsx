@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import DocumentMeta from "./components/common/DocumentMeta";
 import RouteFallback from "./components/common/RouteFallback";
+import { useScrollRestoration } from "./hooks/useScrollRestoration";
 import { ROUTES } from "./constants/routes";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
@@ -51,6 +52,8 @@ const PolicyPage = lazy(() => import("./pages/policy/PolicyPage"));
 const NotFoundPage = lazy(() => import("./pages/error/NotFoundPage"));
 
 export default function App() {
+  useScrollRestoration();
+
   return (
     <div className="relative mx-auto min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] bg-white shadow-sm">
       <DocumentMeta />
