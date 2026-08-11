@@ -42,7 +42,7 @@ export default function AIPage() {
   const startSession = useStartAiSessionMutation();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-dvh bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
       <div className="flex flex-col items-center px-4 pt-8 pb-48">

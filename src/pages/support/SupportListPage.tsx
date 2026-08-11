@@ -109,7 +109,7 @@ export default function SupportListPage() {
   const toggleBookmark = useSupportBookmarkToggle(visiblePosts, setToastMessage);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-24">
+    <div className="min-h-dvh bg-gray-30 pb-24">
       <TopBar
         logo
         bordered={false}

@@ -6,7 +6,7 @@ export default function GuideReportTemplatePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-dvh bg-white">
       <TopBar
         title="문자/내용증명 복사용 작성 템플릿"
         onBack={() => navigate(guideDetailPath(6))}
