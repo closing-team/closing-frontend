@@ -22,10 +22,13 @@ export interface StartAiSessionRequestJson {
 export interface StartAiSessionResponseData {
   sessionId: string;
   status: AiSessionStatus;
-  aiMessage: string;
+  // 일정이 생성되어 대화가 종료된 경우 null
+  aiMessage: string | null;
   turnCount: number;
-  remainingTurns: number;
-  generatedTasks: AiGeneratedTaskDto[];
+  // 대화가 아직 진행 중(isFinal: false)인 경우에만 값이 있고, 일정 생성이 완료된 경우 null
+  remainingTurns: number | null;
+  // 아직 생성되지 않았다면 null
+  generatedTasks: AiGeneratedTaskDto[] | null;
 }
 
 // POST /api/v1/ai/sessions/{sessionId}/messages — AI 세션 메시지 전송 요청과 응답
@@ -34,11 +37,14 @@ export interface SendAiSessionMessageRequestJson {
 }
 
 export interface SendAiSessionMessageResponseData {
-  aiMessage: string;
+  // 일정이 생성되어 대화가 종료된 경우 null
+  aiMessage: string | null;
   turnCount: number;
-  remainingTurns: number;
+  // 대화가 아직 진행 중(isFinal: false)인 경우에만 값이 있고, 일정 생성이 완료된 경우 null
+  remainingTurns: number | null;
   isFinal: boolean;
-  generatedTasks: AiGeneratedTaskDto[];
+  // 아직 생성되지 않았다면 null
+  generatedTasks: AiGeneratedTaskDto[] | null;
 }
 
 // POST /api/v1/ai/sessions/{sessionId}/confirm — AI 세션 확정 일정 캘린더 반영 응답

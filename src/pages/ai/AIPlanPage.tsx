@@ -12,6 +12,7 @@ import Toast from "../../components/common/Toast";
 import { AlertIcon, CheckIcon } from "../../assets/icons";
 import type { Plan } from "../../components/common/PlanCard";
 import {
+  getAiConfirmErrorMessage,
   toPlan,
   toPlanFromConfirmedTask,
   toUpdateAiTaskRequest,
@@ -58,10 +59,10 @@ function formatTime(date: Date) {
 
 interface AiPlanLocationState {
   initialMessage?: string;
-  aiMessage?: string;
-  generatedTasks?: AiGeneratedTaskDto[];
+  aiMessage?: string | null;
+  generatedTasks?: AiGeneratedTaskDto[] | null;
   turnCount?: number;
-  remainingTurns?: number;
+  remainingTurns?: number | null;
 }
 
 interface InitialChatState {
@@ -77,11 +78,11 @@ function buildInitialStateFromSeed(state: AiPlanLocationState): InitialChatState
   if (state.initialMessage) {
     messages.push({ id: messages.length + 1, me: true, text: state.initialMessage, time: now });
   }
-  if (state.aiMessage) {
+  if (state.aiMessage || state.generatedTasks?.length) {
     messages.push({
       id: messages.length + 1,
       me: false,
-      text: state.aiMessage,
+      text: state.aiMessage ?? "일정을 생성했어요.",
       plans: (state.generatedTasks ?? []).map(toPlan),
       time: now,
     });
@@ -218,15 +219,15 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       {
         onSuccess: (data) => {
           setTurnCount(data.turnCount);
-          setRemainingTurns(data.remainingTurns);
+          setRemainingTurns(data.remainingTurns ?? 0);
           setIsFinal(data.isFinal);
           setMessages((prev) => [
             ...prev,
             {
               id: prev.length + 1,
               me: false,
-              text: data.aiMessage,
-              plans: data.generatedTasks.map(toPlan),
+              text: data.aiMessage ?? "일정을 생성했어요.",
+              plans: (data.generatedTasks ?? []).map(toPlan),
               time: formatTime(new Date()),
             },
           ]);
@@ -242,6 +243,9 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       onSuccess: () => {
         setIsConfirmed(true);
         navigate(ROUTES.HOME, { replace: true });
+      },
+      onError: (error) => {
+        console.error("AI 일정 확정 실패:", getAiConfirmErrorMessage(error), error);
       },
     });
   };
@@ -370,7 +374,7 @@ export default function AIPlanPage() {
   const location = useLocation();
   const { sessionId } = useParams<{ sessionId: string }>();
   const state = (location.state as AiPlanLocationState | null) ?? {};
-  const hasSeedData = Boolean(state.aiMessage);
+  const hasSeedData = Boolean(state.aiMessage) || Boolean(state.generatedTasks?.length);
 
   const sessionQuery = useAiSessionQuery(
     !hasSeedData && sessionId ? sessionId : undefined,
