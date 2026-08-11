@@ -6,6 +6,7 @@ import Button from "../common/Button";
 import ConfirmModal from "../common/ConfirmModal";
 import { XLgIcon } from "../../assets/icons";
 import { logoutCurrentSession } from "../../auth/logoutCurrentSession";
+import { clearAuthSession } from "../../auth/authSession";
 import { ROUTES } from "../../constants/routes";
 import { useMyProfileQuery, useWithdrawMutation } from "../../hooks/useAccount";
 
@@ -227,8 +228,11 @@ export default function SideMenu({
           onConfirm={() => {
             withdraw.mutate(undefined, {
               onSuccess: () => {
+                clearAuthSession();
+                queryClient.clear();
                 setShowWithdrawConfirm(false);
-                go(ROUTES.LOGIN);
+                onClose();
+                navigate(ROUTES.LOGIN, { replace: true });
               },
             });
           }}
