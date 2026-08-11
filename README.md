@@ -40,7 +40,6 @@ React + TypeScript + Vite 기반으로 제작된 소상공인 폐업 지원 서�
 - Tanstack Query
 - Zustand
 - Naver Maps API
-- MSW(Mock Service Worker)
 
 ---
 
@@ -71,14 +70,6 @@ src/
 │
 ├── hooks/
 │
-├── mocks/
-│   ├── ai/
-│   ├── home/
-│   ├── inquiry/
-│   ├── msw/
-│   ├── support/
-│   └── used/
-│
 ├── pages/
 │   ├── account/
 │   ├── ai/
@@ -104,7 +95,7 @@ src/
 └── main.tsx
 ```
 
-> `mocks/msw`는 MSW는 핸들러·인메모리 DB, 그 외 `mocks/` 하위 폴더는 도메인별 목업 데이터입니다. `stores/`는 Zustand 스토어가 위치합니다.
+> `stores/`는 Zustand 스토어가 위치합니다.
 
 ---
 
