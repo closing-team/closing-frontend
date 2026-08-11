@@ -23,6 +23,34 @@ import {
 const CHAT_POLL_INTERVAL = 3_000;
 const CHAT_LIST_SIZE = 20;
 const CHAT_MESSAGE_SIZE = 100;
+const MAX_POLL_FAILURES = 5;
+
+// query-core는 fetch가 시작될 때마다 state.fetchFailureCount를 0으로 되돌리기
+// 때문에(fetchState), retry를 끈 폴링에서는 이 값이 1을 넘지 못해 임계치 판정에
+// 쓸 수 없다. 연속 실패 횟수를 직접 세고, 마운트/포커스 재조회로도 초기화되지
+// 않도록 모듈 스코프에 보관한다.
+const pollFailures = new Map<string, number>();
+
+async function countPollResult<T>(
+  key: string,
+  run: () => Promise<T>,
+): Promise<T> {
+  try {
+    const result = await run();
+    pollFailures.set(key, 0);
+    return result;
+  } catch (error) {
+    pollFailures.set(key, (pollFailures.get(key) ?? 0) + 1);
+    throw error;
+  }
+}
+
+function pollUnlessFailing(key: string) {
+  return () =>
+    (pollFailures.get(key) ?? 0) >= MAX_POLL_FAILURES
+      ? false
+      : CHAT_POLL_INTERVAL;
+}
 
 export const chatKeys = {
   all: ["chat"] as const,
@@ -55,17 +83,19 @@ export function useChatRoomsQuery() {
 
   return useQuery({
     queryKey: chatKeys.rooms(),
-    queryFn: async (): Promise<ChatRoomSummary[]> => {
-      const data = await getChatRooms({ size: CHAT_LIST_SIZE });
-      data.chatRooms.forEach((room) => {
-        queryClient.setQueryData<ChatRoomDetail>(
-          chatKeys.room(room.chatRoomId),
-          chatRoomDtoToDetail(room),
-        );
-      });
-      return data.chatRooms.map((room) => chatRoomDtoToSummary(room));
-    },
-    refetchInterval: CHAT_POLL_INTERVAL,
+    queryFn: () =>
+      countPollResult("rooms", async (): Promise<ChatRoomSummary[]> => {
+        const data = await getChatRooms({ size: CHAT_LIST_SIZE });
+        data.chatRooms.forEach((room) => {
+          queryClient.setQueryData<ChatRoomDetail>(
+            chatKeys.room(room.chatRoomId),
+            chatRoomDtoToDetail(room),
+          );
+        });
+        return data.chatRooms.map((room) => chatRoomDtoToSummary(room));
+      }),
+    refetchInterval: pollUnlessFailing("rooms"),
+    retry: false,
   });
 }
 
@@ -92,14 +122,18 @@ export function useChatRoomQuery(chatRoomId: number) {
 export function useChatMessagesQuery(chatRoomId: number) {
   return useQuery({
     queryKey: chatKeys.messages(chatRoomId),
-    queryFn: async (): Promise<ChatMessage[]> => {
-      const data = await getChatMessages(chatRoomId, { size: CHAT_MESSAGE_SIZE });
-      return data.messages.map((message) =>
-        chatMessageDtoToMessage(chatRoomId, message),
-      );
-    },
+    queryFn: () =>
+      countPollResult(`messages:${chatRoomId}`, async (): Promise<ChatMessage[]> => {
+        const data = await getChatMessages(chatRoomId, {
+          size: CHAT_MESSAGE_SIZE,
+        });
+        return data.messages.map((message) =>
+          chatMessageDtoToMessage(chatRoomId, message),
+        );
+      }),
     enabled: Number.isInteger(chatRoomId) && chatRoomId > 0,
-    refetchInterval: CHAT_POLL_INTERVAL,
+    refetchInterval: pollUnlessFailing(`messages:${chatRoomId}`),
+    retry: false,
   });
 }
 
