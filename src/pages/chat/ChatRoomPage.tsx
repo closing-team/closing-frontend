@@ -127,6 +127,8 @@ function ChatRoomView({
                   <img
                     src={room.partnerAvatarUrl}
                     alt={`${room.partnerNickname} 프로필 이미지`}
+                    loading="lazy"
+                    decoding="async"
                     className="h-8 w-8 shrink-0 rounded-full object-cover shadow-[0_5.333px_24.889px_0_rgba(0,0,0,0.08)]"
                   />
                 ) : (
@@ -157,6 +159,8 @@ function ChatRoomView({
                             <img
                               src={message.content}
                               alt="채팅 이미지"
+                              loading="lazy"
+                              decoding="async"
                               className="max-w-full rounded"
                             />
                             {message.caption && <span>{message.caption}</span>}

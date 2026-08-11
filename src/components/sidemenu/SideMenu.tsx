@@ -114,6 +114,8 @@ export default function SideMenu({
               <img
                 src={profile?.profileImageUrl || packageCircle}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover"
               />
             </div>
