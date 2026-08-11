@@ -21,12 +21,12 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateProfile = useUpdateProfileMutation();
 
-  const [nickname, setNickname] = useState(profile.nickname);
+  const [nickname, setNickname] = useState(profile.nickname ?? "");
   const [businessNumber, setBusinessNumber] = useState(profile.businessNumber ?? "");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  const isDirty = nickname !== profile.nickname || selectedImage !== null;
+  const isDirty = nickname !== (profile.nickname ?? "") || selectedImage !== null;
 
   const previewUrl = useMemo(
     () => (selectedImage ? URL.createObjectURL(selectedImage) : null),
@@ -108,17 +108,29 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
       <div className="flex flex-col gap-5 px-4">
         <TextField
           label="닉네임"
+          placeholder="닉네임을 입력해 주세요"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           onClear={() => setNickname("")}
         />
 
-        <TextField label="이름" value={profile.name} disabled />
+        <TextField
+          label="이름"
+          placeholder="등록된 이름이 없어요"
+          value={profile.name ?? ""}
+          disabled
+        />
 
-        <TextField label="전화번호" value={profile.phone} disabled />
+        <TextField
+          label="전화번호"
+          placeholder="등록된 전화번호가 없어요"
+          value={profile.phone ?? ""}
+          disabled
+        />
 
         <VerifyField
           label="사업자 등록 번호"
+          placeholder="000-00-00000 ('-' 제외 입력)"
           value={businessNumber}
           onChange={setBusinessNumber}
           onVerify={handleReverify}
