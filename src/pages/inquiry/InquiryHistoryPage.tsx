@@ -18,7 +18,7 @@ export default function InquiryHistoryPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-white pb-28">
+    <div className="min-h-dvh bg-white pb-28">
       <TopBar title="나의 문의내역" onBack={() => navigate(-1)} />
       {isLoading ? (
         <InquiryHistorySkeleton />

@@ -247,7 +247,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-dvh flex-col bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
       <div className="flex flex-1 flex-col gap-[10px] overflow-y-auto px-4 pt-5 pb-52">
@@ -334,6 +334,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       {deletingPlan && (
         <DeletePlanModal
           plan={deletingPlan}
+          isPending={deleteTask.isPending}
           onCancel={() => setDeletingPlan(null)}
           onConfirm={handleConfirmDelete}
         />
@@ -342,6 +343,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       {editingPlan && (
         <EditPlanModal
           plan={editingPlan}
+          isPending={updateTask.isPending}
           onCancel={() => setEditingPlan(null)}
           onConfirm={handleConfirmEdit}
         />
@@ -353,7 +355,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
 function AIPlanFallback({ message }: { message: string }) {
   const navigate = useNavigate();
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-dvh flex-col bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
       <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
         <p className="text-body-2 text-gray-500">{message}</p>
@@ -392,7 +394,7 @@ export default function AIPlanPage() {
 
   if (sessionQuery.isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-dvh flex-col bg-white">
         <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
         <AIPlanSkeleton />
       </div>
@@ -410,7 +412,7 @@ export default function AIPlanPage() {
   if ("confirmedTasks" in data) {
     const confirmedPlans = data.confirmedTasks.map(toPlanFromConfirmedTask);
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-dvh flex-col bg-white">
         <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
         <div className="flex flex-1 flex-col gap-4 px-4 pt-5 pb-8">
           <Toast

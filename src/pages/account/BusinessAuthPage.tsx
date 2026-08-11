@@ -57,7 +57,7 @@ export default function BusinessAuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-44">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar title="사업자 인증" onBack={() => navigate(-1)} />
 
       <div className="flex flex-col gap-6 px-4 py-5">

@@ -55,7 +55,7 @@ export default function UsedDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-dvh bg-white">
         <TopBar title="상품 상세" onBack={() => navigate(ROUTES.USED)} />
         <ProductDetailSkeleton />
       </div>
@@ -64,7 +64,7 @@ export default function UsedDetailPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-dvh bg-white">
         <TopBar title="상품 상세" onBack={() => navigate(ROUTES.USED)} />
         <p className="px-4 pt-10 text-center text-body-2 text-gray-400">
           상품을 찾을 수 없습니다.
@@ -95,7 +95,7 @@ export default function UsedDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar
         onBack={() => navigate(-1)}
         right={

@@ -46,7 +46,7 @@ export default function UsedMyProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-24">
+    <div className="min-h-dvh bg-gray-30 pb-24">
       <TopBar title="나의 판매물품" onBack={() => navigate(-1)} />
 
       <div className="flex gap-1.5 overflow-x-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

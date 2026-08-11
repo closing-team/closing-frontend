@@ -69,7 +69,7 @@ export default function GuideListPage() {
     (location.state as { from?: string } | null)?.from === "ai";
 
   return (
-    <div className={`min-h-screen bg-gray-30 ${isFromAI ? "" : "pb-24"}`}>
+    <div className={`min-h-dvh bg-gray-30 ${isFromAI ? "" : "pb-24"}`}>
       <TopBar
         title="사장님 폐업 가이드"
         bordered={false}

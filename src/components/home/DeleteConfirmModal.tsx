@@ -7,6 +7,7 @@ interface DeleteConfirmModalProps {
   plan: Plan;
   onCancel: () => void;
   onConfirm: () => void;
+  isPending?: boolean;
 }
 
 function Chip({ children }: { children: ReactNode }) {
@@ -21,11 +22,13 @@ export default function DeleteConfirmModal({
   plan,
   onCancel,
   onConfirm,
+  isPending = false,
 }: DeleteConfirmModalProps) {
   return (
     <ConfirmModal
       title="일정을 완전히 삭제할까요?"
       confirmLabel="삭제"
+      confirmDisabled={isPending}
       onCancel={onCancel}
       onConfirm={onConfirm}
     >

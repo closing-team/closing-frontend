@@ -37,7 +37,7 @@ export default function SupportDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
         <SupportDetailSkeleton />
       </div>
@@ -46,7 +46,7 @@ export default function SupportDetailPage() {
 
   if (!detail) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
         <p className="px-4 py-10 text-center text-body-2 text-gray-500">
           존재하지 않는 공고입니다.
@@ -73,7 +73,7 @@ export default function SupportDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-6">
+    <div className="min-h-dvh bg-gray-30 pb-6">
       <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
 
       <div className="relative mx-4 mt-5 overflow-hidden rounded-xl bg-white">

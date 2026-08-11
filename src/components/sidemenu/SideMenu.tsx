@@ -116,6 +116,10 @@ export default function SideMenu({
                 alt=""
                 loading="lazy"
                 decoding="async"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = packageCircle;
+                }}
                 className="h-full w-full object-cover"
               />
             </div>

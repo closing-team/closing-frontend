@@ -81,7 +81,7 @@ export default function UsedSearchResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       {isCategoryMode ? (
         <>
           <TopBar

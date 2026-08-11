@@ -10,9 +10,14 @@ import type { TimeValue } from "../common/TimeWheel";
 interface AddPlanModalProps {
   onCancel: () => void;
   onConfirm: (plan: Plan, memo: string) => void;
+  isPending?: boolean;
 }
 
-export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps) {
+export default function AddPlanModal({
+  onCancel,
+  onConfirm,
+  isPending = false,
+}: AddPlanModalProps) {
   const today = new Date();
   const [title, setTitle] = useState("");
   const [startDate, setStartDate] = useState<Date>(today);
@@ -101,6 +106,7 @@ export default function AddPlanModal({ onCancel, onConfirm }: AddPlanModalProps)
             variant="primary"
             size="lg"
             fullWidth
+            disabled={isPending}
             onClick={() =>
               onConfirm(
                 { id: Date.now(), title, startDate, startTime, endDate, endTime },

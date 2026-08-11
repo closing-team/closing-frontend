@@ -65,7 +65,7 @@ export default function UsedListPage() {
   const showSkeleton = isLoading || showLocationModal;
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar
         title="중고거래"
         bordered={false}

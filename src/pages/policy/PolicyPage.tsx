@@ -404,7 +404,7 @@ export default function PolicyPage() {
   );
 
   return (
-    <div className="min-h-screen bg-white pb-8">
+    <div className="min-h-dvh bg-white pb-8">
       <TopBar title="약관 및 정책" onBack={() => navigate(-1)} />
 
       <Tabs

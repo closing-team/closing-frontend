@@ -23,7 +23,7 @@ export default function ChatListPage() {
   const sortedRooms = sortRoomsByLatestMessage(roomsQuery.data ?? []);
 
   return (
-    <main className="flex min-h-screen flex-col bg-white">
+    <main className="flex min-h-dvh flex-col bg-white">
       <TopBar title="채팅" onBack={() => navigate(ROUTES.HOME)} />
 
       <section className="mt-4 flex flex-1 flex-col" aria-label="채팅 목록">

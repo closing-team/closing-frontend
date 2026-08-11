@@ -270,7 +270,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar
         logo
         bordered={false}
@@ -362,6 +362,7 @@ export default function HomePage() {
 
       {isAddingPlan && (
         <AddPlanModal
+          isPending={createMutation.isPending}
           onCancel={() => setIsAddingPlan(false)}
           onConfirm={(plan, memo) => {
             createMutation.mutate(toTaskRequest(plan, memo));
@@ -373,6 +374,7 @@ export default function HomePage() {
       {isEditing && selectedPlanWithMemo && (
         <EditPlanModal
           plan={selectedPlanWithMemo}
+          isPending={updateMutation.isPending}
           onCancel={() => setIsEditing(false)}
           onConfirm={(updated, memo) => {
             updateMutation.mutate({
@@ -389,6 +391,7 @@ export default function HomePage() {
       {isDeleting && selectedPlan && (
         <DeleteConfirmModal
           plan={selectedPlan}
+          isPending={deleteMutation.isPending}
           onCancel={() => setIsDeleting(false)}
           onConfirm={() => {
             deleteMutation.mutate(Number(selectedPlan.id));
