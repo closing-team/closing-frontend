@@ -76,6 +76,8 @@ export default function InquiryHistoryItem({
                   key={`${url}-${index}`}
                   src={url}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="size-[70px] shrink-0 rounded-lg object-cover"
                 />
               ))}

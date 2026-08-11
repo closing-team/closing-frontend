@@ -31,6 +31,8 @@ export default function ChatCard({ room, onSelect }: ChatCardProps) {
           <img
             src={room.productImageUrl}
             alt={`${room.productName} 상품 이미지`}
+            loading="lazy"
+            decoding="async"
             className="absolute left-0 top-0 h-[58px] w-[58px] rounded-lg object-cover"
           />
         ) : (
@@ -46,6 +48,8 @@ export default function ChatCard({ room, onSelect }: ChatCardProps) {
           <img
             src={room.partnerAvatarUrl}
             alt={`${room.partnerNickname} 프로필 이미지`}
+            loading="lazy"
+            decoding="async"
             className="absolute left-[30px] top-[30px] h-9 w-9 rounded-full border-2 border-white object-cover shadow-[0_6px_28px_0_rgba(0,0,0,0.08)]"
           />
         ) : (
