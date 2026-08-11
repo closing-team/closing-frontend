@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ImageIcon } from "../../assets/icons";
 import { formatPriceLabel } from "../../utils/formatPrice";
 
@@ -14,6 +15,8 @@ export default function ProductBanner({
   price,
   onClick,
 }: ProductBannerProps) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <button
       type="button"
@@ -22,12 +25,13 @@ export default function ProductBanner({
       className="flex w-full items-center gap-3 self-stretch bg-gray-30 p-4 text-left"
     >
       <div className="h-9 w-9 shrink-0 overflow-hidden rounded bg-gray-200">
-        {imageUrl ? (
+        {imageUrl && !imageError ? (
           <img
             src={imageUrl}
             alt={title}
             loading="lazy"
             decoding="async"
+            onError={() => setImageError(true)}
             className="h-full w-full object-cover"
           />
         ) : (
