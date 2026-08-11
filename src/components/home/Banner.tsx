@@ -112,14 +112,25 @@ function ProgressBanner({ completed, total }: BannerProps) {
 
 export default function Banner({ completed, total }: BannerProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const hasSchedule = total > 0;
 
   useEffect(() => {
+    if (!hasSchedule) return;
+
     const id = setInterval(() => {
       setActiveIndex((prev) => (prev === 0 ? 1 : 0));
     }, ROTATE_INTERVAL_MS);
 
     return () => clearInterval(id);
-  }, []);
+  }, [hasSchedule]);
+
+  if (!hasSchedule) {
+    return (
+      <div className="mx-4" style={{ height: "148px" }}>
+        <PromoBanner />
+      </div>
+    );
+  }
 
   return (
     <div className="relative mx-4" style={{ height: "148px" }}>
