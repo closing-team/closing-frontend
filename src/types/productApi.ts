@@ -123,7 +123,7 @@ export interface GetProductDetailParams {
   longitude?: number;
 }
 
-// POST /api/v1/products — 상품 등록 요청/응답
+// POST /api/v1/products — 상품 등록 요청과 응답
 export interface CreateProductRequestJson {
   title: string;
   businessCategory: string;
@@ -143,7 +143,7 @@ export interface CreateProductResponseData {
   createdAt: string;
 }
 
-// PUT /api/v1/products/{productId} — 상품 수정 요청/응답
+// PUT /api/v1/products/{productId} — 상품 수정 요청과 응답
 export interface UpdateProductRequestJson {
   title: string;
   businessCategory: string;
@@ -170,7 +170,7 @@ export interface UpdateProductResponseData {
   updatedAt: string;
 }
 
-// PATCH /api/v1/products/{productId}/status — 상품 상태 변경 요청/응답
+// PATCH /api/v1/products/{productId}/status — 상품 상태 변경 요청과 응답
 export interface UpdateProductStatusRequestJson {
   status: ProductStatusCode;
 }
@@ -181,7 +181,7 @@ export interface UpdateProductStatusResponseData {
   updatedAt: string;
 }
 
-// POST/DELETE /api/v1/products/{productId}/bookmark — 상품 찜 등록/취소 응답
+// POST, DELETE /api/v1/products/{productId}/bookmark — 상품 찜 등록과 취소 응답
 export interface ProductBookmarkResponseData {
   productId: number;
   bookmarked: boolean;

@@ -24,7 +24,6 @@ import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 export default function UsedListPage() {
   const navigate = useNavigate();
 
-  const authenticated = useUsedStore((s) => s.authenticated);
   const location = useUsedStore((s) => s.location);
   const {
     locationGranted,
@@ -58,14 +57,14 @@ export default function UsedListPage() {
   );
 
   const handleWrite = () => {
-    navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
+    navigate(ROUTES.USED_WRITE);
   };
 
   const isEmpty = visibleProducts.length === 0;
   const showSkeleton = isLoading || showLocationModal;
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar
         title="중고거래"
         bordered={false}

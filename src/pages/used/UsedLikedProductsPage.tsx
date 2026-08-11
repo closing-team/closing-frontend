@@ -25,7 +25,7 @@ export default function UsedLikedProductsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar title="관심 물품" onBack={() => navigate(-1)} />
 
       {likedProducts.length === 0 ? (

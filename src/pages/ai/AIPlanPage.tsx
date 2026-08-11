@@ -4,6 +4,7 @@ import TopBar from "../../components/common/TopBar";
 import ChatBubble from "../../components/common/ChatBubble";
 import ChatInput from "../../components/ai/ChatInput";
 import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
+import AIPlanSkeleton from "../../components/ai/AIPlanSkeleton";
 import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/ai/DeletePlanModal";
 import EditPlanModal from "../../components/ai/EditPlanModal";
@@ -93,7 +94,7 @@ function buildInitialStateFromSeed(state: AiPlanLocationState): InitialChatState
   };
 }
 
-// GET 세션 조회 응답 중 NEW/Generated 모양만 처리 (Confirmed 모양은 상위에서 별도 화면으로 분기)
+// GET 세션 조회 응답 중 NEW와 Generated 모양만 처리, Confirmed 모양은 상위에서 별도 화면으로 분기
 function buildInitialStateFromSession(
   data: { messages: { role: string; content: string }[]; turnCount: number; remainingTurns: number } | { generatedTasks: AiGeneratedTaskDto[] },
 ): InitialChatState {
@@ -246,10 +247,10 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-dvh flex-col bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
 
-      <div className="flex flex-1 flex-col gap-[10px] overflow-y-auto px-4 pt-5 pb-40">
+      <div className="flex flex-1 flex-col gap-[10px] overflow-y-auto px-4 pt-5 pb-52">
         {messages.map((msg) => {
           if (isPlanResult(msg)) {
             return (
@@ -333,6 +334,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       {deletingPlan && (
         <DeletePlanModal
           plan={deletingPlan}
+          isPending={deleteTask.isPending}
           onCancel={() => setDeletingPlan(null)}
           onConfirm={handleConfirmDelete}
         />
@@ -341,6 +343,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       {editingPlan && (
         <EditPlanModal
           plan={editingPlan}
+          isPending={updateTask.isPending}
           onCancel={() => setEditingPlan(null)}
           onConfirm={handleConfirmEdit}
         />
@@ -352,7 +355,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
 function AIPlanFallback({ message }: { message: string }) {
   const navigate = useNavigate();
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-dvh flex-col bg-white">
       <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
       <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
         <p className="text-body-2 text-gray-500">{message}</p>
@@ -391,11 +394,9 @@ export default function AIPlanPage() {
 
   if (sessionQuery.isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-dvh flex-col bg-white">
         <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
-        <div className="flex flex-1 items-center justify-center">
-          <p className="text-body-2 text-gray-500">불러오는 중...</p>
-        </div>
+        <AIPlanSkeleton />
       </div>
     );
   }
@@ -411,7 +412,7 @@ export default function AIPlanPage() {
   if ("confirmedTasks" in data) {
     const confirmedPlans = data.confirmedTasks.map(toPlanFromConfirmedTask);
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-dvh flex-col bg-white">
         <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
         <div className="flex flex-1 flex-col gap-4 px-4 pt-5 pb-8">
           <Toast

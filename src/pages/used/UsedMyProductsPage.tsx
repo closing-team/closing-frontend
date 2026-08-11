@@ -9,7 +9,6 @@ import ProductActionSheets from "../../components/used/ProductActionSheets";
 import InfiniteScrollTrigger from "../../components/common/InfiniteScrollTrigger";
 import { PlusMdIcon } from "../../assets/icons";
 import { ROUTES, usedDetailPath, usedEditPath } from "../../constants/routes";
-import { useUsedStore } from "../../stores/usedStore";
 import { useMyProductsQuery } from "../../hooks/useProductQueries";
 import { useProductActionsSheet } from "../../hooks/useProductActionsSheet";
 import { saleStatusToStatusCode } from "../../utils/productAdapter";
@@ -19,7 +18,6 @@ type StatusFilter = "all" | SaleStatus;
 
 export default function UsedMyProductsPage() {
   const navigate = useNavigate();
-  const authenticated = useUsedStore((s) => s.authenticated);
   const actions = useProductActionsSheet();
   const [filter, setFilter] = useState<StatusFilter>("all");
 
@@ -42,11 +40,11 @@ export default function UsedMyProductsPage() {
           : counts.soldOut;
 
   const handleWrite = () => {
-    navigate(authenticated ? ROUTES.USED_WRITE : ROUTES.BUSINESS_AUTH);
+    navigate(ROUTES.USED_WRITE);
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-24">
+    <div className="min-h-dvh bg-gray-30 pb-24">
       <TopBar title="나의 판매물품" onBack={() => navigate(-1)} />
 
       <div className="flex gap-1.5 overflow-x-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -122,9 +120,12 @@ export default function UsedMyProductsPage() {
 
       <ProductActionSheets
         menuOpen={actions.menuProductId !== null}
+        currentStatus={
+          visibleProducts.find((p) => p.id === actions.menuProductId)?.status ??
+          "selling"
+        }
         deleteOpen={actions.deleteProductId !== null}
-        onChangeToReserved={() => actions.changeStatus("reserved")}
-        onChangeToCompleted={() => actions.changeStatus("completed")}
+        onChangeStatus={actions.changeStatus}
         onEdit={() => {
           const editingId = actions.menuProductId;
           actions.closeMenu();

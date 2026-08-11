@@ -1,11 +1,13 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ImageIcon } from "../../assets/icons";
 import ChatComposer from "../../components/chat/ChatComposer";
 import ProductBanner from "../../components/chat/ProductBanner";
 import ChatRoomEmptyView from "../../components/chat/ChatRoomEmptyView";
 import ChatBubble from "../../components/common/ChatBubble";
 import TopBar from "../../components/common/TopBar";
 import InvalidChatRoomPage from "./InvalidChatRoomPage";
+import ChatRoomSkeleton from "../../components/chat/ChatRoomSkeleton";
 import { usedDetailPath } from "../../constants/routes";
 import {
   useChatMessagesQuery,
@@ -66,6 +68,10 @@ function ChatRoomView({
   const shouldScrollToBottomRef = useRef(true);
   const sortedMessages = sortMessagesBySentAt(messages);
   const messageGroups = groupAdjacentMessages(sortedMessages);
+  const [avatarError, setAvatarError] = useState(false);
+  const [erroredImageMessages, setErroredImageMessages] = useState<Set<string>>(
+    new Set(),
+  );
 
   useLayoutEffect(() => {
     isNearBottomRef.current = true;
@@ -122,10 +128,13 @@ function ChatRoomView({
               className={`flex items-start gap-2 ${isMine ? "justify-end" : "justify-start"}`}
             >
               {!isMine &&
-                (room.partnerAvatarUrl ? (
+                (room.partnerAvatarUrl && !avatarError ? (
                   <img
                     src={room.partnerAvatarUrl}
                     alt={`${room.partnerNickname} 프로필 이미지`}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => setAvatarError(true)}
                     className="h-8 w-8 shrink-0 rounded-full object-cover shadow-[0_5.333px_24.889px_0_rgba(0,0,0,0.08)]"
                   />
                 ) : (
@@ -153,11 +162,24 @@ function ChatRoomView({
                       >
                         {message.type === "image" ? (
                           <span className="flex flex-col gap-2">
-                            <img
-                              src={message.content}
-                              alt="채팅 이미지"
-                              className="max-w-full rounded"
-                            />
+                            {erroredImageMessages.has(message.id) ? (
+                              <span className="flex h-32 w-32 items-center justify-center rounded bg-gray-100 text-gray-200">
+                                <ImageIcon className="h-8 w-8" />
+                              </span>
+                            ) : (
+                              <img
+                                src={message.content}
+                                alt="채팅 이미지"
+                                loading="lazy"
+                                decoding="async"
+                                onError={() =>
+                                  setErroredImageMessages(
+                                    (prev) => new Set(prev).add(message.id),
+                                  )
+                                }
+                                className="max-w-full rounded"
+                              />
+                            )}
                             {message.caption && <span>{message.caption}</span>}
                           </span>
                         ) : (
@@ -202,9 +224,7 @@ export default function ChatRoomPage() {
     return (
       <main className="flex min-h-dvh flex-col bg-white">
         <TopBar title="채팅" onBack={() => navigate(-1)} />
-        <p className="px-4 py-12 text-center text-body-2 text-gray-400">
-          채팅방을 불러오는 중입니다.
-        </p>
+        <ChatRoomSkeleton />
       </main>
     );
   }

@@ -36,7 +36,7 @@ interface PlanDateRangeProps {
   className?: string;
 }
 
-// 일정 카드의 날짜/시간 뱃지 줄 — PlanCard와 GeneratedPlanCard가 공유
+// 일정 카드의 날짜와 시간 뱃지 줄, PlanCard와 GeneratedPlanCard가 공유
 export function PlanDateRange({
   plan,
   badgeBg = "gray-30",

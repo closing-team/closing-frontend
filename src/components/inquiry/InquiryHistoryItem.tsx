@@ -1,4 +1,5 @@
-import { ChevronDownIcon, ChevronUpIcon } from "../../assets/icons";
+import { useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon, ImageIcon } from "../../assets/icons";
 import { formatDate } from "../../utils/dateFormat";
 import type { InquiryListItem } from "../../types/inquiryApi";
 
@@ -26,9 +27,10 @@ export default function InquiryHistoryItem({
   expanded,
   onToggle,
 }: InquiryHistoryItemProps) {
-  // 백엔드 응답에 별도 title 필드가 없어, content 첫 줄을 제목처럼 사용한다.
+  // 백엔드 응답에 별도 title 필드가 없어 content 첫 줄을 제목처럼 사용
   const [heading, ...rest] = inquiry.content.split("\n");
   const detail = rest.join("\n");
+  const [erroredImages, setErroredImages] = useState<Set<string>>(new Set());
 
   return (
     <div className="w-full px-4">
@@ -51,13 +53,13 @@ export default function InquiryHistoryItem({
 
           <div className="flex flex-col gap-1 px-0.5">
             <p
-              className={`text-title-3 text-gray-900 ${expanded ? "" : "truncate"}`}
+              className={`break-words text-title-3 text-gray-900 ${expanded ? "" : "truncate"}`}
             >
               {heading}
             </p>
             {detail && (
               <p
-                className={`text-body-2 text-gray-900 ${
+                className={`break-words text-body-2 text-gray-900 ${
                   expanded ? "whitespace-pre-line" : "truncate"
                 }`}
               >
@@ -67,18 +69,32 @@ export default function InquiryHistoryItem({
           </div>
         </button>
 
-        {inquiry.status === "ANSWERED" &&
+        {expanded &&
           inquiry.imageUrls &&
           inquiry.imageUrls.length > 0 && (
             <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {inquiry.imageUrls.map((url, index) => (
-                <img
-                  key={`${url}-${index}`}
-                  src={url}
-                  alt=""
-                  className="size-[70px] shrink-0 rounded-lg object-cover"
-                />
-              ))}
+              {inquiry.imageUrls.map((url, index) =>
+                erroredImages.has(url) ? (
+                  <span
+                    key={`${url}-${index}`}
+                    className="flex size-[70px] shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-200"
+                  >
+                    <ImageIcon className="h-6 w-6" />
+                  </span>
+                ) : (
+                  <img
+                    key={`${url}-${index}`}
+                    src={url}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    onError={() =>
+                      setErroredImages((prev) => new Set(prev).add(url))
+                    }
+                    className="size-[70px] shrink-0 rounded-lg object-cover"
+                  />
+                ),
+              )}
             </div>
           )}
 

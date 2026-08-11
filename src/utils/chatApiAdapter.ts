@@ -5,7 +5,7 @@ import type {
   CreatedChatRoomDto,
 } from "../types/chatApi";
 import type { SaleStatus } from "../types/used";
-import { formatTimeAgo } from "./timeAgo";
+import { formatTimeAgo, parseAsUtcIfUnspecified } from "./timeAgo";
 
 type ChatRoomHeaderDto = ChatRoomDto | CreatedChatRoomDto;
 
@@ -17,7 +17,7 @@ function toSaleStatus(status: string): SaleStatus | undefined {
 }
 
 function formatDateLabel(value: string): string {
-  const date = new Date(value);
+  const date = parseAsUtcIfUnspecified(value);
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
@@ -26,7 +26,7 @@ function formatMessageTime(value: string): string {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  }).format(new Date(value));
+  }).format(parseAsUtcIfUnspecified(value));
 }
 
 export function chatRoomDtoToSummary(

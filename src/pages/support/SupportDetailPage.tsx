@@ -6,6 +6,7 @@ import Button from "../../components/common/Button";
 import Toast from "../../components/common/Toast";
 import BookmarkButton from "../../components/support/BookmarkButton";
 import DetailSection from "../../components/support/DetailSection";
+import SupportDetailSkeleton from "../../components/support/SupportDetailSkeleton";
 import { ChevronRightIcon } from "../../assets/icons";
 import { useSupportDetailQuery } from "../../hooks/useSupportQueries";
 import {
@@ -36,15 +37,16 @@ export default function SupportDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
+        <SupportDetailSkeleton />
       </div>
     );
   }
 
   if (!detail) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
         <p className="px-4 py-10 text-center text-body-2 text-gray-500">
           존재하지 않는 공고입니다.
@@ -59,7 +61,7 @@ export default function SupportDetailPage() {
   const isExpired = post.applyEndDate !== null && post.applyEndDate < todayStr;
 
   const handleApply = () => {
-    // TODO: 외부 링크 접속 실패 시 토스트 노출 + URL 클립보드 복사 처리 필요
+    // TODO: 외부 링크 접속 실패 시 토스트 노출, URL 클립보드 복사 처리 필요
     window.open(post.externalUrl, "_blank", "noopener,noreferrer");
   };
 
@@ -71,7 +73,7 @@ export default function SupportDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-6">
+    <div className="min-h-dvh bg-gray-30 pb-6">
       <TopBar title="지원정보" onBack={() => navigate(ROUTES.SUPPORT)} />
 
       <div className="relative mx-4 mt-5 overflow-hidden rounded-xl bg-white">

@@ -12,7 +12,7 @@ import type {
 } from "../types/scheduleApi";
 
 export async function getHomeTasks(
-  yearMonth: string, // "2026-07" 형식
+  yearMonth: string,
 ): Promise<HomeTasksResponseData> {
   const res = await api.get<ApiEnvelope<HomeTasksResponseData>>(
     "/api/v1/tasks/home",

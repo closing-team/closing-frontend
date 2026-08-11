@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ImageIcon } from "../../assets/icons";
 import type { ChatRoomSummary } from "../../types/chat";
 
@@ -7,6 +8,8 @@ interface ChatCardProps {
 }
 
 export default function ChatCard({ room, onSelect }: ChatCardProps) {
+  const [productImageError, setProductImageError] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const unreadMessageLabel =
     room.unreadCount > 0 ? `읽지 않은 메시지 ${room.unreadCount}개` : null;
   const meta = [room.location, room.relativeTime].filter(Boolean).join(" · ");
@@ -27,10 +30,13 @@ export default function ChatCard({ room, onSelect }: ChatCardProps) {
       className="flex h-[99px] w-full items-center gap-3 bg-white p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
     >
       <span className="relative h-[66px] w-[66px] shrink-0">
-        {room.productImageUrl ? (
+        {room.productImageUrl && !productImageError ? (
           <img
             src={room.productImageUrl}
             alt={`${room.productName} 상품 이미지`}
+            loading="lazy"
+            decoding="async"
+            onError={() => setProductImageError(true)}
             className="absolute left-0 top-0 h-[58px] w-[58px] rounded-lg object-cover"
           />
         ) : (
@@ -42,10 +48,13 @@ export default function ChatCard({ room, onSelect }: ChatCardProps) {
             <ImageIcon className="h-6 w-6" />
           </div>
         )}
-        {room.partnerAvatarUrl ? (
+        {room.partnerAvatarUrl && !avatarError ? (
           <img
             src={room.partnerAvatarUrl}
             alt={`${room.partnerNickname} 프로필 이미지`}
+            loading="lazy"
+            decoding="async"
+            onError={() => setAvatarError(true)}
             className="absolute left-[30px] top-[30px] h-9 w-9 rounded-full border-2 border-white object-cover shadow-[0_6px_28px_0_rgba(0,0,0,0.08)]"
           />
         ) : (

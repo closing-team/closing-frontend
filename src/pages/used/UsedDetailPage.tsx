@@ -7,6 +7,8 @@ import ProductActionSheets from "../../components/used/ProductActionSheets";
 import { MenuKebabIcon, SearchIcon } from "../../assets/icons";
 import NaverMap from "../../components/used/NaverMap";
 import ProductThumbnail from "../../components/used/ProductThumbnail";
+import ProductDetailSkeleton from "../../components/used/ProductDetailSkeleton";
+import { SALE_STATUS_LABEL } from "../../utils/productAdapter";
 import { formatPriceLabel } from "../../utils/formatPrice";
 import { ROUTES, chatRoomPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
@@ -53,15 +55,16 @@ export default function UsedDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-dvh bg-white">
         <TopBar title="상품 상세" onBack={() => navigate(ROUTES.USED)} />
+        <ProductDetailSkeleton />
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-dvh bg-white">
         <TopBar title="상품 상세" onBack={() => navigate(ROUTES.USED)} />
         <p className="px-4 pt-10 text-center text-body-2 text-gray-400">
           상품을 찾을 수 없습니다.
@@ -92,7 +95,7 @@ export default function UsedDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar
         onBack={() => navigate(-1)}
         right={
@@ -135,6 +138,13 @@ export default function UsedDetailPage() {
         />
 
         <div className="flex flex-col gap-1">
+          {product.status && (
+            <span
+              className={`text-caption-1 ${product.status === "completed" ? "text-gray-400" : "text-primary-500"}`}
+            >
+              {SALE_STATUS_LABEL[product.status]}
+            </span>
+          )}
           <h1 className="text-title-3 text-gray-900">{product.title}</h1>
           <p className="text-title-2 text-gray-900">
             {formatPriceLabel(product.price)}
@@ -200,9 +210,9 @@ export default function UsedDetailPage() {
 
       <ProductActionSheets
         menuOpen={actions.menuProductId === product.id}
+        currentStatus={product.status ?? "selling"}
         deleteOpen={actions.deleteProductId === product.id}
-        onChangeToReserved={() => actions.changeStatus("reserved")}
-        onChangeToCompleted={() => actions.changeStatus("completed")}
+        onChangeStatus={actions.changeStatus}
         onEdit={() => {
           actions.closeMenu();
           navigate(usedEditPath(product.id));

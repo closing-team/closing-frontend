@@ -6,6 +6,7 @@ import Button from "../common/Button";
 import ConfirmModal from "../common/ConfirmModal";
 import { XLgIcon } from "../../assets/icons";
 import { logoutCurrentSession } from "../../auth/logoutCurrentSession";
+import { clearAuthSession } from "../../auth/authSession";
 import { ROUTES } from "../../constants/routes";
 import { useMyProfileQuery, useWithdrawMutation } from "../../hooks/useAccount";
 
@@ -111,8 +112,14 @@ export default function SideMenu({
             </div>
             <div className="h-[60px] w-[60px] shrink-0 overflow-hidden rounded-full bg-gray-100">
               <img
-                src={packageCircle}
+                src={profile?.profileImageUrl || packageCircle}
                 alt=""
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = packageCircle;
+                }}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -227,8 +234,11 @@ export default function SideMenu({
           onConfirm={() => {
             withdraw.mutate(undefined, {
               onSuccess: () => {
+                clearAuthSession();
+                queryClient.clear();
                 setShowWithdrawConfirm(false);
-                go(ROUTES.LOGIN);
+                onClose();
+                navigate(ROUTES.LOGIN, { replace: true });
               },
             });
           }}

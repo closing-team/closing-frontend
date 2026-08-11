@@ -6,18 +6,21 @@ interface DeletePlanModalProps {
   plan: Plan;
   onCancel: () => void;
   onConfirm: () => void;
+  isPending?: boolean;
 }
 
 export default function DeletePlanModal({
   plan,
   onCancel,
   onConfirm,
+  isPending = false,
 }: DeletePlanModalProps) {
   return (
     <ConfirmModal
       title="일정을 완전히 삭제할까요?"
       confirmLabel="삭제"
       cancelClassName="text-primary-500"
+      confirmDisabled={isPending}
       onCancel={onCancel}
       onConfirm={onConfirm}
     >

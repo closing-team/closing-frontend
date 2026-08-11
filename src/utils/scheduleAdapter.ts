@@ -42,20 +42,22 @@ export function toPlan(item: HomeTaskCalendarItem): Plan {
   };
 }
 
-// GET /api/v1/tasks/{taskId} 상세 조회 결과 — 홈 캘린더 목록(toPlan)엔 없는 상세 메모(description)를 포함한다.
+// 일정 상세 조회
 export function taskDetailToPlan(detail: TaskDetailDto): Plan {
   return {
     id: detail.taskId,
     title: detail.title,
     startDate: parseApiDate(detail.startDate),
-    startTime: toTimeValue(parseApiDateTime(detail.startDate, detail.startTime)),
+    startTime: toTimeValue(
+      parseApiDateTime(detail.startDate, detail.startTime),
+    ),
     endDate: parseApiDate(detail.endDate),
     endTime: toTimeValue(parseApiDateTime(detail.endDate, detail.endTime)),
     memo: detail.description,
   };
 }
 
-// 캘린더 셀 렌더링용 — 일정의 시작일 기준으로 그룹핑
+// 일정의 시작일 기준으로 그룹핑
 export function groupPlansByDate(
   items: HomeTaskCalendarItem[],
 ): Record<string, Plan[]> {
@@ -66,12 +68,16 @@ export function groupPlansByDate(
   return grouped;
 }
 
-// "오늘의 일정" 체크리스트용 — 시작일이 오늘인 일정만 추림
+// 시작일이 오늘인 일정만 추출
 export function toTodayTodos(items: HomeTaskCalendarItem[]): Todo[] {
   const todayKey = toApiDateString(new Date());
   return items
     .filter((item) => item.startDate === todayKey)
-    .map((item) => ({ id: item.taskId, text: item.title, done: item.isCompleted }));
+    .map((item) => ({
+      id: item.taskId,
+      text: item.title,
+      done: item.isCompleted,
+    }));
 }
 
 export function toTaskRequest(

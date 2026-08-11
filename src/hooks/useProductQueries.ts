@@ -107,9 +107,11 @@ export function useProductListQuery({
 
   const products = useMemo(
     () =>
-      (query.data?.pages.flatMap((page) => page.products) ?? []).map(
-        productSummaryDtoToProduct,
-      ),
+      (query.data?.pages.flatMap((page) => page.products) ?? [])
+        .map(productSummaryDtoToProduct)
+        // 목록 조회 API에 상태 필터 파라미터가 없어 예약중, 거래완료 상품이
+        // 그대로 섞여 나옴. 판매중(또는 상태 정보 없음)만 클라이언트에서 남김
+        .filter((product) => product.status !== "reserved" && product.status !== "completed"),
     [query.data],
   );
 

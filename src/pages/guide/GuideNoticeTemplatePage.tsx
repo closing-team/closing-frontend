@@ -46,7 +46,7 @@ export default function GuideNoticeTemplatePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-dvh bg-white pb-24">
       <TopBar
         title="문자/내용증명 복사용 작성 템플릿"
         onBack={() => navigate(guideDetailPath(2))}
@@ -112,7 +112,7 @@ export default function GuideNoticeTemplatePage() {
         </TipBox>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 px-4 pb-5 pt-2.5">
+      <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 border-t border-gray-100 bg-white px-4 pb-5 pt-2.5">
         <Button variant="primary" fullWidth onClick={() => navigate(guideDetailPath(2))}>
           다음으로
         </Button>

@@ -11,12 +11,14 @@ interface EditPlanModalProps {
   plan: Plan;
   onCancel: () => void;
   onConfirm: (updated: Plan, memo?: string) => void;
+  isPending?: boolean;
 }
 
 export default function EditPlanModal({
   plan,
   onCancel,
   onConfirm,
+  isPending = false,
 }: EditPlanModalProps) {
   const [title, setTitle] = useState(plan.title);
   const [startDate, setStartDate] = useState<Date>(plan.startDate);
@@ -105,6 +107,7 @@ export default function EditPlanModal({
             variant="primary"
             size="lg"
             fullWidth
+            disabled={isPending}
             onClick={() =>
               onConfirm(
                 { ...plan, title, startDate, startTime, endDate, endTime },

@@ -1,28 +1,23 @@
 export const ROUTES = {
-  // auth
   SPLASH: "/splash",
   LOGIN: "/login",
   KAKAO_CALLBACK: "/auth/kakao/callback",
   TERMS: "/terms",
 
-  // home
   HOME: "/",
-// ai
+
   AI: "/ai",
   AI_PLAN: "/ai/plan/:sessionId",
 
-  // guide
   GUIDE: "/guides",
   GUIDE_DETAIL: "/guides/:stepId",
   GUIDE_NOTICE_TEMPLATE: "/guides/2/template",
   GUIDE_REPORT_TEMPLATE: "/guides/6/template",
 
-  // support
   SUPPORT: "/supports",
   SUPPORT_BOOKMARK: "/supports/bookmark",
   SUPPORT_DETAIL: "/supports/:supportId",
 
-  // used
   USED: "/used",
   USED_DETAIL: "/used/:productId",
   USED_SEARCH: "/used/search",
@@ -32,19 +27,15 @@ export const ROUTES = {
   USED_MY: "/used/my",
   USED_LIKED: "/used/liked",
 
-  // chat
   CHAT: "/chats",
   CHAT_ROOM: "/chats/:chatRoomId",
 
-  // account
   PROFILE_EDIT: "/profile",
   BUSINESS_AUTH: "/business",
 
-  // inquiry
   INQUIRY: "/inquiry",
   INQUIRY_HISTORY: "/inquiry/history",
 
-  // policy
   POLICY: "/policy",
 } as const;
 

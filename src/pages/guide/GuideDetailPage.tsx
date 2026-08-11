@@ -175,7 +175,7 @@ function Step2Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-dvh bg-gray-30 pb-36">
       <TopBar
         title={STEP2_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -270,8 +270,7 @@ const STEP3_CHECKLIST: BulletGroup[] = [
   },
 ];
 
-// TODO: STEP1에서 입력한 희망 종료일(dueDate) 상태와 연동해서 계산하도록 변경.
-// 지금은 정적 텍스트로 하드코딩되어 있음.
+// TODO: STEP1 희망 종료일(dueDate) 상태와 연동해 계산하도록 변경. 현재는 정적 텍스트로 하드코딩
 const STEP3_DEADLINE_ROWS = [
   { label: "희망 영업 종료일 (1단계 연동)", value: "2026년 07월 15일" },
   {
@@ -286,7 +285,7 @@ function Step3Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-36">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP3_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -435,7 +434,7 @@ function Step6Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-36">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP6_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -609,7 +608,7 @@ function Step7Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-36">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP7_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -757,7 +756,7 @@ function Step8Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-dvh bg-gray-30 pb-36">
       <TopBar
         title={STEP8_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -894,7 +893,7 @@ function Step4Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP4_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -1051,7 +1050,7 @@ function Step5Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP5_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -1202,7 +1201,7 @@ function Step9Page() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-32">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar
         title={STEP9_HEADER.title}
         onBack={() => navigate(ROUTES.GUIDE)}
@@ -1324,7 +1323,7 @@ export default function GuideDetailPage() {
 
   if (!content) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="가이드" onBack={() => navigate(ROUTES.GUIDE)} />
         <p className="px-4 py-10 text-center text-body-2 text-gray-500">
           준비 중인 단계입니다.
@@ -1334,7 +1333,7 @@ export default function GuideDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-28">
+    <div className="min-h-dvh bg-gray-30">
       <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE)} />
 
       <div className="bg-white px-4 py-5">
@@ -1350,7 +1349,7 @@ export default function GuideDetailPage() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-2 bg-white px-4 py-5">
+      <div className="flex flex-col gap-2 bg-white px-4 pt-5 pb-28">
         <TextField
           label={content.inputLabel}
           placeholder={content.inputPlaceholder}

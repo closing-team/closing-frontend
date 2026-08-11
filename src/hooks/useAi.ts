@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   confirmAiSession,
   deleteAiSessionTask,
@@ -7,6 +7,7 @@ import {
   startAiSession,
   updateAiSessionTask,
 } from "../api/ai";
+import { scheduleKeys } from "./useSchedule";
 
 export function useAiSessionQuery(sessionId: string | undefined) {
   return useQuery({
@@ -35,8 +36,11 @@ export function useSendAiSessionMessageMutation() {
 }
 
 export function useConfirmAiSessionMutation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: confirmAiSession,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: scheduleKeys.homeAll() }),
   });
 }
 

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { QueryKey } from "@tanstack/react-query";
+import type { InfiniteData, QueryClient, QueryKey } from "@tanstack/react-query";
 import {
   addProductBookmark,
   createProduct,
@@ -14,7 +14,66 @@ import {
   toUpdateProductRequest,
 } from "../utils/productAdapter";
 import { productKeys } from "./useProductQueries";
-import type { DealType, SaleStatus } from "../types/used";
+import type { DealType, Product, SaleStatus } from "../types/used";
+
+interface BookmarkableItem {
+  productId: number;
+  bookmarked: boolean;
+  isBookmarked: boolean;
+}
+
+interface ProductListPage {
+  products: BookmarkableItem[];
+}
+
+function isProductListPageData(
+  data: unknown,
+): data is InfiniteData<ProductListPage> {
+  return (
+    !!data &&
+    typeof data === "object" &&
+    Array.isArray((data as { pages?: unknown }).pages)
+  );
+}
+
+function patchBookmarkFlag(data: unknown, productId: number, liked: boolean): unknown {
+  if (!isProductListPageData(data)) return data;
+  return {
+    ...data,
+    pages: data.pages.map((page) => ({
+      ...page,
+      products: page.products.map((item) =>
+        item.productId === productId
+          ? { ...item, bookmarked: liked, isBookmarked: liked }
+          : item,
+      ),
+    })),
+  };
+}
+
+function removeFromBookmarkList(data: unknown, productId: number): unknown {
+  if (!isProductListPageData(data)) return data;
+  return {
+    ...data,
+    pages: data.pages.map((page) => ({
+      ...page,
+      products: page.products.filter((item) => item.productId !== productId),
+    })),
+  };
+}
+
+function snapshotQueries(queryClient: QueryClient, queryKey: QueryKey) {
+  return [queryKey, queryClient.getQueriesData({ queryKey })] as const;
+}
+
+function restoreSnapshots(
+  queryClient: QueryClient,
+  snapshots: ReadonlyArray<readonly [QueryKey, [QueryKey, unknown][]]>,
+) {
+  snapshots.forEach(([, entries]) => {
+    entries.forEach(([queryKey, data]) => queryClient.setQueryData(queryKey, data));
+  });
+}
 
 export interface ProductFormInput {
   title: string;
@@ -35,12 +94,48 @@ function useInvalidateProductQueries() {
 }
 
 export function useToggleBookmarkMutation() {
+  const queryClient = useQueryClient();
   const invalidate = useInvalidateProductQueries();
 
   return useMutation({
     mutationFn: ({ productId, liked }: { productId: number; liked: boolean }) =>
       liked ? removeProductBookmark(productId) : addProductBookmark(productId),
-    onSuccess: (_data, { productId }) =>
+    onMutate: async ({ productId, liked }) => {
+      const nextLiked = !liked;
+      const affectedKeys = [
+        productKeys.lists(),
+        productKeys.mes(),
+        productKeys.bookmarksAll(),
+        productKeys.detail(productId),
+      ];
+      await Promise.all(
+        affectedKeys.map((queryKey) => queryClient.cancelQueries({ queryKey })),
+      );
+      const snapshots = affectedKeys.map((queryKey) =>
+        snapshotQueries(queryClient, queryKey),
+      );
+
+      queryClient.setQueryData<Product>(productKeys.detail(productId), (current) =>
+        current ? { ...current, liked: nextLiked } : current,
+      );
+      queryClient.setQueriesData({ queryKey: productKeys.lists() }, (data) =>
+        patchBookmarkFlag(data, productId, nextLiked),
+      );
+      queryClient.setQueriesData({ queryKey: productKeys.mes() }, (data) =>
+        patchBookmarkFlag(data, productId, nextLiked),
+      );
+      queryClient.setQueriesData({ queryKey: productKeys.bookmarksAll() }, (data) =>
+        nextLiked
+          ? patchBookmarkFlag(data, productId, nextLiked)
+          : removeFromBookmarkList(data, productId),
+      );
+
+      return { snapshots };
+    },
+    onError: (_error, _variables, context) => {
+      if (context) restoreSnapshots(queryClient, context.snapshots);
+    },
+    onSettled: (_data, _error, { productId }) =>
       invalidate([
         productKeys.lists(),
         productKeys.mes(),

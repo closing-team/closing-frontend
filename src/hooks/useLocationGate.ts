@@ -31,7 +31,7 @@ export function useLocationGate() {
         });
       },
       () => {
-        // 갱신 실패 시 마지막으로 알고 있던 위치를 그대로 유지한다.
+        // 갱신 실패 시 마지막으로 알고 있던 위치 유지
       },
     );
   }, [setLocation]);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
+import UnsavedChangesModal from "../../components/common/UnsavedChangesModal";
 import TextField from "../../components/common/TextField";
 import TextArea from "../../components/common/TextArea";
 import SelectField from "../../components/common/SelectField";
@@ -9,6 +10,7 @@ import Radio from "../../components/used/Radio";
 import PriceField from "../../components/used/PriceField";
 import PhotoUploader from "../../components/used/PhotoUploader";
 import type { PhotoItem } from "../../components/used/PhotoUploader";
+import UsedWriteSkeleton from "../../components/used/UsedWriteSkeleton";
 import NaverMapPicker from "../../components/used/NaverMapPicker";
 import Toast from "../../components/common/Toast";
 import type { DealType, Product } from "../../types/used";
@@ -19,8 +21,9 @@ import {
   useCreateProductMutation,
   useUpdateProductMutation,
 } from "../../hooks/useProductMutations";
+import { useMyProfileQuery } from "../../hooks/useAccount";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../constants/usedCategories";
-import { usedDetailPath } from "../../constants/routes";
+import { ROUTES, usedDetailPath } from "../../constants/routes";
 
 const DEFAULT_ADDRESS = "경기도 고양시 일산동구 장항동 32-1";
 const DEFAULT_LAT = 37.6689;
@@ -110,6 +113,7 @@ function UsedWriteForm({
   );
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
   useEffect(() => {
     if (!toastMessage) return;
@@ -118,6 +122,36 @@ function UsedWriteForm({
   }, [toastMessage]);
 
   const isSubmitting = createProduct.isPending || updateProduct.isPending;
+
+  const [initialSnapshot] = useState({
+    photosLength: photos.length,
+    title,
+    industry,
+    itemCategory,
+    price,
+    directAvailable,
+    addressDetail,
+    parcelAvailable,
+    description,
+  });
+  const isDirty =
+    photos.length !== initialSnapshot.photosLength ||
+    title !== initialSnapshot.title ||
+    industry !== initialSnapshot.industry ||
+    itemCategory !== initialSnapshot.itemCategory ||
+    price !== initialSnapshot.price ||
+    directAvailable !== initialSnapshot.directAvailable ||
+    addressDetail !== initialSnapshot.addressDetail ||
+    parcelAvailable !== initialSnapshot.parcelAvailable ||
+    description !== initialSnapshot.description;
+
+  const handleBack = () => {
+    if (isDirty) {
+      setShowUnsavedModal(true);
+      return;
+    }
+    navigate(-1);
+  };
 
   const getValidationError = (): string | null => {
     if (photos.length === 0) return "물품 사진을 최소 1장 이상 등록해주세요.";
@@ -179,10 +213,10 @@ function UsedWriteForm({
   };
 
   return (
-    <div className="min-h-screen bg-white pb-28">
+    <div className="min-h-dvh bg-white pb-28">
       <TopBar
         title={isEditMode ? "물품 수정" : "물품 등록"}
-        onBack={() => navigate(-1)}
+        onBack={handleBack}
       />
 
       <div className="px-4 pt-5">
@@ -294,31 +328,54 @@ function UsedWriteForm({
           {isEditMode ? "수정 완료" : "등록"}
         </Button>
       </div>
+
+      {showUnsavedModal && (
+        <UnsavedChangesModal
+          onCancel={() => setShowUnsavedModal(false)}
+          onConfirm={() => navigate(-1)}
+        />
+      )}
     </div>
   );
 }
 
 export default function UsedWritePage() {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { productId: productIdParam } = useParams();
   const productId = productIdParam ? Number(productIdParam) : undefined;
   const isEditMode = productId !== undefined;
 
-  const location = useUsedStore((s) => s.location);
+  const geoLocation = useUsedStore((s) => s.location);
+  const { data: profile, isLoading: isLoadingProfile } = useMyProfileQuery();
   const { data: existingProduct, isLoading: isLoadingExisting } =
-    useProductDetailQuery(productId, location);
+    useProductDetailQuery(productId, geoLocation);
 
-  if (isEditMode && isLoadingExisting) {
+  if (isLoadingProfile || (isEditMode && isLoadingExisting)) {
     return (
-      <div className="min-h-screen bg-white">
-        <TopBar title="물품 수정" onBack={() => navigate(-1)} />
+      <div className="min-h-dvh bg-white">
+        <TopBar
+          title={isEditMode ? "물품 수정" : "물품 등록"}
+          onBack={() => navigate(-1)}
+        />
+        <UsedWriteSkeleton />
       </div>
+    );
+  }
+
+  if (!(profile?.businessVerified ?? false)) {
+    return (
+      <Navigate
+        to={ROUTES.BUSINESS_AUTH}
+        replace
+        state={{ redirectTo: routerLocation.pathname }}
+      />
     );
   }
 
   if (isEditMode && !existingProduct) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-dvh bg-white">
         <TopBar title="물품 수정" onBack={() => navigate(-1)} />
         <p className="px-4 pt-10 text-center text-body-2 text-gray-400">
           상품을 찾을 수 없습니다.
@@ -333,7 +390,7 @@ export default function UsedWritePage() {
       isEditMode={isEditMode}
       productId={productId}
       existingProduct={isEditMode ? existingProduct : undefined}
-      currentLocation={location}
+      currentLocation={geoLocation}
     />
   );
 }

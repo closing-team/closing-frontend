@@ -7,7 +7,6 @@ import Button from "../../components/common/Button";
 import Callout, { CalloutItem } from "../../components/common/Callout";
 import Toast from "../../components/common/Toast";
 import { ROUTES } from "../../constants/routes";
-import { useUsedStore } from "../../stores/usedStore";
 import { useVerifyBusinessMutation } from "../../hooks/useBusiness";
 
 const DEFAULT_ERROR_MESSAGE =
@@ -19,7 +18,6 @@ export default function BusinessAuthPage() {
   const redirectTo =
     (location.state as { redirectTo?: string } | null)?.redirectTo ??
     ROUTES.USED_WRITE;
-  const setAuthenticated = useUsedStore((s) => s.setAuthenticated);
   const verifyBusiness = useVerifyBusinessMutation();
 
   const [bizNumber, setBizNumber] = useState("");
@@ -46,7 +44,6 @@ export default function BusinessAuthPage() {
         ownerName: owner.trim(),
         openDate: openedAt,
       });
-      setAuthenticated(true);
       navigate(redirectTo, { replace: true });
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
@@ -57,7 +54,7 @@ export default function BusinessAuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30">
+    <div className="min-h-dvh bg-gray-30 pb-44">
       <TopBar title="사업자 인증" onBack={() => navigate(-1)} />
 
       <div className="flex flex-col gap-6 px-4 py-5">
@@ -110,27 +107,28 @@ export default function BusinessAuthPage() {
             마켓플레이스 판매자로 활동할 수 있습니다.
           </CalloutItem>
         </Callout>
+      </div>
 
-        <div className="flex flex-col items-center gap-3 pb-5 pt-2.5">
-          {errorMessage && <Toast message={errorMessage} />}
-          <Button
-            fullWidth
-            disabled={!canSubmit || verifyBusiness.isPending}
-            onClick={handleVerify}
+      <div className="fixed bottom-0 left-1/2 z-40 flex w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 flex-col items-center gap-3 border-t border-gray-100 bg-white px-4 pb-5 pt-2.5">
+        {errorMessage && <Toast message={errorMessage} />}
+        <Button
+          fullWidth
+          disabled={!canSubmit || verifyBusiness.isPending}
+          onClick={handleVerify}
+        >
+          인증
+        </Button>
+
+        <p className="text-center text-caption-2 text-gray-400">
+          인증에 문제가 있으신가요?{" "}
+          <button
+            type="button"
+            className="text-caption-1 text-gray-500 underline"
+            onClick={() => navigate(ROUTES.INQUIRY)}
           >
-            인증
-          </Button>
-
-          <p className="text-center text-caption-2 text-gray-400">
-            인증에 문제가 있으신가요?{" "}
-            <button
-              type="button"
-              className="text-caption-1 text-gray-500 underline"
-            >
-              고객센터 문의
-            </button>
-          </p>
-        </div>
+            고객센터 문의
+          </button>
+        </p>
       </div>
     </div>
   );

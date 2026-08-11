@@ -9,7 +9,7 @@ export async function verifyBusiness(
   request: VerifyBusinessRequestJson,
 ): Promise<VerifyBusinessResponseData> {
   const res = await api.put<ApiEnvelope<VerifyBusinessResponseData>>(
-    "/api/v1/businesses",
+    "/api/v1/businesses/verify",
     request,
   );
   return res.data.data;

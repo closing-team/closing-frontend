@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import TextField from "../../components/common/TextField";
 import Button from "../../components/common/Button";
 import VerifyField from "../../components/account/VerifyField";
-import UnsavedChangesModal from "../../components/account/UnsavedChangesModal";
+import UnsavedChangesModal from "../../components/common/UnsavedChangesModal";
+import ProfileEditSkeleton from "../../components/account/ProfileEditSkeleton";
 import packageCircle from "../../assets/images/package-circle.png";
 import { PlusSmIcon } from "../../assets/icons";
 import { ROUTES } from "../../constants/routes";
@@ -20,18 +21,34 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateProfile = useUpdateProfileMutation();
 
-  const [nickname, setNickname] = useState(profile.nickname);
+  const [nickname, setNickname] = useState(profile.nickname ?? "");
   const [businessNumber, setBusinessNumber] = useState(profile.businessNumber ?? "");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  const isDirty = nickname !== profile.nickname;
+  const isDirty = nickname !== (profile.nickname ?? "") || selectedImage !== null;
+
+  const previewUrl = useMemo(
+    () => (selectedImage ? URL.createObjectURL(selectedImage) : null),
+    [selectedImage],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const handlePickImage = () => {
     fileInputRef.current?.click();
   };
 
-  const handleImageChange = () => {
-    // TODO: 스토리지 인증키 발급 후 연동
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+    }
+    e.target.value = "";
   };
 
   const handleReverify = () => {
@@ -44,7 +61,7 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
       return;
     }
     updateProfile.mutate(
-      { nickname, profileImageUrl: profile.profileImageUrl },
+      { nickname, image: selectedImage ?? undefined },
       { onSuccess: () => navigate(-1) },
     );
   };
@@ -58,14 +75,14 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-28">
+    <div className="min-h-dvh bg-gray-30 pb-28">
       <TopBar title="프로필 수정" onBack={handleBack} />
 
       <div className="flex flex-col items-center py-8">
         <div className="relative h-[90px] w-[90px]">
           <div className="h-full w-full overflow-hidden rounded-full bg-gray-200">
             <img
-              src={profile.profileImageUrl || packageCircle}
+              src={previewUrl || profile.profileImageUrl || packageCircle}
               alt=""
               className="h-full w-full object-cover"
             />
@@ -91,17 +108,29 @@ function ProfileEditForm({ profile }: ProfileEditFormProps) {
       <div className="flex flex-col gap-5 px-4">
         <TextField
           label="닉네임"
+          placeholder="닉네임을 입력해 주세요"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           onClear={() => setNickname("")}
         />
 
-        <TextField label="이름" value={profile.name} disabled />
+        <TextField
+          label="이름"
+          placeholder="등록된 이름이 없어요"
+          value={profile.name ?? ""}
+          disabled
+        />
 
-        <TextField label="전화번호" value={profile.phone} disabled />
+        <TextField
+          label="전화번호"
+          placeholder="등록된 전화번호가 없어요"
+          value={profile.phone ?? ""}
+          disabled
+        />
 
         <VerifyField
           label="사업자 등록 번호"
+          placeholder="000-00-00000 ('-' 제외 입력)"
           value={businessNumber}
           onChange={setBusinessNumber}
           onVerify={handleReverify}
@@ -137,8 +166,9 @@ export default function ProfileEditPage() {
 
   if (isLoading || !profile) {
     return (
-      <div className="min-h-screen bg-gray-30">
+      <div className="min-h-dvh bg-gray-30">
         <TopBar title="프로필 수정" onBack={() => navigate(-1)} />
+        <ProfileEditSkeleton />
       </div>
     );
   }

@@ -5,6 +5,7 @@ import TopBar from "../../components/common/TopBar";
 import Tabs from "../../components/common/Tabs";
 import Dropdown from "../../components/common/Dropdown";
 import SupportCard from "../../components/support/SupportCard";
+import SupportListSkeleton from "../../components/support/SupportListSkeleton";
 import EmptyView from "../../components/common/EmptyView";
 import SideMenu from "../../components/sidemenu/SideMenu";
 import Toast from "../../components/common/Toast";
@@ -89,8 +90,8 @@ export default function SupportListPage() {
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
 
   const sortCode = SORT_TO_CODE[sort];
-  const { posts } = useSupportListQuery(sortCode);
-  const { bookmarks } = useBookmarksQuery(sortCode);
+  const { posts, isLoading: isPostsLoading } = useSupportListQuery(sortCode);
+  const { bookmarks, isLoading: isBookmarksLoading } = useBookmarksQuery(sortCode);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   useEffect(() => {
@@ -100,6 +101,7 @@ export default function SupportListPage() {
   }, [toastMessage]);
 
   const isBookmarkTab = activeTab === "bookmark";
+  const isLoading = isBookmarkTab ? isBookmarksLoading : isPostsLoading;
   const visiblePosts = useMemo(
     () => (isBookmarkTab ? bookmarks : sortPosts(posts, sort)),
     [isBookmarkTab, bookmarks, posts, sort],
@@ -107,7 +109,7 @@ export default function SupportListPage() {
   const toggleBookmark = useSupportBookmarkToggle(visiblePosts, setToastMessage);
 
   return (
-    <div className="min-h-screen bg-gray-30 pb-24">
+    <div className="min-h-dvh bg-gray-30 pb-24">
       <TopBar
         logo
         bordered={false}
@@ -134,8 +136,7 @@ export default function SupportListPage() {
       <Tabs
         tabs={TABS}
         value={activeTab}
-        // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark)도 함께 바꿀지 여부는
-        // 아직 정해지지 않음 — 사용자와 상의 후 결정
+        // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark) 동기화 여부 미정, 논의 후 결정
         onChange={(key) => setActiveTab(key as SupportTab)}
       />
 
@@ -150,7 +151,9 @@ export default function SupportListPage() {
         />
       </div>
 
-      {visiblePosts.length === 0 ? (
+      {isLoading ? (
+        <SupportListSkeleton />
+      ) : visiblePosts.length === 0 ? (
         <EmptyView
           icon={
             <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full bg-gray-100">
