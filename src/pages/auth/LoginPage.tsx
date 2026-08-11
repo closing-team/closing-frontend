@@ -38,7 +38,7 @@ export default function LoginPage({
           <img src={logo} alt="" className="h-[70px] w-[70px]" />
           <img src={wordmark} alt="클로징" className="h-[22px] w-[60px]" />
           <p className="px-0.5 text-subtitle-1 text-gray-700">
-            혼란 없이 정리하고, 더 빠르게 다시 시작하세요.
+            폐업을 앞둔 사장님의 든든한 동행 가이드
           </p>
         </div>
 
