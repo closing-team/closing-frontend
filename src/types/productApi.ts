@@ -187,3 +187,12 @@ export interface ProductBookmarkResponseData {
   bookmarked: boolean;
   isBookmarked: boolean;
 }
+
+// PATCH /api/v1/products/me/location — 판매자 활동 지역 수정 요청과 응답
+export interface UpdateSellerLocationRequestJson {
+  location: string;
+}
+
+export interface UpdateSellerLocationResponseData {
+  location: string;
+}
