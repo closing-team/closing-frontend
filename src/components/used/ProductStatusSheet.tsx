@@ -1,16 +1,17 @@
 import Button from "../common/Button";
+import type { SaleStatus } from "../../types/used";
 
 interface ProductStatusSheetProps {
-  onChangeToReserved: () => void;
-  onChangeToCompleted: () => void;
+  currentStatus: SaleStatus;
+  onChangeStatus: (status: SaleStatus) => void;
   onEdit: () => void;
   onDelete: () => void;
   onClose: () => void;
 }
 
 export default function ProductStatusSheet({
-  onChangeToReserved,
-  onChangeToCompleted,
+  currentStatus,
+  onChangeStatus,
   onEdit,
   onDelete,
   onClose,
@@ -30,20 +31,33 @@ export default function ProductStatusSheet({
         </div>
 
         <div className="flex flex-col overflow-hidden rounded-lg bg-gray-30">
-          <button
-            type="button"
-            onClick={onChangeToReserved}
-            className="flex h-[52px] items-center justify-center gap-2.5 border-b border-gray-100 px-4 py-3 text-center text-subtitle-1 text-gray-700 active:bg-gray-100"
-          >
-            예약중으로 변경
-          </button>
-          <button
-            type="button"
-            onClick={onChangeToCompleted}
-            className="flex h-[52px] items-center justify-center gap-2.5 border-b border-gray-100 px-4 py-3 text-center text-subtitle-1 text-gray-700 active:bg-gray-100"
-          >
-            거래완료로 변경
-          </button>
+          {currentStatus === "selling" && (
+            <button
+              type="button"
+              onClick={() => onChangeStatus("reserved")}
+              className="flex h-[52px] items-center justify-center gap-2.5 border-b border-gray-100 px-4 py-3 text-center text-subtitle-1 text-gray-700 active:bg-gray-100"
+            >
+              예약중으로 변경
+            </button>
+          )}
+          {currentStatus === "reserved" && (
+            <button
+              type="button"
+              onClick={() => onChangeStatus("selling")}
+              className="flex h-[52px] items-center justify-center gap-2.5 border-b border-gray-100 px-4 py-3 text-center text-subtitle-1 text-gray-700 active:bg-gray-100"
+            >
+              판매중으로 변경
+            </button>
+          )}
+          {currentStatus !== "completed" && (
+            <button
+              type="button"
+              onClick={() => onChangeStatus("completed")}
+              className="flex h-[52px] items-center justify-center gap-2.5 border-b border-gray-100 px-4 py-3 text-center text-subtitle-1 text-gray-700 active:bg-gray-100"
+            >
+              거래완료로 변경
+            </button>
+          )}
           <button
             type="button"
             onClick={onEdit}

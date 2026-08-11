@@ -1,11 +1,12 @@
 import ProductStatusSheet from "./ProductStatusSheet";
 import DeleteProductModal from "./DeleteProductModal";
+import type { SaleStatus } from "../../types/used";
 
 interface ProductActionSheetsProps {
   menuOpen: boolean;
+  currentStatus: SaleStatus;
   deleteOpen: boolean;
-  onChangeToReserved: () => void;
-  onChangeToCompleted: () => void;
+  onChangeStatus: (status: SaleStatus) => void;
   onEdit: () => void;
   onRequestDelete: () => void;
   onCloseMenu: () => void;
@@ -15,9 +16,9 @@ interface ProductActionSheetsProps {
 
 export default function ProductActionSheets({
   menuOpen,
+  currentStatus,
   deleteOpen,
-  onChangeToReserved,
-  onChangeToCompleted,
+  onChangeStatus,
   onEdit,
   onRequestDelete,
   onCloseMenu,
@@ -28,8 +29,8 @@ export default function ProductActionSheets({
     <>
       {menuOpen && (
         <ProductStatusSheet
-          onChangeToReserved={onChangeToReserved}
-          onChangeToCompleted={onChangeToCompleted}
+          currentStatus={currentStatus}
+          onChangeStatus={onChangeStatus}
           onEdit={onEdit}
           onDelete={onRequestDelete}
           onClose={onCloseMenu}

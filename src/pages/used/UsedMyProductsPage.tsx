@@ -122,9 +122,12 @@ export default function UsedMyProductsPage() {
 
       <ProductActionSheets
         menuOpen={actions.menuProductId !== null}
+        currentStatus={
+          visibleProducts.find((p) => p.id === actions.menuProductId)?.status ??
+          "selling"
+        }
         deleteOpen={actions.deleteProductId !== null}
-        onChangeToReserved={() => actions.changeStatus("reserved")}
-        onChangeToCompleted={() => actions.changeStatus("completed")}
+        onChangeStatus={actions.changeStatus}
         onEdit={() => {
           const editingId = actions.menuProductId;
           actions.closeMenu();
