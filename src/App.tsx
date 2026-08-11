@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import DocumentMeta from "./components/common/DocumentMeta";
+import RouteFallback from "./components/common/RouteFallback";
 import { ROUTES } from "./constants/routes";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
@@ -53,7 +54,7 @@ export default function App() {
   return (
     <div className="relative mx-auto min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] bg-white shadow-sm">
       <DocumentMeta />
-      <Suspense fallback={null}>
+      <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route
             path={ROUTES.SPLASH}

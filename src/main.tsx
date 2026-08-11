@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import { frontendSessionRestore } from "./auth/frontendSessionRestore";
 import AuthBootstrap from "./components/auth/AuthBootstrap";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import { queryClient } from "./queryClient";
 import "./index.css";
 
@@ -29,9 +30,11 @@ enableMocking().then(() => {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <AuthBootstrap restoreSession={frontendSessionRestore}>
-            <App />
-          </AuthBootstrap>
+          <ErrorBoundary>
+            <AuthBootstrap restoreSession={frontendSessionRestore}>
+              <App />
+            </AuthBootstrap>
+          </ErrorBoundary>
         </BrowserRouter>
       </QueryClientProvider>
     </React.StrictMode>,
