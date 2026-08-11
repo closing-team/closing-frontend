@@ -8,14 +8,29 @@ import AuthBootstrap from "./components/auth/AuthBootstrap";
 import { queryClient } from "./queryClient";
 import "./index.css";
 
-// 백엔드 배포 전까지는 dev 환경뿐 아니라 VITE_ENABLE_MSW=true로 켠 배포본에서도
-// MSW로 전 도메인 API를 모킹한다. 백엔드 준비가 끝나면 이 플래그를 끄면 된다.
+// 예전에 MSW를 켜고 접속했던 브라우저에는 서비스 워커가 그대로 남아 요청을 계속
+// 가로챈다. 목업을 끈 상태에서는 남은 워커를 정리해 실제 응답만 오도록 한다.
+async function unregisterStaleMockWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  await Promise.all(
+    registrations
+      .filter((registration) =>
+        registration.active?.scriptURL.includes("mockServiceWorker.js"),
+      )
+      .map((registration) => registration.unregister()),
+  );
+}
+
+// 전 도메인이 실제 백엔드에 연결돼 목업이 더 이상 필요하지 않으므로 기본적으로
+// MSW를 띄우지 않는다. 다시 목업으로 확인해야 할 때만 VITE_ENABLE_MSW=true로 켠다.
 // Service Worker 등록이 드물게 응답하지 않는 환경이 있어(예: 헤드리스 브라우저),
 // 그 경우에도 앱 전체가 멈추지 않도록 타임아웃 시 렌더링을 진행시킨다.
 async function enableMocking() {
-  const shouldMock =
-    import.meta.env.DEV || import.meta.env.VITE_ENABLE_MSW === "true";
-  if (!shouldMock) return;
+  if (import.meta.env.VITE_ENABLE_MSW !== "true") {
+    await unregisterStaleMockWorker();
+    return;
+  }
   const { worker } = await import("./mocks/msw/browser");
   const timeout = new Promise<void>((resolve) => setTimeout(resolve, 3000));
   await Promise.race([
