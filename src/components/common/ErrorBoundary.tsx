@@ -36,7 +36,7 @@ export default class ErrorBoundary extends Component<
     }
 
     return (
-      <main className="flex min-h-dvh flex-col items-center justify-center gap-2 bg-white px-6 text-center">
+      <main className="relative mx-auto flex min-h-dvh w-full max-w-app min-w-[var(--container-app-min)] flex-col items-center justify-center gap-2 bg-white px-6 text-center shadow-sm">
         <div className="flex w-[172px] flex-col items-center gap-7">
           <div className="flex flex-col items-center self-stretch">
             <div className="flex aspect-square h-20 w-20 items-center justify-center p-2">
