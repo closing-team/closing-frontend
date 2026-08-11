@@ -69,7 +69,7 @@ export default function GuideListPage() {
     (location.state as { from?: string } | null)?.from === "ai";
 
   return (
-    <div className={`min-h-dvh bg-gray-30 ${isFromAI ? "" : "pb-24"}`}>
+    <div className={`min-h-dvh bg-gray-30 ${isFromAI ? "pb-8" : "pb-24"}`}>
       <TopBar
         title="사장님 폐업 가이드"
         bordered={false}
@@ -90,7 +90,7 @@ export default function GuideListPage() {
         <p className="mb-3 text-title-3 text-gray-900">단계별 가이드 목록</p>
         <div className="flex flex-col gap-3">
           {GUIDE_STEPS.map((step) => (
-            <StepCard key={step.id} step={step} />
+            <StepCard key={step.id} step={step} isFromAI={isFromAI} />
           ))}
         </div>
 
