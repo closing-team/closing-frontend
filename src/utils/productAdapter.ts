@@ -33,6 +33,12 @@ const SALE_STATUS_TO_STATUS_CODE: Record<SaleStatus, ProductStatusCode> = {
   completed: "SOLD_OUT",
 };
 
+export const SALE_STATUS_LABEL: Record<SaleStatus, string> = {
+  selling: "판매중",
+  reserved: "예약중",
+  completed: "거래완료",
+};
+
 export function tradeMethodsToDealTypes(methods: TradeMethodCode[]): DealType[] {
   return methods.map((m) => TRADE_METHOD_TO_DEAL_TYPE[m]);
 }

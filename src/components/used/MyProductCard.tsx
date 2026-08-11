@@ -2,6 +2,7 @@ import { MenuKebabIcon } from "../../assets/icons";
 import { LikeCount } from "./LikeButton";
 import ProductThumbnail from "./ProductThumbnail";
 import { formatPriceLabel } from "../../utils/formatPrice";
+import { SALE_STATUS_LABEL } from "../../utils/productAdapter";
 import type { SaleStatus } from "../../types/used";
 
 export type { SaleStatus };
@@ -17,12 +18,6 @@ interface MyProductCardProps {
   onClick?: () => void;
   onMenuClick?: () => void;
 }
-
-const STATUS_LABEL: Record<SaleStatus, string> = {
-  selling: "판매중",
-  reserved: "예약중",
-  completed: "거래완료",
-};
 
 export default function MyProductCard({
   status,
@@ -42,7 +37,7 @@ export default function MyProductCard({
     <div className="flex flex-col items-start self-stretch rounded-xl bg-white pb-3 shadow-[0_0_8px_0_rgba(159,159,162,0.02)]">
       <div className="flex h-[42px] items-center justify-between self-stretch pl-3 pr-1.5">
         <span className={`text-caption-1 ${statusColorClass}`}>
-          {STATUS_LABEL[status]}
+          {SALE_STATUS_LABEL[status]}
         </span>
         <button
           type="button"

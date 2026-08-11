@@ -8,6 +8,7 @@ import { MenuKebabIcon, SearchIcon } from "../../assets/icons";
 import NaverMap from "../../components/used/NaverMap";
 import ProductThumbnail from "../../components/used/ProductThumbnail";
 import ProductDetailSkeleton from "../../components/used/ProductDetailSkeleton";
+import { SALE_STATUS_LABEL } from "../../utils/productAdapter";
 import { formatPriceLabel } from "../../utils/formatPrice";
 import { ROUTES, chatRoomPath, usedEditPath } from "../../constants/routes";
 import { useUsedStore } from "../../stores/usedStore";
@@ -137,6 +138,13 @@ export default function UsedDetailPage() {
         />
 
         <div className="flex flex-col gap-1">
+          {product.status && (
+            <span
+              className={`text-caption-1 ${product.status === "completed" ? "text-gray-400" : "text-primary-500"}`}
+            >
+              {SALE_STATUS_LABEL[product.status]}
+            </span>
+          )}
           <h1 className="text-title-3 text-gray-900">{product.title}</h1>
           <p className="text-title-2 text-gray-900">
             {formatPriceLabel(product.price)}
