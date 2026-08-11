@@ -15,9 +15,9 @@ function loadNaverMapsScript(clientId: string): Promise<void> {
   }
 
   loadPromise = new Promise((resolve, reject) => {
-    // 지도 스크립트의 onload는 geocoder 같은 서브모듈이 내부적으로
-    // 비동기 추가 로드되기 전에 먼저 발생할 수 있다. 서브모듈까지
-    // 전부 준비된 시점을 알려주는 전용 callback 파라미터를 사용한다.
+    // 지도 스크립트의 onload는 geocoder 같은 서브모듈의 비동기 추가 로드보다
+    // 먼저 발생 가능. 서브모듈까지 전부 준비된 시점을 알려주는 전용 callback
+    // 파라미터 사용
     (window as unknown as Record<string, () => void>)[CALLBACK_NAME] = () => {
       resolve();
     };

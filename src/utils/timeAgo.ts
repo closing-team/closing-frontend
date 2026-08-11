@@ -2,9 +2,7 @@ const MINUTE = 60 * 1000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
-// 타임존 표기(Z 또는 +/-HH:MM)가 없는 날짜시간 문자열은 JS가 로컬 시간대로
-// 해석해버린다. 백엔드가 타임존 없이 UTC 시각을 그대로 내려주는 경우가 있어,
-// 이런 문자열은 UTC로 명시해서 파싱한다.
+// 타임존 표기가 없는 날짜시간 문자열은 UTC로 명시해서 파싱
 export function parseAsUtcIfUnspecified(isoDate: string): Date {
   const hasTimezone = /[Zz]$|[+-]\d{2}:?\d{2}$/.test(isoDate);
   const hasTime = isoDate.includes("T");

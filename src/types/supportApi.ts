@@ -35,7 +35,7 @@ export interface GetSupportsParams {
   size?: number;
 }
 
-// POST /api/v1/bookmarks — 북마크 등록 요청/응답
+// POST /api/v1/bookmarks — 북마크 등록 요청과 응답
 export interface BookmarkRequestJson {
   supportId: number;
 }

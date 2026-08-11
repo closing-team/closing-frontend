@@ -1,7 +1,7 @@
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
-// 이 컴포넌트는 첫 화면과 함께 즉시 로드되므로 아이콘 배럴(assets/icons) 대신
-// 쓰는 아이콘만 직접 가져온다. 배럴을 거치면 전체 아이콘 세트가 초기 번들에 실린다.
+// 첫 화면과 함께 즉시 로드되는 컴포넌트라 아이콘 배럴(assets/icons) 대신 쓰는
+// 아이콘만 직접 import. 배럴을 거치면 전체 아이콘 세트가 초기 번들에 포함
 import NotFoundIcon from "../../assets/icons/not-found.svg?react";
 import { ROUTES } from "../../constants/routes";
 
@@ -13,9 +13,9 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// 렌더링 중 예외가 나면 React가 트리 전체를 언마운트해 흰 화면만 남는다. 앱
-// 최상단에서 잡아 복구 수단을 보여준다. 트리가 이미 깨진 상태라 라우터 이동
-// 대신 전체를 새로 띄운다.
+// 렌더링 중 예외 발생 시 React가 트리 전체를 언마운트해 흰 화면만 남음. 앱
+// 최상단에서 잡아 복구 수단 표시. 트리가 이미 깨진 상태라 라우터 이동 대신
+// 전체 새로고침으로 복구
 export default class ErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
