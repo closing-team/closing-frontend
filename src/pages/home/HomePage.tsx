@@ -232,7 +232,7 @@ export default function HomePage() {
   const todos = toTodayTodos(calendarItems);
   const progress = {
     completed: homeData?.summary.completedCount ?? 0,
-    total: homeData?.summary.totalCount ?? 1,
+    total: homeData?.summary.totalCount ?? 0,
   };
 
   const createMutation = useCreateTaskMutation();
