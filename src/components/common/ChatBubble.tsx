@@ -4,7 +4,6 @@ interface ChatBubbleProps {
   me?: boolean;
   time?: string;
   read?: boolean;
-  avatar?: ReactNode;
   children: ReactNode;
 }
 
@@ -12,10 +11,9 @@ export default function ChatBubble({
   me = false,
   time,
   read = false,
-  avatar,
   children,
 }: ChatBubbleProps) {
-  const column = (
+  return (
     <div
       className={`flex flex-col gap-[5px] ${me ? "items-end" : "items-start"}`}
     >
@@ -36,15 +34,4 @@ export default function ChatBubble({
       )}
     </div>
   );
-
-  if (!me && avatar) {
-    return (
-      <div className="flex items-start gap-2">
-        {avatar}
-        {column}
-      </div>
-    );
-  }
-
-  return column;
 }
