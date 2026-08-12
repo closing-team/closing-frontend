@@ -131,7 +131,7 @@ export default function SideMenu({
 
           <div className="mx-5 mt-5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => go(ROUTES.PROFILE_EDIT)}
             >

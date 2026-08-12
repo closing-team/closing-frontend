@@ -76,7 +76,7 @@ function Step2Page({ isFromAI }: { isFromAI: boolean }) {
       footer={
         <div className="flex gap-2.5 px-4 pb-5 pt-2.5">
           <Button
-            variant="outline"
+            variant="secondary"
             fullWidth
             onClick={() => navigate(guideDetailPath(1), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
@@ -99,7 +99,7 @@ function Step2Page({ isFromAI }: { isFromAI: boolean }) {
               <BulletList groups={section.groups} />
               {section.templateButton && (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   fullWidth
                   className="h-11"
@@ -134,7 +134,7 @@ function Step3Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(2), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -201,7 +201,7 @@ function Step6Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(5), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -226,7 +226,7 @@ function Step6Page({ isFromAI }: { isFromAI: boolean }) {
           <div className="flex flex-col gap-4">
             <BulletList groups={STEP6_WHERE_TO_FILE} />
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               fullWidth
               className="h-11"
@@ -287,7 +287,7 @@ function Step7Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(6), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -352,7 +352,7 @@ function Step8Page({ isFromAI }: { isFromAI: boolean }) {
       footer={
         <div className="flex gap-2.5 px-4 pb-5 pt-2.5">
           <Button
-            variant="outline"
+            variant="secondary"
             fullWidth
             onClick={() => navigate(guideDetailPath(7), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
@@ -428,7 +428,7 @@ function Step4Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(3), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -511,7 +511,7 @@ function Step5Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(4), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
