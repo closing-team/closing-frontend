@@ -103,6 +103,7 @@ export default function ChatComposer({
       setFailedMessage(pendingMessage);
     } finally {
       setIsSending(false);
+      requestAnimationFrame(() => textareaRef.current?.focus());
     }
   };
 
@@ -273,7 +274,9 @@ export default function ChatComposer({
           aria-label="전송"
           disabled={!canSend || isSending}
           onClick={() => void send()}
-          className="flex h-10 w-10 shrink-0 items-center justify-center text-gray-400 disabled:cursor-not-allowed"
+          className={`flex h-10 w-10 shrink-0 items-center justify-center disabled:cursor-not-allowed ${
+            canSend && !isSending ? "text-primary-500" : "text-gray-400"
+          }`}
         >
           {canSend && !isSending ? (
             <SendEnabledIcon className="h-6 w-6 shrink-0" />
