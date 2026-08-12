@@ -1,4 +1,4 @@
-// PUT /api/v1/businesses — 사업자 인증 요청과 응답
+// PUT /api/v1/businesses/verify — 사업자 인증 요청과 응답
 export interface VerifyBusinessRequestJson {
   businessNumber: string;
   ownerName: string;
