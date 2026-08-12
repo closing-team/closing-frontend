@@ -13,16 +13,30 @@ export interface Plan {
   memo?: string;
 }
 
+type PlanDateRangeSize = "sm" | "md";
+
+const BADGE_CLASS: Record<PlanDateRangeSize, string> = {
+  sm: "rounded-[4px] px-1 py-px",
+  md: "rounded-md px-2 py-1",
+};
+
+const PAIR_GAP_CLASS: Record<PlanDateRangeSize, string> = {
+  sm: "gap-0.5",
+  md: "gap-1.5",
+};
+
 function DateBadge({
   children,
   bg,
+  size,
 }: {
   children: ReactNode;
   bg: "white" | "gray-30";
+  size: PlanDateRangeSize;
 }) {
   return (
     <span
-      className={`rounded-md px-2 py-1 text-caption-3 text-gray-400 ${bg === "white" ? "bg-white" : "bg-gray-30"}`}
+      className={`text-caption-3 text-gray-400 ${BADGE_CLASS[size]} ${bg === "white" ? "bg-white" : "bg-gray-30"}`}
     >
       {children}
     </span>
@@ -31,27 +45,42 @@ function DateBadge({
 
 interface PlanDateRangeProps {
   plan: Plan;
-  badgeBg?: "white" | "gray-30"; // 카드 배경이 white면 gray-30, 카드 배경이 gray-30이면 white로 대비를 줌
-  indent?: boolean; // 불릿(8px)+간격(8px)만큼 들여쓰기 — 제목이 불릿 옆에 있는 PlanCard 전용
+  badgeBg?: "white" | "gray-30";
+  size?: PlanDateRangeSize;
+  indent?: boolean;
   className?: string;
 }
 
-// 일정 카드의 날짜와 시간 뱃지 줄, PlanCard와 GeneratedPlanCard가 공유
 export function PlanDateRange({
   plan,
   badgeBg = "gray-30",
+  size = "md",
   indent = false,
   className = "",
 }: PlanDateRangeProps) {
+  const pairGap = PAIR_GAP_CLASS[size];
+
   return (
     <div
       className={`flex flex-wrap items-center gap-1.5 ${indent ? "pl-4" : ""} ${className}`}
     >
-      <DateBadge bg={badgeBg}>{formatDate(plan.startDate)}</DateBadge>
-      <DateBadge bg={badgeBg}>{formatTime(plan.startTime)}</DateBadge>
+      <div className={`flex items-center ${pairGap}`}>
+        <DateBadge bg={badgeBg} size={size}>
+          {formatDate(plan.startDate)}
+        </DateBadge>
+        <DateBadge bg={badgeBg} size={size}>
+          {formatTime(plan.startTime)}
+        </DateBadge>
+      </div>
       <span className="h-px w-1 shrink-0 bg-gray-500" />
-      <DateBadge bg={badgeBg}>{formatDate(plan.endDate)}</DateBadge>
-      <DateBadge bg={badgeBg}>{formatTime(plan.endTime)}</DateBadge>
+      <div className={`flex items-center ${pairGap}`}>
+        <DateBadge bg={badgeBg} size={size}>
+          {formatDate(plan.endDate)}
+        </DateBadge>
+        <DateBadge bg={badgeBg} size={size}>
+          {formatTime(plan.endTime)}
+        </DateBadge>
+      </div>
     </div>
   );
 }

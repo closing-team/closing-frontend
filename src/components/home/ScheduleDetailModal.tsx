@@ -1,9 +1,4 @@
-import {
-  XMdIcon,
-  ChevronLeftIcon,
-  PencilIcon,
-  TrashIcon,
-} from "../../assets/icons";
+import { ChevronLeftIcon, PencilIcon, TrashIcon } from "../../assets/icons";
 import { PlanDateRange } from "../common/PlanCard";
 import type { Plan } from "../common/PlanCard";
 
@@ -79,43 +74,38 @@ export default function ScheduleDetailModal({
 }: ScheduleDetailModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative flex max-h-[85vh] w-full max-w-[343px] flex-col overflow-x-hidden overflow-y-auto rounded-2xl bg-white">
-        <div className="flex items-center justify-between pl-3 pr-4 py-[14px]">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              aria-label="뒤로가기"
-              onClick={onBack}
-              className="text-gray-500"
-            >
-              <ChevronLeftIcon className="h-6 w-6" />
-            </button>
-            <p className="text-title-2 text-gray-900">
-              {date.getMonth() + 1}월 {date.getDate()}일 일정
-            </p>
-          </div>
+      <button
+        type="button"
+        aria-label="닫기"
+        onClick={onClose}
+        className="absolute inset-0 bg-black/40"
+      />
+      <div className="relative flex max-h-[85vh] w-full max-w-[343px] flex-col overflow-x-hidden overflow-y-auto rounded-xl bg-white">
+        <div className="flex h-[67px] shrink-0 items-center gap-2 border-b border-gray-100 py-[14px] pl-2 pr-3">
           <button
             type="button"
-            aria-label="닫기"
-            onClick={onClose}
-            className="text-gray-900"
+            aria-label="뒤로가기"
+            onClick={onBack}
+            className="text-gray-500"
           >
-            <XMdIcon className="h-6 w-6" />
+            <ChevronLeftIcon className="h-6 w-6" />
           </button>
+          <p className="text-title-2 text-gray-900">
+            {date.getMonth() + 1}월 {date.getDate()}일 일정
+          </p>
         </div>
 
-        <div className="rounded-b-2xl bg-gray-30 px-4 pt-4 pb-4">
+        <div className="rounded-b-xl bg-gray-30 px-4 pt-4 pb-4">
           <div className="flex items-center rounded-[6px] bg-white py-[10px] pl-4 pr-2">
             <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500" />
             <div className="ml-3 flex flex-1 flex-col">
               <p className="text-subtitle-2 text-gray-900">{plan.title}</p>
-              <PlanDateRange plan={plan} className="mt-0.5" />
+              <PlanDateRange plan={plan} size="sm" className="mt-0.5" />
             </div>
           </div>
 
           {detail && (
-            <div className="mt-6">
+            <div className="mt-6 px-1">
               <DetailSection text={detail} />
             </div>
           )}
