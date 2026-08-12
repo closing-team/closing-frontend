@@ -7,7 +7,10 @@ import Button from "../../components/common/Button";
 import Callout, { CalloutItem } from "../../components/common/Callout";
 import Toast from "../../components/common/Toast";
 import { ROUTES } from "../../constants/routes";
-import { useVerifyBusinessMutation } from "../../hooks/useBusiness";
+import {
+  useSkipBusinessVerification,
+  useVerifyBusinessMutation,
+} from "../../hooks/useBusiness";
 
 const DEFAULT_ERROR_MESSAGE =
   "인증 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
@@ -19,6 +22,7 @@ export default function BusinessAuthPage() {
     (location.state as { redirectTo?: string } | null)?.redirectTo ??
     ROUTES.USED_WRITE;
   const verifyBusiness = useVerifyBusinessMutation();
+  const skipVerification = useSkipBusinessVerification();
 
   const [bizNumber, setBizNumber] = useState("");
   const [owner, setOwner] = useState("");
@@ -124,9 +128,12 @@ export default function BusinessAuthPage() {
           <button
             type="button"
             className="text-caption-1 text-gray-500 underline"
-            onClick={() => navigate(ROUTES.INQUIRY)}
+            onClick={() => {
+              skipVerification();
+              navigate(redirectTo, { replace: true });
+            }}
           >
-            고객센터 문의
+            건너뛰기
           </button>
         </p>
       </div>
