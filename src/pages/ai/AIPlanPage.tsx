@@ -7,14 +7,15 @@ import GeneratedPlanCard from "../../components/ai/GeneratedPlanCard";
 import AIPlanSkeleton from "../../components/ai/AIPlanSkeleton";
 import Button from "../../components/common/Button";
 import DeletePlanModal from "../../components/ai/DeletePlanModal";
-import EditPlanModal from "../../components/ai/EditPlanModal";
+import PlanFormModal from "../../components/common/PlanFormModal";
 import Toast from "../../components/common/Toast";
 import { AlertIcon, CheckIcon } from "../../assets/icons";
 import type { Plan } from "../../components/common/PlanCard";
 import {
   getAiConfirmErrorMessage,
+  toConfirmedPlans,
   toPlan,
-  toPlanFromConfirmedTask,
+  toPlans,
   toUpdateAiTaskRequest,
 } from "../../utils/aiAdapter";
 import {
@@ -83,7 +84,7 @@ function buildInitialStateFromSeed(state: AiPlanLocationState): InitialChatState
       id: messages.length + 1,
       me: false,
       text: state.aiMessage ?? "일정을 생성했어요.",
-      plans: (state.generatedTasks ?? []).map(toPlan),
+      plans: toPlans(state.generatedTasks),
       time: now,
     });
   }
@@ -118,7 +119,7 @@ function buildInitialStateFromSession(
         id: 1,
         me: false,
         text: "지금까지 생성된 일정이에요",
-        plans: data.generatedTasks.map(toPlan),
+        plans: toPlans(data.generatedTasks),
         time: "",
       },
     ],
@@ -176,12 +177,12 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
     );
   };
 
-  const handleConfirmEdit = (updated: Plan, memo?: string) => {
+  const handleConfirmEdit = (updated: Plan, memo: string) => {
     updateTask.mutate(
       {
         sessionId,
         tempId: String(updated.id),
-        request: toUpdateAiTaskRequest(updated, memo ?? ""),
+        request: toUpdateAiTaskRequest(updated, memo),
       },
       {
         onSuccess: (data) => {
@@ -227,7 +228,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
               id: prev.length + 1,
               me: false,
               text: data.aiMessage ?? "일정을 생성했어요.",
-              plans: (data.generatedTasks ?? []).map(toPlan),
+              plans: toPlans(data.generatedTasks),
               time: formatTime(new Date()),
             },
           ]);
@@ -345,7 +346,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       )}
 
       {editingPlan && (
-        <EditPlanModal
+        <PlanFormModal
           plan={editingPlan}
           isPending={updateTask.isPending}
           onCancel={() => setEditingPlan(null)}
@@ -414,7 +415,7 @@ export default function AIPlanPage() {
   const data = sessionQuery.data;
 
   if ("confirmedTasks" in data) {
-    const confirmedPlans = data.confirmedTasks.map(toPlanFromConfirmedTask);
+    const confirmedPlans = toConfirmedPlans(data.confirmedTasks);
     return (
       <div className="flex min-h-dvh flex-col bg-white">
         <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
