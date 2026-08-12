@@ -27,7 +27,8 @@ function Chip({ children }: { children: ReactNode }) {
 }
 
 function DetailSection({ text }: { text: string }) {
-  type Block = { header: string; items: string[] };
+  // header가 null이면 대괄호 헤더 없이 자유롭게 입력한 일반 메모 줄들이다
+  type Block = { header: string | null; items: string[] };
 
   const blocks: Block[] = [];
   let current: Block | null = null;
@@ -38,7 +39,11 @@ function DetailSection({ text }: { text: string }) {
     if (/^\[.+\]$/.test(line)) {
       current = { header: line, items: [] };
       blocks.push(current);
-    } else if (current) {
+    } else {
+      if (!current) {
+        current = { header: null, items: [] };
+        blocks.push(current);
+      }
       current.items.push(line);
     }
   }
@@ -47,10 +52,21 @@ function DetailSection({ text }: { text: string }) {
     <>
       {blocks.map((block, bi) => (
         <div key={bi} className={bi > 0 ? "mt-7" : ""}>
-          <p className="text-caption-1 text-gray-700">{block.header}</p>
-          <div className="mt-[6px] flex flex-col gap-1">
+          {block.header && (
+            <p className="text-caption-1 text-gray-700">{block.header}</p>
+          )}
+          <div
+            className={`flex flex-col gap-1 ${block.header ? "mt-[6px]" : ""}`}
+          >
             {block.items.map((item, ii) => (
-              <p key={ii} className="text-caption-2 text-gray-500">
+              <p
+                key={ii}
+                className={
+                  block.header
+                    ? "text-caption-2 text-gray-500"
+                    : "text-body-2 text-gray-900"
+                }
+              >
                 {item}
               </p>
             ))}
