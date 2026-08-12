@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/common/TopBar";
 import Button from "../../components/common/Button";
+import Toast from "../../components/common/Toast";
 import TipBox from "../../components/guide/TipBox";
 import CopyBox from "../../components/guide/CopyBox";
 import { CheckIcon } from "../../assets/icons";
 import { guideDetailPath } from "../../constants/routes";
+
+const COPY_TOAST_MS = 1500;
 
 const TEXT_MESSAGE_TEMPLATE = `안녕하세요, 김건물 사장님.
 저는 대박카페 1호점 임차인 홍길동입니다.
@@ -22,28 +25,34 @@ const NOTICE_FORM_TEMPLATE = `수신인 : 김건물
 
 function CopyButton({
   text,
+  onCopied,
   children,
 }: {
   text: string;
+  onCopied: () => void;
   children: string;
 }) {
-  const [copied, setCopied] = useState(false);
-
   const handleClick = async () => {
     await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    onCopied();
   };
 
   return (
     <Button variant="secondary" size="sm" fullWidth className="h-11" onClick={handleClick}>
-      {copied ? "복사됨" : children}
+      {children}
     </Button>
   );
 }
 
 export default function GuideNoticeTemplatePage() {
   const navigate = useNavigate();
+  const [showCopyToast, setShowCopyToast] = useState(false);
+
+  useEffect(() => {
+    if (!showCopyToast) return;
+    const timer = window.setTimeout(() => setShowCopyToast(false), COPY_TOAST_MS);
+    return () => window.clearTimeout(timer);
+  }, [showCopyToast]);
 
   return (
     <div className="min-h-dvh bg-white pb-24">
@@ -62,7 +71,7 @@ export default function GuideNoticeTemplatePage() {
               {TEXT_MESSAGE_TEMPLATE}
             </p>
           </CopyBox>
-          <CopyButton text={TEXT_MESSAGE_TEMPLATE}>
+          <CopyButton text={TEXT_MESSAGE_TEMPLATE} onCopied={() => setShowCopyToast(true)}>
             문자 내용 복사하기
           </CopyButton>
         </div>
@@ -87,7 +96,7 @@ export default function GuideNoticeTemplatePage() {
               <p className="text-body-3 text-gray-500">2026년 07월 02일</p>
             </div>
           </CopyBox>
-          <CopyButton text={NOTICE_FORM_TEMPLATE}>
+          <CopyButton text={NOTICE_FORM_TEMPLATE} onCopied={() => setShowCopyToast(true)}>
             내용증명 서식 복사하기
           </CopyButton>
         </div>
@@ -112,7 +121,8 @@ export default function GuideNoticeTemplatePage() {
         </TipBox>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 border-t border-gray-100 bg-white px-4 pb-5 pt-2.5">
+      <div className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 flex-col gap-3 border-t border-gray-100 bg-white px-4 pb-5 pt-2.5">
+        {showCopyToast && <Toast message="복사했어요" />}
         <Button variant="primary" fullWidth onClick={() => navigate(guideDetailPath(2))}>
           다음으로
         </Button>
