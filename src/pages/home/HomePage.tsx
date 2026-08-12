@@ -44,6 +44,7 @@ import {
   assignPlanLanes,
   buildMonthCells,
   buildWeekSegments,
+  isSameDay,
   plansOnDate,
   toWeeks,
 } from "../../utils/calendarLayout";
@@ -53,14 +54,6 @@ const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 const MAX_LANES = 3;
 const LANE_HEIGHT = { collapsed: 4, expanded: 14 };
 const LANE_GAP = 2;
-
-function isSameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
 
 function WeekRow({
   week,
