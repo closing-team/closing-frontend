@@ -1,4 +1,4 @@
-import ConfirmModal from "../common/ConfirmModal";
+import ConfirmModal from "./ConfirmModal";
 
 interface UnsavedChangesModalProps {
   onCancel: () => void;

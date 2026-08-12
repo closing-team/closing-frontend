@@ -28,11 +28,6 @@ export function getLoginErrorMessage(error: unknown): string {
   }
 }
 
-export function getTermsErrorMessage(error: unknown): string {
-  void error;
-  return TEMPORARY_ERROR_MESSAGE;
-}
-
 export function getSignupErrorMessage(error: unknown): string {
   switch (getApiErrorCode(error)) {
     case "AUTH_SIGNUP_TOKEN404":
