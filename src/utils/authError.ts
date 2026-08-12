@@ -54,3 +54,12 @@ export function getLogoutErrorMessage(error: unknown): string {
       return TEMPORARY_ERROR_MESSAGE;
   }
 }
+
+export function getWithdrawErrorMessage(error: unknown): string {
+  switch (getApiErrorCode(error)) {
+    case "COMMON401":
+      return "로그인 정보가 만료되었습니다.";
+    default:
+      return TEMPORARY_ERROR_MESSAGE;
+  }
+}
