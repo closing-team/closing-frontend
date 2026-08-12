@@ -76,7 +76,7 @@ function Step2Page({ isFromAI }: { isFromAI: boolean }) {
       footer={
         <div className="flex gap-2.5 px-4 pb-5 pt-2.5">
           <Button
-            variant="outline"
+            variant="secondary"
             fullWidth
             onClick={() => navigate(guideDetailPath(1), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
@@ -99,7 +99,7 @@ function Step2Page({ isFromAI }: { isFromAI: boolean }) {
               <BulletList groups={section.groups} />
               {section.templateButton && (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   fullWidth
                   className="h-11"
@@ -134,7 +134,7 @@ function Step3Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(2), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -201,7 +201,7 @@ function Step6Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(5), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -226,7 +226,7 @@ function Step6Page({ isFromAI }: { isFromAI: boolean }) {
           <div className="flex flex-col gap-4">
             <BulletList groups={STEP6_WHERE_TO_FILE} />
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               fullWidth
               className="h-11"
@@ -287,7 +287,7 @@ function Step7Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(6), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -352,7 +352,7 @@ function Step8Page({ isFromAI }: { isFromAI: boolean }) {
       footer={
         <div className="flex gap-2.5 px-4 pb-5 pt-2.5">
           <Button
-            variant="outline"
+            variant="secondary"
             fullWidth
             onClick={() => navigate(guideDetailPath(7), isFromAI ? { state: { from: "ai" } } : undefined)}
           >
@@ -428,7 +428,7 @@ function Step4Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(3), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -511,7 +511,7 @@ function Step5Page({ isFromAI }: { isFromAI: boolean }) {
         <div className="flex flex-col gap-3 px-4 pb-5 pt-2.5">
           <div className="flex gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               fullWidth
               onClick={() => navigate(guideDetailPath(4), isFromAI ? { state: { from: "ai" } } : undefined)}
             >
@@ -701,18 +701,49 @@ export default function GuideDetailPage() {
     );
   }
 
+  return (
+    <Step1Page
+      isFromAI={isFromAI}
+      dueDate={dueDate}
+      setDueDate={setDueDate}
+    />
+  );
+}
+
+function Step1Page({
+  isFromAI,
+  dueDate,
+  setDueDate,
+}: {
+  isFromAI: boolean;
+  dueDate: string;
+  setDueDate: (value: string) => void;
+}) {
+  const navigate = useNavigate();
   const content = STEP1_CONTENT;
   const dueDateError = validateDueDate(dueDate);
 
   return (
-    <div className="min-h-dvh bg-white pb-28">
-      <TopBar title={content.title} onBack={() => navigate(ROUTES.GUIDE, isFromAI ? { state: { from: "ai" } } : undefined)} />
-
-      <div className="bg-white px-4 py-5">
-        <p className="text-title-3 text-gray-900">{content.subtitle}</p>
-        <p className="mt-1 text-body-2 text-gray-700">{content.description}</p>
-      </div>
-
+    <StepLayout
+      isFromAI={isFromAI}
+      paddingBottom="pb-28"
+      title={content.title}
+      subtitle={content.subtitle}
+      description={content.description}
+      descriptionClassName="mt-1 text-body-2 text-gray-700"
+      footer={
+        <div className="px-4 pb-5 pt-2.5">
+          <Button
+            variant="primary"
+            fullWidth
+            disabled={dueDateError !== null}
+            onClick={() => navigate(guideDetailPath(content.nextStepId), isFromAI ? { state: { from: "ai" } } : undefined)}
+          >
+            다음으로
+          </Button>
+        </div>
+      }
+    >
       <div className="flex flex-col gap-3 bg-gray-30 px-4 py-6">
         {content.sections.map((section) => (
           <SectionCard key={section.title} title={section.title} size="compact">
@@ -733,17 +764,6 @@ export default function GuideDetailPage() {
         />
         <NoteBox title={content.noteTitle} items={content.noteItems} />
       </div>
-
-      <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 border-t border-gray-100 bg-white px-4 pb-5 pt-2.5">
-        <Button
-          variant="primary"
-          fullWidth
-          disabled={dueDateError !== null}
-          onClick={() => navigate(guideDetailPath(content.nextStepId), isFromAI ? { state: { from: "ai" } } : undefined)}
-        >
-          다음으로
-        </Button>
-      </div>
-    </div>
+    </StepLayout>
   );
 }

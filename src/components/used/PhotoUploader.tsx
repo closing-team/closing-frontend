@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PlusMdIcon, XFilledIcon } from "../../assets/icons";
+import {
+  filterValidImageFiles,
+  MAX_UPLOAD_IMAGE_SIZE_MB,
+} from "../../utils/fileValidation";
 
 export type PhotoItem = { kind: "existing"; url: string } | { kind: "new"; file: File };
 
-const MAX_PHOTO_SIZE_MB = 10;
 const OVERSIZED_PHOTO_WARNING_MS = 2000;
 
 interface PhotoUploaderProps {
@@ -18,7 +21,7 @@ export default function PhotoUploader({
   items,
   onChange,
   max = 10,
-  maxSizeMB = MAX_PHOTO_SIZE_MB,
+  maxSizeMB = MAX_UPLOAD_IMAGE_SIZE_MB,
   label = "실물 사진",
 }: PhotoUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,11 +58,8 @@ export default function PhotoUploader({
     const picked = Array.from(e.target.files ?? []);
     e.target.value = "";
 
-    const valid = picked.filter(
-      (file) =>
-        file.type.startsWith("image/") && file.size <= maxSizeMB * 1024 * 1024,
-    );
-    setShowOversizedWarning(valid.length < picked.length);
+    const { valid, rejectedCount } = filterValidImageFiles(picked, { maxSizeMB });
+    setShowOversizedWarning(rejectedCount > 0);
 
     if (valid.length === 0) return;
     const selected = valid.map((file): PhotoItem => ({ kind: "new", file }));

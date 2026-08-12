@@ -1,12 +1,11 @@
-import type { ReactNode } from "react";
 import {
   XMdIcon,
   ChevronLeftIcon,
   PencilIcon,
   TrashIcon,
 } from "../../assets/icons";
+import { PlanDateRange } from "../common/PlanCard";
 import type { Plan } from "../common/PlanCard";
-import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface ScheduleDetailModalProps {
   date: Date;
@@ -18,16 +17,8 @@ interface ScheduleDetailModalProps {
   onDelete: () => void;
 }
 
-function Chip({ children }: { children: ReactNode }) {
-  return (
-    <span className="rounded-[4px] bg-gray-30 px-1 py-px text-caption-3 text-gray-400">
-      {children}
-    </span>
-  );
-}
-
 function DetailSection({ text }: { text: string }) {
-  // header가 null이면 대괄호 헤더 없이 자유롭게 입력한 일반 메모 줄들이다
+  // header가 null이면 대괄호 헤더 없이 자유롭게 입력한 일반 메모 줄들
   type Block = { header: string | null; items: string[] };
 
   const blocks: Block[] = [];
@@ -119,13 +110,7 @@ export default function ScheduleDetailModal({
             <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500" />
             <div className="ml-3 flex flex-1 flex-col">
               <p className="text-subtitle-2 text-gray-900">{plan.title}</p>
-              <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                <Chip>{formatDate(plan.startDate)}</Chip>
-                <Chip>{formatTime(plan.startTime)}</Chip>
-                <span className="h-px w-1 shrink-0 bg-gray-500" />
-                <Chip>{formatDate(plan.endDate)}</Chip>
-                <Chip>{formatTime(plan.endTime)}</Chip>
-              </div>
+              <PlanDateRange plan={plan} className="mt-0.5" />
             </div>
           </div>
 

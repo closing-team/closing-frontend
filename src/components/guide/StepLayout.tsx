@@ -11,9 +11,9 @@ interface StepLayoutProps {
   subtitle: string;
   description: string;
   descriptionClassName?: string;
-  agreed: boolean;
-  onAgreedChange: (checked: boolean) => void;
-  checkboxLabel: string;
+  agreed?: boolean;
+  onAgreedChange?: (checked: boolean) => void;
+  checkboxLabel?: string;
   footer: ReactNode;
   children: ReactNode;
 }
@@ -50,13 +50,15 @@ export default function StepLayout({
       {children}
 
       <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 border-t border-gray-100 bg-white">
-        <div className="px-4 pb-3 pt-5">
-          <Checkbox
-            checked={agreed}
-            onChange={onAgreedChange}
-            label={<span className="text-body-2 text-gray-900">{checkboxLabel}</span>}
-          />
-        </div>
+        {checkboxLabel && (
+          <div className="px-4 pb-3 pt-5">
+            <Checkbox
+              checked={agreed ?? false}
+              onChange={onAgreedChange ?? (() => {})}
+              label={<span className="text-body-2 text-gray-900">{checkboxLabel}</span>}
+            />
+          </div>
+        )}
         {footer}
       </div>
     </div>

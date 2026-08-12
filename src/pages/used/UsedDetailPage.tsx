@@ -80,13 +80,23 @@ export default function UsedDetailPage() {
   const isMine = product.isMine ?? true;
   const showDealLocation =
     product.dealTypes.includes("직거래") && product.dealLocation;
-  const existingRoom = chatRoomsData?.find(
+  const productChatRooms = (chatRoomsData ?? []).filter(
     (room) => room.productId === String(product.id),
   );
-  const hasChat = !!existingRoom;
+  const existingRoom = productChatRooms[0];
+  const hasChat = productChatRooms.length > 0;
 
   const handleChatClick = () => {
-    if (isMine || createChatRoom.isPending) return;
+    if (isMine) {
+      if (productChatRooms.length === 0) return;
+      if (productChatRooms.length === 1) {
+        navigate(chatRoomPath(existingRoom.id));
+        return;
+      }
+      navigate(ROUTES.CHAT);
+      return;
+    }
+    if (createChatRoom.isPending) return;
     createChatRoom.mutate(product.id, {
       onSuccess: (room) => {
         navigate(chatRoomPath(room.chatRoomId), { state: { room } });
@@ -190,11 +200,14 @@ export default function UsedDetailPage() {
         <Button
           fullWidth
           variant={hasChat ? "secondary" : "primary"}
-          className={hasChat ? "text-primary-500" : ""}
           onClick={handleChatClick}
-          disabled={isMine || createChatRoom.isPending}
+          disabled={isMine ? !hasChat : createChatRoom.isPending}
         >
-          {isMine ? "대화중인 채팅 0" : hasChat ? "대화중인 채팅 보기" : "구매 문의"}
+          {isMine
+            ? `대화중인 채팅 ${productChatRooms.length}`
+            : hasChat
+              ? "대화중인 채팅 보기"
+              : "구매 문의"}
         </Button>
         {!isMine && (
           <LikeButton

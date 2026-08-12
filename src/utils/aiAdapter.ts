@@ -58,7 +58,7 @@ export function toPlanFromConfirmedTask(task: AiConfirmedTaskDto): Plan {
   };
 }
 
-// generatedTasks는 아직 생성되지 않은 턴이면 null로 온다
+// generatedTasks는 아직 생성되지 않은 턴이면 null
 export function toPlans(tasks: AiGeneratedTaskDto[] | null | undefined): Plan[] {
   return (tasks ?? []).map(toPlan);
 }

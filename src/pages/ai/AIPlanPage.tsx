@@ -28,6 +28,7 @@ import {
 import { ROUTES } from "../../constants/routes";
 import cloyCircle from "../../assets/images/cloy-circle.png";
 import type { AiGeneratedTaskDto } from "../../types/aiApi";
+import { formatTime, toTimeValue } from "../../utils/dateFormat";
 
 type TextMessage = {
   id: number;
@@ -50,12 +51,8 @@ function isPlanResult(msg: Message): msg is PlanResultMessage {
   return !msg.me && "plans" in msg;
 }
 
-function formatTime(date: Date) {
-  const h = date.getHours();
-  const m = date.getMinutes();
-  const ampm = h < 12 ? "오전" : "오후";
-  const h12 = h % 12 || 12;
-  return `${ampm} ${h12}:${String(m).padStart(2, "0")}`;
+function formatNowTime(): string {
+  return formatTime(toTimeValue(new Date()));
 }
 
 interface AiPlanLocationState {
@@ -74,7 +71,7 @@ interface InitialChatState {
 }
 
 function buildInitialStateFromSeed(state: AiPlanLocationState): InitialChatState {
-  const now = formatTime(new Date());
+  const now = formatNowTime();
   const messages: Message[] = [];
   if (state.initialMessage) {
     messages.push({ id: messages.length + 1, me: true, text: state.initialMessage, time: now });
@@ -211,7 +208,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
 
     setMessages((prev) => [
       ...prev,
-      { id: prev.length + 1, me: true, text, time: formatTime(new Date()) },
+      { id: prev.length + 1, me: true, text, time: formatNowTime() },
     ]);
     setInput("");
 
@@ -229,7 +226,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
               me: false,
               text: data.aiMessage ?? "일정을 생성했어요.",
               plans: toPlans(data.generatedTasks),
-              time: formatTime(new Date()),
+              time: formatNowTime(),
             },
           ]);
         },

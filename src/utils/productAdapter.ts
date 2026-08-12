@@ -15,9 +15,17 @@ import { toBusinessCategoryCode, toProductCategoryCode } from "./productCategory
 const DEFAULT_PRODUCT_SUBMIT_ERROR_MESSAGE =
   "물품 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.";
 
+const PRODUCT_SUBMIT_ERROR_MESSAGES: Record<string, string> = {
+  PRODUCT404: "이미 삭제되었거나 존재하지 않는 물품입니다.",
+};
+
 export function getProductSubmitErrorMessage(error: unknown): string {
-  if (!axios.isAxiosError<{ message?: string }>(error)) {
+  if (!axios.isAxiosError<{ code?: string; message?: string }>(error)) {
     return DEFAULT_PRODUCT_SUBMIT_ERROR_MESSAGE;
+  }
+  const code = error.response?.data?.code;
+  if (code && PRODUCT_SUBMIT_ERROR_MESSAGES[code]) {
+    return PRODUCT_SUBMIT_ERROR_MESSAGES[code];
   }
   return error.response?.data?.message ?? DEFAULT_PRODUCT_SUBMIT_ERROR_MESSAGE;
 }
