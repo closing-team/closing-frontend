@@ -190,7 +190,6 @@ export default function UsedDetailPage() {
         <Button
           fullWidth
           variant={hasChat ? "secondary" : "primary"}
-          className={hasChat ? "text-primary-500" : ""}
           onClick={handleChatClick}
           disabled={isMine || createChatRoom.isPending}
         >
