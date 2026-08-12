@@ -262,7 +262,6 @@ export default function HomePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedPlans, setSelectedPlans] = useState<Plan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const navigate = useNavigate();
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
@@ -348,9 +347,8 @@ export default function HomePage() {
         onNext={handleNextMonth}
         plans={plans}
         onAddPlan={() => setIsAddingPlan(true)}
-        onDayClick={(date, dayPlans) => {
+        onDayClick={(date) => {
           setSelectedDate(date);
-          setSelectedPlans(dayPlans);
         }}
       />
 
@@ -383,7 +381,7 @@ export default function HomePage() {
       {selectedDate && !selectedPlan && !isAddingPlan && (
         <DayScheduleModal
           date={selectedDate}
-          plans={selectedPlans}
+          plans={plansOnDate(plans, selectedDate)}
           onClose={() => setSelectedDate(null)}
           onAdd={() => setIsAddingPlan(true)}
           onPlanClick={(plan) => setSelectedPlan(plan)}
@@ -407,6 +405,7 @@ export default function HomePage() {
 
       {isAddingPlan && (
         <PlanFormModal
+          initialDate={selectedDate ?? undefined}
           isPending={createMutation.isPending}
           onCancel={() => setIsAddingPlan(false)}
           onConfirm={(plan, memo) => {

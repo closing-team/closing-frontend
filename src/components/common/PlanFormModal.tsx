@@ -10,6 +10,8 @@ import type { TimeValue } from "./TimeWheel";
 interface PlanFormModalProps {
   // 지정하면 수정 모드(초기값을 이 일정에서 채움), 생략하면 추가 모드
   plan?: Plan;
+  // 추가 모드에서 시작/종료일 기본값으로 쓸 날짜 (예: 특정 날짜의 일정 목록에서 추가할 때). 생략하면 오늘
+  initialDate?: Date;
   onCancel: () => void;
   onConfirm: (plan: Plan, memo: string) => void;
   isPending?: boolean;
@@ -17,12 +19,13 @@ interface PlanFormModalProps {
 
 export default function PlanFormModal({
   plan,
+  initialDate,
   onCancel,
   onConfirm,
   isPending = false,
 }: PlanFormModalProps) {
   const isEdit = plan !== undefined;
-  const today = new Date();
+  const today = initialDate ?? new Date();
   const [title, setTitle] = useState(plan?.title ?? "");
   const [startDate, setStartDate] = useState<Date>(plan?.startDate ?? today);
   const [startTime, setStartTime] = useState<TimeValue>(
