@@ -3,7 +3,6 @@ import type { ChangeEvent } from "react";
 import TextField from "./TextField";
 import ScheduleRangeField from "./ScheduleRangeField";
 import Button from "./Button";
-import { XMdIcon } from "../../assets/icons";
 import type { Plan } from "./PlanCard";
 import type { TimeValue } from "./TimeWheel";
 
@@ -49,23 +48,20 @@ export default function PlanFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative max-h-[85vh] w-full max-w-[347px] overflow-x-hidden overflow-y-auto rounded-xl bg-white">
-        <div className="flex h-[60px] items-center justify-between pl-4 pr-3">
+      <button
+        type="button"
+        aria-label="닫기"
+        onClick={onCancel}
+        className="absolute inset-0 bg-black/40"
+      />
+      <div className="relative max-h-[85vh] w-full max-w-[343px] overflow-x-hidden overflow-y-auto rounded-xl bg-white">
+        <div className="flex items-center pb-4 pl-4 pr-3 pt-6">
           <p className="text-title-3 text-gray-900">
             {isEdit ? "일정 수정" : "일정 추가"}
           </p>
-          <button
-            type="button"
-            aria-label="닫기"
-            onClick={onCancel}
-            className="flex h-6 w-6 items-center justify-center text-gray-900"
-          >
-            <XMdIcon className="h-6 w-6" />
-          </button>
         </div>
 
-        <div className="px-4">
+        <div className="px-4 pb-4">
           <TextField
             label="일정 이름"
             labelSize="subtitle-2"
@@ -105,7 +101,7 @@ export default function PlanFormModal({
           </div>
         </div>
 
-        <div className="flex h-[100px] items-center gap-2 px-4 pt-8 pb-4">
+        <div className="flex items-center gap-2 p-4">
           <Button
             variant="secondary"
             size="lg"
