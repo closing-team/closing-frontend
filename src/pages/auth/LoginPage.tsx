@@ -29,13 +29,13 @@ export default function LoginPage({
         <img
           src={cloyBlur}
           alt=""
-          className="absolute left-[74.5px] top-[82px] h-[702.457px] w-[488.133px]"
+          className="absolute left-[74.5px] top-[82px] h-[702.457px] w-[488.133px] max-w-none"
         />
       </div>
 
       <section className="relative z-10 flex min-h-dvh flex-col pt-[302px] pb-8">
         <div className="flex flex-col items-start justify-center gap-5 self-stretch px-5">
-          <img src={logo} alt="" className="h-[70px] w-[70px]" />
+          <img src={logo} alt="" className="h-[70px] w-[70px] rounded-2xl" />
           <img src={wordmark} alt="클로징" className="h-[22px] w-[60px]" />
           <p className="px-0.5 text-subtitle-1 text-gray-700">
             폐업을 앞둔 사장님의 든든한 동행 가이드
