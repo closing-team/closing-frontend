@@ -26,6 +26,7 @@ import { useMyProfileQuery } from "../../hooks/useAccount";
 import { reverseGeocodeNeighborhood } from "../../utils/naverGeocoder";
 import { INDUSTRY_OPTIONS, ITEM_OPTIONS } from "../../constants/usedCategories";
 import { ROUTES, usedDetailPath } from "../../constants/routes";
+import { getProductSubmitErrorMessage } from "../../utils/productAdapter";
 
 const DEFAULT_ADDRESS = "경기도 고양시 일산동구 장항동 32-1";
 const DEFAULT_LAT = 37.6689;
@@ -219,29 +220,33 @@ function UsedWriteForm({
       lng: directAvailable ? lng : undefined,
     };
 
-    if (isEditMode && productId !== undefined) {
-      const retainedImages = photos
-        .filter((p) => p.kind === "existing")
-        .map((p) => p.url);
-      const newImages = photos
-        .filter((p) => p.kind === "new")
-        .map((p) => p.file);
+    try {
+      if (isEditMode && productId !== undefined) {
+        const retainedImages = photos
+          .filter((p) => p.kind === "existing")
+          .map((p) => p.url);
+        const newImages = photos
+          .filter((p) => p.kind === "new")
+          .map((p) => p.file);
 
-      await updateProduct.mutateAsync({
-        productId,
-        input,
-        retainedImages,
-        newImages,
-      });
+        await updateProduct.mutateAsync({
+          productId,
+          input,
+          retainedImages,
+          newImages,
+        });
+        void syncSellerLocation();
+        navigate(usedDetailPath(productId), { replace: true });
+        return;
+      }
+
+      const images = photos.filter((p) => p.kind === "new").map((p) => p.file);
+      const created = await createProduct.mutateAsync({ input, images });
       void syncSellerLocation();
-      navigate(usedDetailPath(productId), { replace: true });
-      return;
+      navigate(usedDetailPath(created.productId), { replace: true });
+    } catch (error) {
+      setToastMessage(getProductSubmitErrorMessage(error));
     }
-
-    const images = photos.filter((p) => p.kind === "new").map((p) => p.file);
-    const created = await createProduct.mutateAsync({ input, images });
-    void syncSellerLocation();
-    navigate(usedDetailPath(created.productId), { replace: true });
   };
 
   return (
