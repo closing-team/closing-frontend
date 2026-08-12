@@ -1,7 +1,7 @@
 import type { CategoryGroup } from "../types/used";
 
 export const RECOMMENDED_KEYWORD_POOL = [
-  // 주방기기/설비
+  // 주방기기 및 설비
   "쇼케이스",
   "45박스 냉장고",
   "업소용 냉장고",
@@ -18,7 +18,7 @@ export const RECOMMENDED_KEYWORD_POOL = [
   "스팀 오븐",
   "데크 오븐",
 
-  // 카페/베이커리
+  // 카페 및 베이커리
   "에스프레소 머신",
   "커피 그라인더",
   "제과 오븐",
@@ -26,7 +26,7 @@ export const RECOMMENDED_KEYWORD_POOL = [
   "믹서기",
   "쇼케이스 냉장고",
 
-  // 홀 가구/인테리어
+  // 홀 가구 및 인테리어
   "카페 의자",
   "업소용 테이블",
   "접이식 테이블",
@@ -38,7 +38,7 @@ export const RECOMMENDED_KEYWORD_POOL = [
   "진열대",
   "선반",
 
-  // 사무/IT 장비
+  // 사무 및 IT 장비
   "POS기",
   "키오스크",
   "카드 단말기",

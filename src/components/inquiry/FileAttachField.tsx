@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { PlusMdIcon, XMdIcon } from "../../assets/icons";
+import {
+  filterValidImageFiles,
+  MAX_UPLOAD_IMAGE_SIZE_MB,
+} from "../../utils/fileValidation";
+
+const OVERSIZED_FILE_WARNING_MS = 2000;
 
 interface FileAttachFieldProps {
   files: File[];
@@ -14,7 +20,7 @@ export default function FileAttachField({
   files,
   onChange,
   max = 3,
-  maxSizeMB = 10,
+  maxSizeMB = MAX_UPLOAD_IMAGE_SIZE_MB,
   accept = ["image/jpeg", "image/png"],
   label = "파일 첨부(선택)",
 }: FileAttachFieldProps) {
@@ -23,6 +29,7 @@ export default function FileAttachField({
 
   const [previewUrls, setPreviewUrls] = useState<Map<File, string>>(new Map());
   const previewUrlsRef = useRef(previewUrls);
+  const [showOversizedWarning, setShowOversizedWarning] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -30,13 +37,25 @@ export default function FileAttachField({
     };
   }, []);
 
+  useEffect(() => {
+    if (!showOversizedWarning) return;
+    const timer = window.setTimeout(
+      () => setShowOversizedWarning(false),
+      OVERSIZED_FILE_WARNING_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [showOversizedWarning]);
+
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const picked = Array.from(e.target.files ?? []);
     e.target.value = "";
 
-    const valid = picked.filter(
-      (file) => accept.includes(file.type) && file.size <= maxSizeMB * 1024 * 1024,
-    );
+    const { valid, rejectedCount } = filterValidImageFiles(picked, {
+      maxSizeMB,
+      accept,
+    });
+    setShowOversizedWarning(rejectedCount > 0);
+
     const remaining = max - files.length;
     if (remaining <= 0 || valid.length === 0) return;
 
@@ -91,6 +110,12 @@ export default function FileAttachField({
           최대 {max}장까지 등록할 수 있습니다.
         </p>
       </div>
+
+      {showOversizedWarning && (
+        <p className="mt-2 ml-0.5 text-caption-2 text-warning-600" role="alert">
+          {maxSizeMB}MB 이하의 이미지 파일(JPG, PNG)만 첨부할 수 있습니다.
+        </p>
+      )}
 
       {files.length > 0 && (
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
