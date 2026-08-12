@@ -631,19 +631,19 @@ function Step9Page({ isFromAI }: { isFromAI: boolean }) {
         <SectionCard title="미리 챙겨두면 좋은 세무 증빙 서류">
           <BulletList groups={STEP9_DOCUMENTS} />
         </SectionCard>
+      </div>
 
-        <div className="flex w-full flex-col items-center gap-3 py-2">
-          <img src={cloyCircle} alt="" className="h-12 w-12 shrink-0" />
-          <p className="text-title-2 text-primary-500">
-            {STEP9_HEADER.celebrationTitle}
-          </p>
-          <div className="flex flex-col items-center gap-1 text-center text-body-2 text-gray-900">
-            {STEP9_HEADER.celebrationLines.map((line, i) => (
-              <p key={i} className="whitespace-pre-line">
-                {line}
-              </p>
-            ))}
-          </div>
+      <div className="flex w-full flex-col items-center gap-3 bg-white px-4 py-6">
+        <img src={cloyCircle} alt="" className="h-12 w-12 shrink-0" />
+        <p className="text-title-2 text-primary-500">
+          {STEP9_HEADER.celebrationTitle}
+        </p>
+        <div className="flex flex-col items-center gap-1 text-center text-body-2 text-gray-900">
+          {STEP9_HEADER.celebrationLines.map((line, i) => (
+            <p key={i} className="whitespace-pre-line">
+              {line}
+            </p>
+          ))}
         </div>
       </div>
     </StepLayout>

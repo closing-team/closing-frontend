@@ -35,16 +35,130 @@ import {
   useUpdateTaskMutation,
 } from "../../hooks/useSchedule";
 import {
-  groupPlansByDate,
   taskDetailToPlan,
+  toPlans,
   toTodayTodos,
   toTaskRequest,
 } from "../../utils/scheduleAdapter";
+import {
+  assignPlanLanes,
+  buildMonthCells,
+  buildWeekSegments,
+  plansOnDate,
+  toWeeks,
+} from "../../utils/calendarLayout";
+import type { CalendarCell } from "../../utils/calendarLayout";
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
+const MAX_LANES = 3;
+const LANE_HEIGHT = { collapsed: 4, expanded: 14 };
+const LANE_GAP = 2;
 
-function toDateKey(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function WeekRow({
+  week,
+  plans,
+  lanes,
+  isExpanded,
+  today,
+  onDayClick,
+}: {
+  week: CalendarCell[];
+  plans: Plan[];
+  lanes: Map<Plan["id"], number>;
+  isExpanded: boolean;
+  today: Date;
+  onDayClick: (date: Date, plans: Plan[]) => void;
+}) {
+  const segments = buildWeekSegments(week, plans, lanes).filter(
+    (segment) => segment.lane < MAX_LANES,
+  );
+  const laneHeight = isExpanded
+    ? LANE_HEIGHT.expanded
+    : LANE_HEIGHT.collapsed;
+
+  return (
+    <div
+      className={`relative ${isExpanded ? "min-h-[101.6px]" : "min-h-[52px]"}`}
+    >
+      <div className="absolute inset-0 grid grid-cols-7">
+        {week.map((cell) => {
+          const dayPlans = cell.currentMonth ? plansOnDate(plans, cell.date) : [];
+
+          if (!isExpanded || !cell.currentMonth || dayPlans.length === 0) {
+            return <div key={cell.date.toISOString()} />;
+          }
+
+          return (
+            <button
+              key={cell.date.toISOString()}
+              type="button"
+              aria-label={`${cell.date.getMonth() + 1}월 ${cell.day}일 일정 보기`}
+              onClick={() => onDayClick(cell.date, dayPlans)}
+            />
+          );
+        })}
+      </div>
+
+      <div className="pointer-events-none relative pt-1">
+        <div className="grid grid-cols-7">
+          {week.map((cell) => (
+            <div key={cell.date.toISOString()} className="flex justify-center">
+              <div
+                className={`flex h-7 w-7 items-center justify-center rounded-full text-caption-3 ${
+                  cell.currentMonth && isSameDay(cell.date, today)
+                    ? "bg-primary-500 text-white"
+                    : cell.currentMonth
+                      ? "text-gray-900"
+                      : "text-gray-200"
+                }`}
+              >
+                {cell.day}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="mt-0.5 grid grid-cols-7"
+          style={{
+            gridTemplateRows: `repeat(${MAX_LANES}, ${laneHeight}px)`,
+            rowGap: `${LANE_GAP}px`,
+          }}
+        >
+          {segments.map((segment) => (
+            <div
+              key={`${segment.plan.id}-${segment.startCol}`}
+              style={{
+                gridColumn: `${segment.startCol + 1} / ${segment.endCol + 2}`,
+                gridRow: segment.lane + 1,
+              }}
+              className={`min-w-0 ${segment.isStart ? "ml-0.5" : ""} ${segment.isEnd ? "mr-0.5" : ""}`}
+            >
+              {isExpanded ? (
+                <div
+                  className={`h-full truncate bg-primary-50 px-1 text-[9px] leading-[14px] text-primary-500 ${segment.isStart ? "rounded-l" : ""} ${segment.isEnd ? "rounded-r" : ""}`}
+                >
+                  {segment.plan.title}
+                </div>
+              ) : (
+                <div
+                  className={`h-full bg-primary-100 ${segment.isStart ? "rounded-l-full" : ""} ${segment.isEnd ? "rounded-r-full" : ""}`}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function Calendar({
@@ -52,7 +166,7 @@ function Calendar({
   month,
   onPrev,
   onNext,
-  schedules,
+  plans,
   onAddPlan,
   onDayClick,
 }: {
@@ -60,46 +174,25 @@ function Calendar({
   month: number;
   onPrev: () => void;
   onNext: () => void;
-  schedules: Record<string, Plan[]>;
+  plans: Plan[];
   onAddPlan: () => void;
   onDayClick: (date: Date, plans: Plan[]) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const today = new Date();
 
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const daysInPrevMonth = new Date(year, month, 0).getDate();
-  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+  const weeks = toWeeks(buildMonthCells(year, month));
+  const lanes = assignPlanLanes(plans);
 
-  const cells: { day: number; currentMonth: boolean }[] = [];
-
-  for (let i = firstDay - 1; i >= 0; i--) {
-    cells.push({ day: daysInPrevMonth - i, currentMonth: false });
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ day: d, currentMonth: true });
-  }
-  for (let d = 1; cells.length < totalCells; d++) {
-    cells.push({ day: d, currentMonth: false });
-  }
-
-  const isToday = (d: number) =>
-    year === today.getFullYear() &&
-    month === today.getMonth() &&
-    d === today.getDate();
-
-  const isCurrentMonth =
-    year === today.getFullYear() && month === today.getMonth();
-  const todayCellIndex = isCurrentMonth ? firstDay + today.getDate() - 1 : 0;
-  const collapsedRowStart = Math.floor(todayCellIndex / 7) * 7;
-  const visibleCells = isExpanded
-    ? cells
-    : cells.slice(collapsedRowStart, collapsedRowStart + 7);
+  const todayWeekIndex = weeks.findIndex((week) =>
+    week.some((cell) => cell.currentMonth && isSameDay(cell.date, today)),
+  );
+  const visibleWeeks = isExpanded
+    ? weeks
+    : [weeks[todayWeekIndex === -1 ? 0 : todayWeekIndex]];
 
   return (
     <div className="pt-6">
-      {/* 섹션 1: 헤더 - 상단 radius 24px, 그림자 없음 */}
       <div className="rounded-t-[24px] bg-white px-4 pt-4 pb-4">
         <div className="relative flex items-center justify-center">
           <div className="flex items-center gap-5">
@@ -119,7 +212,6 @@ function Calendar({
         </div>
       </div>
 
-      {/* 섹션 2: 날짜 그리드 - 그림자 없음 */}
       <div className="bg-white px-4 pb-2">
         <div className="mb-1 grid grid-cols-7">
           {DAY_LABELS.map((label) => (
@@ -132,65 +224,19 @@ function Calendar({
           ))}
         </div>
 
-        <div className="grid grid-cols-7">
-          {visibleCells.map((cell, i) => {
-            const dateKey = cell.currentMonth
-              ? toDateKey(year, month, cell.day)
-              : "";
-            const events = dateKey ? (schedules[dateKey] ?? []) : [];
-            const today_ = cell.currentMonth && isToday(cell.day);
-
-            const handleCellClick = () => {
-              if (isExpanded && cell.currentMonth && events.length > 0) {
-                onDayClick(new Date(year, month, cell.day), events);
-              }
-            };
-
-            return (
-              <div
-                key={i}
-                onClick={handleCellClick}
-                className={`flex flex-col items-center py-1 ${
-                  isExpanded && cell.currentMonth && events.length > 0
-                    ? "cursor-pointer"
-                    : ""
-                } ${isExpanded ? "min-h-[101.6px]" : "min-h-[52px]"}`}
-              >
-                <div
-                  className={`flex h-7 w-7 items-center justify-center rounded-full text-caption-3 ${
-                    today_
-                      ? "bg-primary-500 text-white"
-                      : cell.currentMonth
-                        ? "text-gray-900"
-                        : "text-gray-200"
-                  }`}
-                >
-                  {cell.day}
-                </div>
-                <div className="mt-0.5 w-full px-0.5">
-                  {events.length > 0 &&
-                    (isExpanded ? (
-                      <div className="space-y-0.5">
-                        {events.slice(0, 2).map((ev, j) => (
-                          <div
-                            key={j}
-                            className="truncate rounded bg-primary-50 px-0.5 text-[9px] leading-[14px] text-primary-500"
-                          >
-                            {ev.title}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="h-1 w-full rounded-full bg-primary-100" />
-                    ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {visibleWeeks.map((week) => (
+          <WeekRow
+            key={week[0].date.toISOString()}
+            week={week}
+            plans={plans}
+            lanes={lanes}
+            isExpanded={isExpanded}
+            today={today}
+            onDayClick={onDayClick}
+          />
+        ))}
       </div>
 
-      {/* 섹션 3: 토글 - 독립 블럭, 높이 32px, 하단 radius 24px, 아래 방향 드롭섀도우만 */}
       <button
         type="button"
         aria-label={isExpanded ? "캘린더 접기" : "캘린더 펼치기"}
@@ -216,7 +262,6 @@ export default function HomePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedPlans, setSelectedPlans] = useState<Plan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const navigate = useNavigate();
   const { bookmarkCount, interestCount, chatCount } = useSideMenuCounts();
@@ -225,7 +270,7 @@ export default function HomePage() {
   const { data: homeData, isLoading: isHomeLoading } = useHomeTasksQuery(yearMonth);
 
   const calendarItems = homeData?.calendar ?? [];
-  const schedules = groupPlansByDate(calendarItems);
+  const plans = toPlans(calendarItems);
   const todos = toTodayTodos(calendarItems);
   const progress = {
     completed: homeData?.summary.completedCount ?? 0,
@@ -300,11 +345,10 @@ export default function HomePage() {
         month={month}
         onPrev={handlePrevMonth}
         onNext={handleNextMonth}
-        schedules={schedules}
+        plans={plans}
         onAddPlan={() => setIsAddingPlan(true)}
-        onDayClick={(date, plans) => {
+        onDayClick={(date) => {
           setSelectedDate(date);
-          setSelectedPlans(plans);
         }}
       />
 
@@ -337,7 +381,7 @@ export default function HomePage() {
       {selectedDate && !selectedPlan && !isAddingPlan && (
         <DayScheduleModal
           date={selectedDate}
-          plans={selectedPlans}
+          plans={plansOnDate(plans, selectedDate)}
           onClose={() => setSelectedDate(null)}
           onAdd={() => setIsAddingPlan(true)}
           onPlanClick={(plan) => setSelectedPlan(plan)}
@@ -361,6 +405,7 @@ export default function HomePage() {
 
       {isAddingPlan && (
         <PlanFormModal
+          initialDate={selectedDate ?? undefined}
           isPending={createMutation.isPending}
           onCancel={() => setIsAddingPlan(false)}
           onConfirm={(plan, memo) => {

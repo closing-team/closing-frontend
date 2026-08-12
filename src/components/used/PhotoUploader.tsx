@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PlusMdIcon, XFilledIcon } from "../../assets/icons";
 
 export type PhotoItem = { kind: "existing"; url: string } | { kind: "new"; file: File };
+
+const MAX_PHOTO_SIZE_MB = 10;
+const OVERSIZED_PHOTO_WARNING_MS = 2000;
 
 interface PhotoUploaderProps {
   items: PhotoItem[];
   onChange: (items: PhotoItem[]) => void;
   max?: number;
+  maxSizeMB?: number;
   label?: string;
 }
 
@@ -14,10 +18,21 @@ export default function PhotoUploader({
   items,
   onChange,
   max = 10,
+  maxSizeMB = MAX_PHOTO_SIZE_MB,
   label = "실물 사진",
 }: PhotoUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const canAdd = items.length < max;
+  const [showOversizedWarning, setShowOversizedWarning] = useState(false);
+
+  useEffect(() => {
+    if (!showOversizedWarning) return;
+    const timer = window.setTimeout(
+      () => setShowOversizedWarning(false),
+      OVERSIZED_PHOTO_WARNING_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [showOversizedWarning]);
 
   const newFileUrls = useMemo(() => {
     const map = new Map<File, string>();
@@ -37,13 +52,18 @@ export default function PhotoUploader({
     item.kind === "existing" ? item.url : (newFileUrls.get(item.file) ?? "");
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []).map(
-      (file): PhotoItem => ({ kind: "new", file }),
-    );
-    if (selected.length > 0) {
-      onChange([...items, ...selected].slice(0, max));
-    }
+    const picked = Array.from(e.target.files ?? []);
     e.target.value = "";
+
+    const valid = picked.filter(
+      (file) =>
+        file.type.startsWith("image/") && file.size <= maxSizeMB * 1024 * 1024,
+    );
+    setShowOversizedWarning(valid.length < picked.length);
+
+    if (valid.length === 0) return;
+    const selected = valid.map((file): PhotoItem => ({ kind: "new", file }));
+    onChange([...items, ...selected].slice(0, max));
   };
 
   const handleRemove = (index: number) => {
@@ -54,8 +74,15 @@ export default function PhotoUploader({
     <div>
       <p className="mb-[13px] ml-0.5 text-subtitle-2 text-gray-900">
         {label}{" "}
-        <span className="text-caption-2 text-gray-500">(최대 {max}장)</span>
+        <span className="text-caption-2 text-gray-500">
+          (최대 {max}장, 장당 {maxSizeMB}MB 이하)
+        </span>
       </p>
+      {showOversizedWarning && (
+        <p className="mb-2 ml-0.5 text-caption-2 text-warning-600" role="alert">
+          {maxSizeMB}MB 이하의 이미지만 등록할 수 있습니다.
+        </p>
+      )}
       <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <button
           type="button"

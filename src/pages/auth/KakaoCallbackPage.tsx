@@ -95,7 +95,7 @@ export default function KakaoCallbackPage({
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center bg-primary-50 px-5 text-center">
-      <img src={logo} alt="" className="h-[70px] w-[70px]" />
+      <img src={logo} alt="" className="h-[70px] w-[70px] rounded-2xl" />
       <p
         role={isError ? "alert" : undefined}
         className={`mt-6 text-body-2 ${isError ? "text-warning-600" : "text-gray-700"}`}

@@ -5,9 +5,14 @@ import {
   SendEnabledIcon,
   XMdIcon,
 } from "../../assets/icons";
+import Toast from "../common/Toast";
+import { MAX_CHAT_IMAGES_PER_MESSAGE, MAX_CHAT_IMAGE_SIZE_MB } from "../../constants/chat";
 import type { PendingChatMessage } from "../../types/chat";
 
 const MAX_TEXTAREA_HEIGHT = 60;
+const IMAGE_WARNING_MS = 2000;
+const TOO_MANY_IMAGES_MESSAGE = `사진은 최대 ${MAX_CHAT_IMAGES_PER_MESSAGE}장까지 보낼 수 있습니다.`;
+const OVERSIZED_IMAGE_MESSAGE = `${MAX_CHAT_IMAGE_SIZE_MB}MB 이하의 이미지만 보낼 수 있습니다.`;
 
 interface SelectedImage {
   file: File;
@@ -28,11 +33,13 @@ export default function ChatComposer({
   const [isSending, setIsSending] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [failedMessage, setFailedMessage] = useState<PendingChatMessage | null>(null);
+  const [imageWarning, setImageWarning] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const ownedPreviewUrlsRef = useRef(new Set<string>());
   const canSend =
     value.trim().length > 0 || (allowImages && selectedImages.length > 0);
+  const canAddMoreImages = selectedImages.length < MAX_CHAT_IMAGES_PER_MESSAGE;
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -40,6 +47,12 @@ export default function ChatComposer({
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT)}px`;
   }, [value]);
+
+  useEffect(() => {
+    if (!imageWarning) return;
+    const timer = window.setTimeout(() => setImageWarning(null), IMAGE_WARNING_MS);
+    return () => window.clearTimeout(timer);
+  }, [imageWarning]);
 
   const revokeOwnedPreview = (previewUrl: string) => {
     if (ownedPreviewUrlsRef.current.has(previewUrl)) {
@@ -98,10 +111,33 @@ export default function ChatComposer({
       return;
     }
 
-    const files = Array.from(event.target.files ?? []).filter((file) =>
+    const pickedFiles = Array.from(event.target.files ?? []).filter((file) =>
       file.type.startsWith("image/"),
     );
     event.target.value = "";
+
+    if (pickedFiles.length === 0) {
+      return;
+    }
+
+    const availableSlots = MAX_CHAT_IMAGES_PER_MESSAGE - selectedImages.length;
+    if (availableSlots <= 0) {
+      setImageWarning(TOO_MANY_IMAGES_MESSAGE);
+      return;
+    }
+
+    const validSizeFiles = pickedFiles.filter(
+      (file) => file.size <= MAX_CHAT_IMAGE_SIZE_MB * 1024 * 1024,
+    );
+    const files = validSizeFiles.slice(0, availableSlots);
+
+    if (validSizeFiles.length > availableSlots) {
+      setImageWarning(TOO_MANY_IMAGES_MESSAGE);
+    } else if (validSizeFiles.length < pickedFiles.length) {
+      setImageWarning(OVERSIZED_IMAGE_MESSAGE);
+    } else {
+      setImageWarning(null);
+    }
 
     if (files.length === 0) {
       return;
@@ -152,6 +188,8 @@ export default function ChatComposer({
         </div>
       )}
 
+      {imageWarning && <Toast message={imageWarning} variant="danger" />}
+
       {failedMessage && (
         <div className="flex items-center justify-between gap-3" role="alert">
           <span className="text-caption-2 text-warning-600">메시지를 전송할 수 없습니다.</span>
@@ -170,10 +208,10 @@ export default function ChatComposer({
         <button
           type="button"
           aria-label="이미지 선택"
-          disabled={isSending || !allowImages}
+          disabled={isSending || !allowImages || !canAddMoreImages}
           className="flex h-10 w-10 shrink-0 items-center justify-center text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
           onClick={() => {
-            if (!isSending && allowImages) {
+            if (!isSending && allowImages && canAddMoreImages) {
               fileInputRef.current?.click();
             }
           }}
@@ -187,7 +225,7 @@ export default function ChatComposer({
           multiple
           aria-label="이미지 첨부"
           className="sr-only"
-          disabled={isSending || !allowImages}
+          disabled={isSending || !allowImages || !canAddMoreImages}
           onChange={handleFileChange}
         />
         <div
