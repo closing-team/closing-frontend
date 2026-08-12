@@ -9,9 +9,13 @@ import {
 } from "../api/ai";
 import { scheduleKeys } from "./useSchedule";
 
+export const aiKeys = {
+  session: (sessionId: string | undefined) => ["aiSession", sessionId] as const,
+};
+
 export function useAiSessionQuery(sessionId: string | undefined) {
   return useQuery({
-    queryKey: ["aiSession", sessionId],
+    queryKey: aiKeys.session(sessionId),
     queryFn: () => getAiSession(sessionId!),
     enabled: !!sessionId,
   });

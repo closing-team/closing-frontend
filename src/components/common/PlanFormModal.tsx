@@ -1,30 +1,38 @@
 import { useState, useRef } from "react";
 import type { ChangeEvent } from "react";
-import TextField from "../common/TextField";
-import ScheduleRangeField from "../common/ScheduleRangeField";
-import Button from "../common/Button";
+import TextField from "./TextField";
+import ScheduleRangeField from "./ScheduleRangeField";
+import Button from "./Button";
 import { XMdIcon } from "../../assets/icons";
-import type { Plan } from "../common/PlanCard";
-import type { TimeValue } from "../common/TimeWheel";
+import type { Plan } from "./PlanCard";
+import type { TimeValue } from "./TimeWheel";
 
-interface AddPlanModalProps {
+interface PlanFormModalProps {
+  // 지정하면 수정 모드(초기값을 이 일정에서 채움), 생략하면 추가 모드
+  plan?: Plan;
   onCancel: () => void;
   onConfirm: (plan: Plan, memo: string) => void;
   isPending?: boolean;
 }
 
-export default function AddPlanModal({
+export default function PlanFormModal({
+  plan,
   onCancel,
   onConfirm,
   isPending = false,
-}: AddPlanModalProps) {
+}: PlanFormModalProps) {
+  const isEdit = plan !== undefined;
   const today = new Date();
-  const [title, setTitle] = useState("");
-  const [startDate, setStartDate] = useState<Date>(today);
-  const [startTime, setStartTime] = useState<TimeValue>({ meridiem: "오전", hour: 10, minute: 0 });
-  const [endDate, setEndDate] = useState<Date>(today);
-  const [endTime, setEndTime] = useState<TimeValue>({ meridiem: "오후", hour: 10, minute: 0 });
-  const [memo, setMemo] = useState("");
+  const [title, setTitle] = useState(plan?.title ?? "");
+  const [startDate, setStartDate] = useState<Date>(plan?.startDate ?? today);
+  const [startTime, setStartTime] = useState<TimeValue>(
+    plan?.startTime ?? { meridiem: "오전", hour: 10, minute: 0 },
+  );
+  const [endDate, setEndDate] = useState<Date>(plan?.endDate ?? today);
+  const [endTime, setEndTime] = useState<TimeValue>(
+    plan?.endTime ?? { meridiem: "오후", hour: 10, minute: 0 },
+  );
+  const [memo, setMemo] = useState(plan?.memo ?? "");
   const memoRef = useRef<HTMLTextAreaElement>(null);
 
   const handleMemoInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -41,7 +49,9 @@ export default function AddPlanModal({
       <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
       <div className="relative max-h-[85vh] w-full max-w-[347px] overflow-x-hidden overflow-y-auto rounded-xl bg-white">
         <div className="flex h-[60px] items-center justify-between pl-4 pr-3">
-          <p className="text-title-3 text-gray-900">일정 추가</p>
+          <p className="text-title-3 text-gray-900">
+            {isEdit ? "일정 수정" : "일정 추가"}
+          </p>
           <button
             type="button"
             aria-label="닫기"
@@ -109,12 +119,14 @@ export default function AddPlanModal({
             disabled={isPending}
             onClick={() =>
               onConfirm(
-                { id: Date.now(), title, startDate, startTime, endDate, endTime },
+                isEdit
+                  ? { ...plan, title, startDate, startTime, endDate, endTime }
+                  : { id: Date.now(), title, startDate, startTime, endDate, endTime },
                 memo,
               )
             }
           >
-            저장
+            {isEdit ? "완료" : "저장"}
           </Button>
         </div>
       </div>
