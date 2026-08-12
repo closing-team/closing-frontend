@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../assets/icons";
+import { isSameDay } from "../../utils/calendarLayout";
 
 interface DateCalendarProps {
   value?: Date | null;
@@ -8,14 +9,6 @@ interface DateCalendarProps {
 }
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-
-function isSameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
 
 export default function DateCalendar({
   value,

@@ -42,7 +42,6 @@ export function toPlan(item: HomeTaskCalendarItem): Plan {
   };
 }
 
-// 일정 상세 조회
 export function taskDetailToPlan(detail: TaskDetailDto): Plan {
   return {
     id: detail.taskId,
@@ -61,7 +60,6 @@ export function toPlans(items: HomeTaskCalendarItem[]): Plan[] {
   return items.map(toPlan);
 }
 
-// 시작일이 오늘인 일정만 추출
 export function toTodayTodos(items: HomeTaskCalendarItem[]): Todo[] {
   const todayKey = toApiDateString(new Date());
   return items

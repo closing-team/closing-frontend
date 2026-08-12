@@ -1,8 +1,7 @@
-import type { ReactNode } from "react";
 import { XMdIcon, ChevronRightIcon } from "../../assets/icons";
 import Button from "../common/Button";
+import { PlanDateRange } from "../common/PlanCard";
 import type { Plan } from "../common/PlanCard";
-import { formatDate, formatTime } from "../../utils/dateFormat";
 
 interface DayScheduleModalProps {
   date: Date;
@@ -10,14 +9,6 @@ interface DayScheduleModalProps {
   onClose: () => void;
   onAdd: () => void;
   onPlanClick: (plan: Plan) => void;
-}
-
-function Chip({ children }: { children: ReactNode }) {
-  return (
-    <span className="rounded-[4px] bg-white px-1 py-px text-caption-3 text-gray-400">
-      {children}
-    </span>
-  );
 }
 
 export default function DayScheduleModal({
@@ -56,13 +47,7 @@ export default function DayScheduleModal({
               <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500" />
               <div className="ml-3 flex flex-1 flex-col">
                 <p className="text-subtitle-2 text-gray-900">{plan.title}</p>
-                <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                  <Chip>{formatDate(plan.startDate)}</Chip>
-                  <Chip>{formatTime(plan.startTime)}</Chip>
-                  <span className="h-px w-1 shrink-0 bg-gray-500" />
-                  <Chip>{formatDate(plan.endDate)}</Chip>
-                  <Chip>{formatTime(plan.endTime)}</Chip>
-                </div>
+                <PlanDateRange plan={plan} badgeBg="white" className="mt-0.5" />
               </div>
               <ChevronRightIcon className="h-5 w-5 shrink-0 text-gray-400" />
             </button>

@@ -25,6 +25,10 @@ export function toDayIndex(date: Date): number {
   );
 }
 
+export function isSameDay(a: Date, b: Date): boolean {
+  return toDayIndex(a) === toDayIndex(b);
+}
+
 function planRange(plan: Plan): [number, number] {
   const start = toDayIndex(plan.startDate);
   return [start, Math.max(start, toDayIndex(plan.endDate))];

@@ -1,6 +1,7 @@
 export function BannerSkeleton() {
   return (
     <div
+      aria-hidden="true"
       className="mx-4 animate-pulse rounded-lg bg-gray-100"
       style={{ height: "148px" }}
     />
@@ -9,7 +10,7 @@ export function BannerSkeleton() {
 
 export function TodoListSkeleton() {
   return (
-    <div className="flex flex-col gap-3 px-4 py-2">
+    <div aria-hidden="true" className="flex flex-col gap-3 px-4 py-2">
       {["5rem", "8rem", "6rem"].map((width, i) => (
         <div
           key={i}
