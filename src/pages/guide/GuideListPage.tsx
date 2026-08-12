@@ -94,9 +94,11 @@ export default function GuideListPage() {
           ))}
         </div>
 
-        <div className="mb-2 mt-4 flex items-center gap-3 rounded-2xl border border-warning-100 bg-warning-50 px-4 py-3">
-          <AlertIcon className="h-6 w-6 shrink-0 text-warning-500" />
-          <p className="text-subtitle-2 font-semibold text-warning-600">
+        <div className="relative mb-2 mt-4 flex items-center gap-3 rounded-2xl border border-warning-300 bg-white px-4 py-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warning-50">
+            <AlertIcon className="h-5 w-5 text-warning-500" />
+          </span>
+          <p className="text-subtitle-2 font-semibold text-warning-500">
             매장 안의 물건(집기)을 먼저 처분해야 인테리어 철거가 가능합니다!
           </p>
         </div>
