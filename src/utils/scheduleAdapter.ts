@@ -57,15 +57,8 @@ export function taskDetailToPlan(detail: TaskDetailDto): Plan {
   };
 }
 
-// 일정의 시작일 기준으로 그룹핑
-export function groupPlansByDate(
-  items: HomeTaskCalendarItem[],
-): Record<string, Plan[]> {
-  const grouped: Record<string, Plan[]> = {};
-  for (const item of items) {
-    (grouped[item.startDate] ??= []).push(toPlan(item));
-  }
-  return grouped;
+export function toPlans(items: HomeTaskCalendarItem[]): Plan[] {
+  return items.map(toPlan);
 }
 
 // 시작일이 오늘인 일정만 추출
