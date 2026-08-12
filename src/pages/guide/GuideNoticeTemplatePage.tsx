@@ -36,7 +36,7 @@ function CopyButton({
   };
 
   return (
-    <Button variant="primary" size="sm" fullWidth className="h-11" onClick={handleClick}>
+    <Button variant="secondary" size="sm" fullWidth className="h-11" onClick={handleClick}>
       {copied ? "복사됨" : children}
     </Button>
   );
