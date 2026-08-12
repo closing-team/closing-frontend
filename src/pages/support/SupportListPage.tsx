@@ -110,20 +110,29 @@ export default function SupportListPage() {
 
   return (
     <div className="min-h-dvh bg-gray-30 pb-24">
-      <TopBar
-        logo
-        bordered={false}
-        right={
-          <button
-            type="button"
-            aria-label="전체 메뉴"
-            className="p-1 text-gray-900"
-            onClick={() => setIsSideMenuOpen(true)}
-          >
-            <MenuHamburgerIcon />
-          </button>
-        }
-      />
+      <div className="sticky top-0 z-40 bg-white">
+        <TopBar
+          logo
+          bordered={false}
+          right={
+            <button
+              type="button"
+              aria-label="전체 메뉴"
+              className="p-1 text-gray-900"
+              onClick={() => setIsSideMenuOpen(true)}
+            >
+              <MenuHamburgerIcon />
+            </button>
+          }
+        />
+
+        <Tabs
+          tabs={TABS}
+          value={activeTab}
+          // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark) 동기화 여부 미정, 논의 후 결정
+          onChange={(key) => setActiveTab(key as SupportTab)}
+        />
+      </div>
 
       <SideMenu
         open={isSideMenuOpen}
@@ -131,13 +140,6 @@ export default function SupportListPage() {
         bookmarkCount={bookmarkCount}
         interestCount={interestCount}
         chatCount={chatCount}
-      />
-
-      <Tabs
-        tabs={TABS}
-        value={activeTab}
-        // TODO: 탭 클릭 시 URL(/support ↔ /support/bookmark) 동기화 여부 미정, 논의 후 결정
-        onChange={(key) => setActiveTab(key as SupportTab)}
       />
 
       <div className="flex items-center justify-between px-4 pb-3 pt-5">

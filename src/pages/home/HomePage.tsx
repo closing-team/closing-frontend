@@ -12,8 +12,7 @@ import {
 import SideMenu from "../../components/sidemenu/SideMenu";
 import { useSideMenuCounts } from "../../hooks/useSideMenuCounts";
 import { ROUTES } from "../../constants/routes";
-import AddPlanModal from "../../components/home/AddPlanModal";
-import EditPlanModal from "../../components/ai/EditPlanModal";
+import PlanFormModal from "../../components/common/PlanFormModal";
 import DayScheduleModal from "../../components/home/DayScheduleModal";
 import ScheduleDetailModal from "../../components/home/ScheduleDetailModal";
 import DeleteConfirmModal from "../../components/home/DeleteConfirmModal";
@@ -361,7 +360,7 @@ export default function HomePage() {
       )}
 
       {isAddingPlan && (
-        <AddPlanModal
+        <PlanFormModal
           isPending={createMutation.isPending}
           onCancel={() => setIsAddingPlan(false)}
           onConfirm={(plan, memo) => {
@@ -372,18 +371,24 @@ export default function HomePage() {
       )}
 
       {isEditing && selectedPlanWithMemo && (
-        <EditPlanModal
+        <PlanFormModal
           plan={selectedPlanWithMemo}
           isPending={updateMutation.isPending}
           onCancel={() => setIsEditing(false)}
           onConfirm={(updated, memo) => {
-            updateMutation.mutate({
-              taskId: Number(updated.id),
-              request: toTaskRequest(updated, memo ?? ""),
-            });
-            setIsEditing(false);
-            setSelectedPlan(null);
-            setSelectedDate(null);
+            updateMutation.mutate(
+              {
+                taskId: Number(updated.id),
+                request: toTaskRequest(updated, memo),
+              },
+              {
+                onSuccess: () => {
+                  setIsEditing(false);
+                  setSelectedPlan(null);
+                  setSelectedDate(null);
+                },
+              },
+            );
           }}
         />
       )}

@@ -7,6 +7,13 @@ export function formatDate(date: Date) {
   return `${y}.${m}.${d}`;
 }
 
+export function formatKoreanDate(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}년 ${m}월 ${d}일`;
+}
+
 export function formatTime({ meridiem, hour, minute }: TimeValue) {
   return `${meridiem} ${hour}:${String(minute).padStart(2, "0")}`;
 }

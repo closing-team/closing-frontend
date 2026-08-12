@@ -9,6 +9,10 @@ import { logoutCurrentSession } from "../../auth/logoutCurrentSession";
 import { clearAuthSession } from "../../auth/authSession";
 import { ROUTES } from "../../constants/routes";
 import { useMyProfileQuery, useWithdrawMutation } from "../../hooks/useAccount";
+import {
+  getLogoutErrorMessage,
+  getWithdrawErrorMessage,
+} from "../../utils/authError";
 
 interface SideMenuProps {
   open: boolean;
@@ -203,6 +207,7 @@ export default function SideMenu({
           title="로그아웃 할까요?"
           confirmLabel="로그아웃"
           confirmVariant="primary"
+          confirmDisabled={logoutMutation.isPending}
           onCancel={() => {
             logoutMutation.reset();
             setShowLogoutConfirm(false);
@@ -219,7 +224,7 @@ export default function SideMenu({
               role="alert"
               className="px-4 text-center text-body-2 text-warning-500"
             >
-              로그아웃하지 못했습니다. 다시 시도해주세요.
+              {getLogoutErrorMessage(logoutMutation.error)}
             </p>
           )}
         </ConfirmModal>
@@ -230,7 +235,11 @@ export default function SideMenu({
           title="정말 클로징 회원에서 탈퇴할까요?"
           description="삭제된 데이터는 복구되지 않습니다."
           confirmLabel="탈퇴"
-          onCancel={() => setShowWithdrawConfirm(false)}
+          confirmDisabled={withdraw.isPending}
+          onCancel={() => {
+            withdraw.reset();
+            setShowWithdrawConfirm(false);
+          }}
           onConfirm={() => {
             withdraw.mutate(undefined, {
               onSuccess: () => {
@@ -242,7 +251,16 @@ export default function SideMenu({
               },
             });
           }}
-        />
+        >
+          {withdraw.isError && (
+            <p
+              role="alert"
+              className="px-4 text-center text-body-2 text-warning-500"
+            >
+              {getWithdrawErrorMessage(withdraw.error)}
+            </p>
+          )}
+        </ConfirmModal>
       )}
     </div>
   );

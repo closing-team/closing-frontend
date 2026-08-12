@@ -1,12 +1,13 @@
 {
   "name": "closing-frontend",
   "private": true,
-  "version": "0.7.1",
+  "version": "0.8.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "check:api": "node scripts/check-api-nullability.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
