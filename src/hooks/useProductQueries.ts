@@ -58,7 +58,8 @@ function filterToParams(filter: UsedFilter): {
 export const productKeys = {
   lists: () => ["products", "list"] as const,
   list: (params: unknown) => ["products", "list", params] as const,
-  detail: (id: number) => ["products", "detail", id] as const,
+  details: () => ["products", "detail"] as const,
+  detail: (id: number) => [...productKeys.details(), id] as const,
   mes: () => ["products", "me"] as const,
   me: (status: ProductStatusCode | undefined) =>
     ["products", "me", status] as const,

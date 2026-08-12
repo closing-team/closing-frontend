@@ -226,7 +226,7 @@ export function useUpdateSellerLocationMutation() {
   return useMutation({
     mutationFn: updateSellerLocation,
     // 어떤 상품의 상세 캐시가 이 판매자의 것인지 알 수 없어, 캐시된 상세 쿼리
-    // 전체(["products", "detail"] 접두사)를 무효화한다.
-    onSuccess: () => invalidate([productKeys.mes(), ["products", "detail"]]),
+    // 전체(productKeys.details() 접두사)를 무효화.
+    onSuccess: () => invalidate([productKeys.mes(), productKeys.details()]),
   });
 }

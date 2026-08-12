@@ -168,11 +168,11 @@ function UsedWriteForm({
     return null;
   };
 
-  // 물품을 등록/수정할 때 판매자 활동 지역도 함께 갱신한다. 직거래면 고른
-  // 장소를, 택배만이면 대신 실제 GPS 현재 위치를 쓴다. 위치 권한이 없어
-  // lat/lng이 하드코딩된 기본값으로 떨어진 경우는 잘못된 지역을 저장하게
-  // 되므로 건너뛴다. 상품 등록 자체와는 무관한 부가 동기화라 실패해도
-  // 조용히 넘어간다.
+  // 물품을 등록 및 수정할 때 판매자 활동 지역도 함께 갱신. 직거래면 고른
+  // 장소를, 택배만이면 대신 실제 GPS 현재 위치를 사용. 위치 권한이 없어
+  // lat, lng이 하드코딩된 기본값으로 떨어진 경우는 잘못된 지역을 저장하게
+  // 되므로 건너뜀. 상품 등록 자체와는 무관한 부가 동기화라 실패해도
+  // 조용히 넘어감.
   const sellerLocationCoords = (): { lat: number; lng: number } | null => {
     if (directAvailable) return { lat, lng };
     if (currentLocation) return currentLocation;
