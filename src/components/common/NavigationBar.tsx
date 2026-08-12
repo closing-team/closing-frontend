@@ -45,7 +45,7 @@ export default function NavigationBar() {
           <Link
             key={path}
             to={path}
-            className={`flex shrink-0 flex-col items-center justify-center gap-1.5 px-3 py-1 ${active ? "text-primary-500" : "text-gray-200"}`}
+            className={`flex h-14 w-[50px] shrink-0 flex-col items-center justify-center gap-1.5 ${active ? "text-primary-500" : "text-gray-200"}`}
           >
             <Icon />
             <span className="text-caption-1">{label}</span>
