@@ -1,3 +1,4 @@
+import axios from "axios";
 import type {
   ProductSummaryDto,
   MyProductSummaryDto,
@@ -10,6 +11,16 @@ import type {
 import type { DealType, Product, SaleStatus } from "../types/used";
 import { formatTimeAgo } from "./timeAgo";
 import { toBusinessCategoryCode, toProductCategoryCode } from "./productCategoryMap";
+
+const DEFAULT_PRODUCT_SUBMIT_ERROR_MESSAGE =
+  "물품 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+
+export function getProductSubmitErrorMessage(error: unknown): string {
+  if (!axios.isAxiosError<{ message?: string }>(error)) {
+    return DEFAULT_PRODUCT_SUBMIT_ERROR_MESSAGE;
+  }
+  return error.response?.data?.message ?? DEFAULT_PRODUCT_SUBMIT_ERROR_MESSAGE;
+}
 
 const TRADE_METHOD_TO_DEAL_TYPE: Record<TradeMethodCode, DealType> = {
   DIRECT: "직거래",
