@@ -2,12 +2,14 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ImageIcon } from "../../assets/icons";
 import ChatComposer from "../../components/chat/ChatComposer";
+import ChatImageLightbox from "../../components/chat/ChatImageLightbox";
 import ProductBanner from "../../components/chat/ProductBanner";
 import ChatRoomEmptyView from "../../components/chat/ChatRoomEmptyView";
 import ChatBubble from "../../components/common/ChatBubble";
 import TopBar from "../../components/common/TopBar";
 import InvalidChatRoomPage from "./InvalidChatRoomPage";
 import ChatRoomSkeleton from "../../components/chat/ChatRoomSkeleton";
+import { MAX_CHAT_IMAGES_PER_MESSAGE } from "../../constants/chat";
 import { usedDetailPath } from "../../constants/routes";
 import {
   useChatMessagesQuery,
@@ -27,6 +29,36 @@ function sortMessagesBySentAt(messages: ChatMessage[]) {
     (first, second) => Date.parse(first.sentAt) - Date.parse(second.sentAt),
   );
 }
+
+type MessageRenderUnit =
+  | { kind: "text"; message: ChatMessage }
+  | { kind: "images"; messages: ChatMessage[] };
+
+function toRenderUnits(group: ChatMessage[]): MessageRenderUnit[] {
+  return group.reduce<MessageRenderUnit[]>((units, message) => {
+    if (message.type === "image") {
+      const lastUnit = units.at(-1);
+      if (
+        lastUnit?.kind === "images" &&
+        lastUnit.messages.length < MAX_CHAT_IMAGES_PER_MESSAGE
+      ) {
+        lastUnit.messages.push(message);
+        return units;
+      }
+      units.push({ kind: "images", messages: [message] });
+      return units;
+    }
+    units.push({ kind: "text", message });
+    return units;
+  }, []);
+}
+
+const IMAGE_GROUP_LAYOUT: Record<number, { container: string; cell: string }> = {
+  1: { container: "flex", cell: "h-[120px] w-[120px]" },
+  2: { container: "flex gap-1", cell: "h-[120px] w-[120px]" },
+  3: { container: "flex gap-1", cell: "h-[90px] w-[90px]" },
+  4: { container: "grid grid-cols-2 gap-1", cell: "h-[120px] w-[120px]" },
+};
 
 function groupAdjacentMessages(messages: ChatMessage[]) {
   return messages.reduce<ChatMessage[][]>((groups, message) => {
@@ -72,6 +104,7 @@ function ChatRoomView({
   const [erroredImageMessages, setErroredImageMessages] = useState<Set<string>>(
     new Set(),
   );
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     isNearBottomRef.current = true;
@@ -146,24 +179,52 @@ function ChatRoomView({
               <div
                 className={`flex flex-col gap-[5px] ${isMine ? "items-end" : "items-start"}`}
               >
-                {group.map((message, index) => {
-                  const isLastInGroup = index === group.length - 1;
+                {toRenderUnits(group).map((unit, unitIndex, units) => {
+                  const isLastUnit = unitIndex === units.length - 1;
+
+                  if (unit.kind === "text") {
+                    const { message } = unit;
+                    return (
+                      <div
+                        key={message.id}
+                        data-testid="chat-message"
+                        data-sender={message.sender}
+                      >
+                        <ChatBubble
+                          me={isMine}
+                          time={isLastUnit ? message.displayTime : undefined}
+                          read={isLastUnit && message.read}
+                        >
+                          {message.content}
+                        </ChatBubble>
+                      </div>
+                    );
+                  }
+
+                  const { messages: imageMessages } = unit;
+                  const lastImageMessage = imageMessages.at(-1)!;
+                  const layout = IMAGE_GROUP_LAYOUT[imageMessages.length];
+                  const time = isLastUnit ? lastImageMessage.displayTime : undefined;
 
                   return (
                     <div
-                      key={message.id}
-                      data-testid="chat-message"
-                      data-sender={message.sender}
+                      key={imageMessages[0].id}
+                      data-testid="chat-message-images"
+                      data-sender={imageMessages[0].sender}
+                      className={`flex flex-col gap-[5px] ${isMine ? "items-end" : "items-start"}`}
                     >
-                      <ChatBubble
-                        me={isMine}
-                        time={isLastInGroup ? message.displayTime : undefined}
-                        read={isLastInGroup && message.read}
-                      >
-                        {message.type === "image" ? (
-                          <span className="flex flex-col gap-2">
+                      <div className={layout.container}>
+                        {imageMessages.map((message) => (
+                          <button
+                            key={message.id}
+                            type="button"
+                            aria-label="이미지 확대보기"
+                            disabled={erroredImageMessages.has(message.id)}
+                            onClick={() => setLightboxSrc(message.content)}
+                            className={`${layout.cell} shrink-0 overflow-hidden rounded-md disabled:cursor-default`}
+                          >
                             {erroredImageMessages.has(message.id) ? (
-                              <span className="flex h-32 w-32 items-center justify-center rounded bg-gray-100 text-gray-200">
+                              <span className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-200">
                                 <ImageIcon className="h-8 w-8" />
                               </span>
                             ) : (
@@ -177,15 +238,18 @@ function ChatRoomView({
                                     (prev) => new Set(prev).add(message.id),
                                   )
                                 }
-                                className="max-w-full rounded"
+                                className="h-full w-full object-cover"
                               />
                             )}
-                            {message.caption && <span>{message.caption}</span>}
-                          </span>
-                        ) : (
-                          message.content
-                        )}
-                      </ChatBubble>
+                          </button>
+                        ))}
+                      </div>
+                      {time && (
+                        <span className="flex shrink-0 items-center gap-1 whitespace-nowrap px-0.5 text-caption-3 text-gray-400">
+                          {isMine && lastImageMessage.read && <span>읽음</span>}
+                          <span>{time}</span>
+                        </span>
+                      )}
                     </div>
                   );
                 })}
@@ -196,6 +260,9 @@ function ChatRoomView({
         <div ref={conversationEndRef} aria-hidden="true" />
       </section>
       <ChatComposer key={room.id} onSend={handleSend} />
+      {lightboxSrc && (
+        <ChatImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
+      )}
     </main>
   );
 }
