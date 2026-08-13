@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 
 export interface TimeValue {
   meridiem: "오전" | "오후";
@@ -17,6 +18,9 @@ const HOURS = Array.from({ length: 12 }, (_, i) => i + 1);
 const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5);
 const MERIDIEMS: TimeValue["meridiem"][] = ["오전", "오후"];
 
+// 드래그로 인식할 최소 이동 거리(px). 이보다 적게 움직이면 클릭으로 취급
+const DRAG_THRESHOLD = 4;
+
 function WheelColumn<T extends string | number>({
   items,
   selected,
@@ -30,38 +34,80 @@ function WheelColumn<T extends string | number>({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
+  const draggingRef = useRef(false);
+  const draggedRef = useRef(false);
+  const startYRef = useRef(0);
+  const startScrollTopRef = useRef(0);
 
   useEffect(() => {
     const index = items.indexOf(selected);
     ref.current?.scrollTo({ top: index * ITEM_HEIGHT });
   }, []);
 
+  const snapToNearest = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const index = Math.min(
+      items.length - 1,
+      Math.max(0, Math.round(el.scrollTop / ITEM_HEIGHT)),
+    );
+    el.scrollTo({ top: index * ITEM_HEIGHT, behavior: "smooth" });
+    if (items[index] !== selected) onSelect(items[index]);
+  }, [items, selected, onSelect]);
+
   const handleScroll = () => {
+    if (draggingRef.current) return;
     window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => {
-      const el = ref.current;
-      if (!el) return;
-      const index = Math.min(
-        items.length - 1,
-        Math.max(0, Math.round(el.scrollTop / ITEM_HEIGHT)),
-      );
-      el.scrollTo({ top: index * ITEM_HEIGHT, behavior: "smooth" });
-      if (items[index] !== selected) onSelect(items[index]);
-    }, 100);
+    timerRef.current = window.setTimeout(snapToNearest, 100);
+  };
+
+  const handleMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
+    draggingRef.current = true;
+    draggedRef.current = false;
+    startYRef.current = e.clientY;
+    startScrollTopRef.current = ref.current?.scrollTop ?? 0;
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!draggingRef.current || !ref.current) return;
+      const deltaY = e.clientY - startYRef.current;
+      if (Math.abs(deltaY) > DRAG_THRESHOLD) draggedRef.current = true;
+      ref.current.scrollTop = startScrollTopRef.current - deltaY;
+    };
+    const handleMouseUp = () => {
+      if (!draggingRef.current) return;
+      draggingRef.current = false;
+      snapToNearest();
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [snapToNearest]);
+
+  const handleSelect = (item: T) => {
+    if (draggedRef.current) return;
+    const index = items.indexOf(item);
+    ref.current?.scrollTo({ top: index * ITEM_HEIGHT, behavior: "smooth" });
+    if (item !== selected) onSelect(item);
   };
 
   return (
     <div
       ref={ref}
       onScroll={handleScroll}
-      className="h-40 snap-y snap-mandatory overflow-y-auto py-[64px]"
-      style={{ scrollbarWidth: "none" }}
+      onMouseDown={handleMouseDown}
+      className="h-40 snap-y snap-mandatory overflow-y-auto py-[64px] active:cursor-grabbing"
+      style={{ scrollbarWidth: "none", cursor: "grab", userSelect: "none" }}
     >
       {items.map((item) => (
         <button
           key={String(item)}
           type="button"
-          onClick={() => onSelect(item)}
+          onClick={() => handleSelect(item)}
           className={`flex h-8 w-14 snap-center items-center justify-center text-body-1 ${
             item === selected ? "font-semibold text-gray-900" : "text-gray-400"
           }`}

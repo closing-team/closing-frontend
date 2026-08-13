@@ -27,9 +27,22 @@ export async function getTerms(): Promise<TermDto[]> {
 export async function signup(
   request: SignupRequest,
 ): Promise<SignupResponseData> {
+  const formData = new FormData();
+  if (request.image) {
+    formData.append("image", request.image);
+  }
+
   const response = await api.post<ApiEnvelope<SignupResponseData>>(
     "/api/v1/auth/signup",
-    request,
+    formData,
+    {
+      params: {
+        name: request.name,
+        nickname: request.nickname,
+        phone: request.phone,
+        email: request.email || undefined,
+      },
+    },
   );
   return response.data.data;
 }

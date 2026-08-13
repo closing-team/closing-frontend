@@ -31,6 +31,7 @@ function getTermLabel(type: string): string {
 
 export default function TermsPage() {
   const navigate = useNavigate();
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
   const [pendingSignup] = useState(readPendingSignup);
   const [agreedTermIds, setAgreedTermIds] = useState<Set<number>>(
     () => new Set(),
@@ -39,7 +40,7 @@ export default function TermsPage() {
   const [nickname, setNickname] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [signupError, setSignupError] = useState<string | null>(null);
   const submitStarted = useRef(false);
   const mounted = useRef(true);
@@ -82,7 +83,7 @@ export default function TermsPage() {
     name.trim().length > 0 &&
     nickname.trim().length > 0 &&
     PHONE_PATTERN.test(phone.trim()) &&
-    email.trim().includes("@");
+    (email.trim().length === 0 || email.trim().includes("@"));
   const canSignup =
     termsQuery.isSuccess && hasRequiredAgreements && hasValidProfile;
 
@@ -110,8 +111,8 @@ export default function TermsPage() {
         name: name.trim(),
         nickname: nickname.trim(),
         phone: phone.trim(),
-        email: email.trim(),
-        profileImageUrl: profileImageUrl.trim(),
+        email: email.trim() || undefined,
+        image: profileImage ?? undefined,
       },
       termIds: terms
         .filter((term) => agreedTermIds.has(term.termId))
@@ -137,6 +138,7 @@ export default function TermsPage() {
           <TextField
             label="이름"
             aria-label="이름"
+            placeholder="실명을 입력해 주세요"
             value={name}
             onChange={(event) => setName(event.target.value)}
             onClear={() => setName("")}
@@ -144,6 +146,7 @@ export default function TermsPage() {
           <TextField
             label="닉네임"
             aria-label="닉네임"
+            placeholder="닉네임을 입력해 주세요"
             value={nickname}
             onChange={(event) => setNickname(event.target.value)}
             onClear={() => setNickname("")}
@@ -152,26 +155,57 @@ export default function TermsPage() {
             label="전화번호"
             aria-label="전화번호"
             inputMode="tel"
-            placeholder="01012345678"
+            placeholder="010-1234-5678 ('-' 없이 입력 가능)"
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
             onClear={() => setPhone("")}
           />
           <TextField
-            label="이메일"
-            aria-label="이메일"
+            label="이메일 (선택)"
+            aria-label="이메일 (선택)"
             type="email"
+            placeholder="이메일을 입력해 주세요"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             onClear={() => setEmail("")}
           />
-          <TextField
-            label="프로필 이미지 URL (선택)"
-            aria-label="프로필 이미지 URL (선택)"
-            value={profileImageUrl}
-            onChange={(event) => setProfileImageUrl(event.target.value)}
-            onClear={() => setProfileImageUrl("")}
-          />
+          <div className="mb-1">
+            <p className="mb-2 ml-0.5 text-title-3 text-gray-900">
+              프로필 이미지 (선택)
+            </p>
+            <div className="flex h-[52px] items-center gap-3 rounded-lg border border-gray-200 px-4">
+              <button
+                type="button"
+                onClick={() => profileImageInputRef.current?.click()}
+                className="shrink-0 rounded-md border border-gray-300 px-3 py-1.5 text-caption-1 font-semibold text-gray-700"
+              >
+                이미지 선택
+              </button>
+              <span className="min-w-0 flex-1 truncate text-body-3 text-gray-500">
+                {profileImage?.name ?? "선택된 이미지가 없습니다."}
+              </span>
+              {profileImage && (
+                <button
+                  type="button"
+                  aria-label="선택한 프로필 이미지 삭제"
+                  onClick={() => setProfileImage(null)}
+                  className="shrink-0 text-caption-1 font-semibold text-gray-500"
+                >
+                  삭제
+                </button>
+              )}
+            </div>
+            <input
+              ref={profileImageInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                setProfileImage(event.target.files?.[0] ?? null);
+                event.target.value = "";
+              }}
+            />
+          </div>
         </div>
 
         {termsQuery.isPending && <TermsListSkeleton />}
