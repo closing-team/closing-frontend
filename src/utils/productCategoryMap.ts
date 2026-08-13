@@ -32,29 +32,10 @@ const PRODUCT_CATEGORY_CODES: Record<string, string> = {
   "POS/키오스크/빌지프린터": "POS_KIOSK_BILL_PRINTER",
 };
 
-function buildReverseMap(map: Record<string, string>): Record<string, string> {
-  const reversed: Record<string, string> = {};
-  for (const [label, code] of Object.entries(map)) {
-    reversed[code] = label;
-  }
-  return reversed;
-}
-
-const BUSINESS_CATEGORY_LABELS = buildReverseMap(BUSINESS_CATEGORY_CODES);
-const PRODUCT_CATEGORY_LABELS = buildReverseMap(PRODUCT_CATEGORY_CODES);
-
 export function toBusinessCategoryCode(label: string): string {
   return BUSINESS_CATEGORY_CODES[normalize(label)] ?? label;
 }
 
 export function toProductCategoryCode(label: string): string {
   return PRODUCT_CATEGORY_CODES[normalize(label)] ?? label;
-}
-
-export function fromBusinessCategoryCode(code: string): string {
-  return BUSINESS_CATEGORY_LABELS[code] ?? code;
-}
-
-export function fromProductCategoryCode(code: string): string {
-  return PRODUCT_CATEGORY_LABELS[code] ?? code;
 }
