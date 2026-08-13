@@ -18,13 +18,6 @@ export function formatTime({ meridiem, hour, minute }: TimeValue) {
   return `${meridiem} ${hour}:${String(minute).padStart(2, "0")}`;
 }
 
-export function getNextHour(from: Date = new Date()): Date {
-  const next = new Date(from);
-  next.setMinutes(0, 0, 0);
-  next.setHours(next.getHours() + 1);
-  return next;
-}
-
 export function toTimeValue(date: Date): TimeValue {
   const hour24 = date.getHours();
   const meridiem: TimeValue["meridiem"] = hour24 < 12 ? "오전" : "오후";
@@ -37,8 +30,4 @@ export function combineDateAndTime(date: Date, { meridiem, hour, minute }: TimeV
   const combined = new Date(date);
   combined.setHours(hour24, minute, 0, 0);
   return combined;
-}
-
-export function addHours(date: Date, hours: number): Date {
-  return new Date(date.getTime() + hours * 60 * 60 * 1000);
 }
