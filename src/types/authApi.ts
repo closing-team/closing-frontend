@@ -21,8 +21,8 @@ export interface SignupRequest {
   name: string;
   nickname: string;
   phone: string;
-  email: string;
-  profileImageUrl: string;
+  email?: string;
+  image?: File;
 }
 
 export interface SignupResponseData {
