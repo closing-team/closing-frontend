@@ -138,6 +138,7 @@ export default function TermsPage() {
           <TextField
             label="이름"
             aria-label="이름"
+            placeholder="실명을 입력해 주세요"
             value={name}
             onChange={(event) => setName(event.target.value)}
             onClear={() => setName("")}
@@ -145,6 +146,7 @@ export default function TermsPage() {
           <TextField
             label="닉네임"
             aria-label="닉네임"
+            placeholder="닉네임을 입력해 주세요"
             value={nickname}
             onChange={(event) => setNickname(event.target.value)}
             onClear={() => setNickname("")}
@@ -153,7 +155,7 @@ export default function TermsPage() {
             label="전화번호"
             aria-label="전화번호"
             inputMode="tel"
-            placeholder="01012345678"
+            placeholder="010-1234-5678 ('-' 없이 입력 가능)"
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
             onClear={() => setPhone("")}
@@ -162,6 +164,7 @@ export default function TermsPage() {
             label="이메일 (선택)"
             aria-label="이메일 (선택)"
             type="email"
+            placeholder="이메일을 입력해 주세요"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             onClear={() => setEmail("")}
