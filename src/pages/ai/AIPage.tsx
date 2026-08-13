@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES, aiPlanPath } from "../../constants/routes";
 import TopBar from "../../components/common/TopBar";
 import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatInput from "../../components/ai/ChatInput";
+import AIPlanSkeleton from "../../components/ai/AIPlanSkeleton";
 import Toast from "../../components/common/Toast";
 import { AlertIcon, CheckIcon } from "../../assets/icons";
 import cloyCircle from "../../assets/images/cloy-circle.png";
@@ -42,7 +43,35 @@ export default function AIPage() {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isCheckingExisting, setIsCheckingExisting] = useState(true);
   const startSession = useStartAiSessionMutation();
+  const checkExistingSession = useStartAiSessionMutation();
+
+  useEffect(() => {
+    checkExistingSession.mutate(
+      { initialInput: "" },
+      {
+        // 성공 응답이 온다는 건 initialInput 없이도 이미 확정된 세션을 돌려줬다는 뜻
+        onSuccess: (data) => {
+          navigate(aiPlanPath(data.sessionId), { replace: true });
+        },
+        // 확정된 세션이 없으면 initialInput 필수 검증에 걸려 실패함 — 정상 케이스라 그냥 입력 화면 보여줌
+        onError: () => {
+          setIsCheckingExisting(false);
+        },
+      },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (isCheckingExisting) {
+    return (
+      <div className="min-h-dvh bg-white">
+        <TopBar onBack={() => navigate(-1)} title="AI 맞춤 계획 만들기" />
+        <AIPlanSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh bg-white">
