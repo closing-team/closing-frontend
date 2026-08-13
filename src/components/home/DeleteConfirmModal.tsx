@@ -28,7 +28,12 @@ export default function DeleteConfirmModal({
           <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500" />
           <div className="ml-3 flex flex-1 flex-col">
             <p className="text-subtitle-2 text-gray-900">{plan.title}</p>
-            <PlanDateRange plan={plan} badgeBg="white" className="mt-0.5" />
+            <PlanDateRange
+              plan={plan}
+              badgeBg="white"
+              size="sm"
+              className="mt-0.5"
+            />
           </div>
         </div>
       </div>
