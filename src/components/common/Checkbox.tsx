@@ -18,7 +18,7 @@ export default function Checkbox({
 }: CheckboxProps) {
   return (
     <label
-      className={`inline-flex items-start gap-3 ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${className}`}
+      className={`flex w-full items-start gap-3 ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${className}`}
     >
       <button
         type="button"
