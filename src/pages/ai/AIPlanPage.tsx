@@ -13,6 +13,7 @@ import { AlertIcon, CheckIcon } from "../../assets/icons";
 import type { Plan } from "../../components/common/PlanCard";
 import {
   getAiConfirmErrorMessage,
+  getAiErrorMessage,
   toConfirmedPlans,
   toPlan,
   toPlans,
@@ -142,6 +143,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
   const [isFinal, setIsFinal] = useState(initial.isFinal);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initial.messages);
+  const [actionError, setActionError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const sendMessage = useSendAiSessionMessageMutation();
@@ -206,6 +208,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
     const text = input.trim();
     if (!text || isFinal || sendMessage.isPending) return;
 
+    setActionError(null);
     setMessages((prev) => [
       ...prev,
       { id: prev.length + 1, me: true, text, time: formatNowTime() },
@@ -230,6 +233,9 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
             },
           ]);
         },
+        onError: (error) => {
+          setActionError(getAiErrorMessage(error));
+        },
       },
     );
   };
@@ -237,6 +243,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
   const handleConfirmSession = () => {
     if (isConfirmed) return;
 
+    setActionError(null);
     confirmSession.mutate(sessionId, {
       onSuccess: () => {
         setIsConfirmed(true);
@@ -244,6 +251,7 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       },
       onError: (error) => {
         console.error("AI 일정 확정 실패:", getAiConfirmErrorMessage(error), error);
+        setActionError(getAiConfirmErrorMessage(error));
       },
     });
   };
@@ -309,7 +317,15 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
       </div>
 
       <div className="fixed bottom-0 left-1/2 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-gradient-to-t from-white via-white to-white/0 px-4 pb-4 pt-6">
-        {turnCount > 0 &&
+        {actionError ? (
+          <Toast
+            variant="danger"
+            icon={<AlertIcon className="h-5 w-5 shrink-0 text-warning-500" />}
+            message={actionError}
+            className="mb-3"
+          />
+        ) : (
+          turnCount > 0 &&
           (isFinal ? (
             <Toast
               variant="danger"
@@ -323,7 +339,8 @@ function AIPlanChat({ sessionId, initial }: AIPlanChatProps) {
               message={`남은 질문 횟수: ${remainingTurns}`}
               className="mb-3"
             />
-          ))}
+          ))
+        )}
         <ChatInput
           value={input}
           onChange={setInput}

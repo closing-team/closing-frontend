@@ -34,6 +34,16 @@ export function getAiConfirmErrorMessage(error: unknown): string {
   return error.response?.data?.message ?? DEFAULT_AI_CONFIRM_ERROR_MESSAGE;
 }
 
+const DEFAULT_AI_ERROR_MESSAGE = "요청을 처리하지 못했어요. 다시 시도해주세요.";
+
+// 세션 시작/메시지 전송처럼 코드별 메시지가 따로 없는 AI 요청 실패에 씀
+export function getAiErrorMessage(error: unknown): string {
+  if (!axios.isAxiosError<{ message?: string }>(error)) {
+    return DEFAULT_AI_ERROR_MESSAGE;
+  }
+  return error.response?.data?.message ?? DEFAULT_AI_ERROR_MESSAGE;
+}
+
 export function toPlan(task: AiGeneratedTaskDto): Plan {
   return {
     id: task.tempId,

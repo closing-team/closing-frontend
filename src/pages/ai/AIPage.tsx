@@ -4,9 +4,11 @@ import { ROUTES, aiPlanPath } from "../../constants/routes";
 import TopBar from "../../components/common/TopBar";
 import CalloutBanner from "../../components/common/CalloutBanner";
 import ChatInput from "../../components/ai/ChatInput";
-import { CheckIcon } from "../../assets/icons";
+import Toast from "../../components/common/Toast";
+import { AlertIcon, CheckIcon } from "../../assets/icons";
 import cloyCircle from "../../assets/images/cloy-circle.png";
 import { useStartAiSessionMutation } from "../../hooks/useAi";
+import { getAiErrorMessage } from "../../utils/aiAdapter";
 
 const CHECKLIST = [
   {
@@ -39,6 +41,7 @@ const CHECKLIST = [
 export default function AIPage() {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const startSession = useStartAiSessionMutation();
 
   return (
@@ -87,6 +90,14 @@ export default function AIPage() {
       </div>
 
       <div className="fixed bottom-0 left-1/2 w-full max-w-app min-w-[var(--container-app-min)] -translate-x-1/2 bg-gradient-to-t from-white via-white to-white/0 px-4 pb-4 pt-6">
+        {errorMessage && (
+          <Toast
+            variant="danger"
+            icon={<AlertIcon className="h-5 w-5 shrink-0 text-warning-500" />}
+            message={errorMessage}
+            className="mb-3"
+          />
+        )}
         <ChatInput
           value={input}
           onChange={setInput}
@@ -94,6 +105,7 @@ export default function AIPage() {
           onSend={() => {
             const initialInput = input.trim();
             if (!initialInput || startSession.isPending) return;
+            setErrorMessage(null);
 
             startSession.mutate(
               { initialInput },
@@ -109,6 +121,9 @@ export default function AIPage() {
                       remainingTurns: data.remainingTurns,
                     },
                   });
+                },
+                onError: (error) => {
+                  setErrorMessage(getAiErrorMessage(error));
                 },
               },
             );
